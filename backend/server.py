@@ -34,6 +34,38 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Pay periods (bi-weekly) based on install date
+PAY_PERIODS = [
+    ("Dec 25, 2025 - Jan 07, 2026", datetime(2025, 12, 25), datetime(2026, 1, 7)),
+    ("Jan 08, 2026 - Jan 21, 2026", datetime(2026, 1, 8), datetime(2026, 1, 21)),
+    ("Jan 22, 2026 - Feb 04, 2026", datetime(2026, 1, 22), datetime(2026, 2, 4)),
+    ("Feb 05, 2026 - Feb 18, 2026", datetime(2026, 2, 5), datetime(2026, 2, 18)),
+    ("Feb 19, 2026 - Mar 04, 2026", datetime(2026, 2, 19), datetime(2026, 3, 4)),
+    ("Mar 05, 2026 - Mar 18, 2026", datetime(2026, 3, 5), datetime(2026, 3, 18)),
+    ("Mar 19, 2026 - Apr 01, 2026", datetime(2026, 3, 19), datetime(2026, 4, 1)),
+    ("Apr 02, 2026 - Apr 15, 2026", datetime(2026, 4, 2), datetime(2026, 4, 15)),
+    ("Apr 16, 2026 - Apr 29, 2026", datetime(2026, 4, 16), datetime(2026, 4, 29)),
+    ("Apr 30, 2026 - May 13, 2026", datetime(2026, 4, 30), datetime(2026, 5, 13)),
+    ("May 14, 2026 - May 27, 2026", datetime(2026, 5, 14), datetime(2026, 5, 27)),
+    ("May 28, 2026 - Jun 10, 2026", datetime(2026, 5, 28), datetime(2026, 6, 10)),
+    ("Jun 11, 2026 - Jun 24, 2026", datetime(2026, 6, 11), datetime(2026, 6, 24)),
+    ("Jun 25, 2026 - Jul 08, 2026", datetime(2026, 6, 25), datetime(2026, 7, 8)),
+    ("Jul 09, 2026 - Jul 22, 2026", datetime(2026, 7, 9), datetime(2026, 7, 22)),
+    ("Jul 23, 2026 - Aug 05, 2026", datetime(2026, 7, 23), datetime(2026, 8, 5)),
+    ("Aug 06, 2026 - Aug 19, 2026", datetime(2026, 8, 6), datetime(2026, 8, 19)),
+    ("Aug 20, 2026 - Sep 02, 2026", datetime(2026, 8, 20), datetime(2026, 9, 2)),
+    ("Sep 03, 2026 - Sep 16, 2026", datetime(2026, 9, 3), datetime(2026, 9, 16)),
+    ("Sep 17, 2026 - Sep 30, 2026", datetime(2026, 9, 17), datetime(2026, 9, 30)),
+    ("Oct 01, 2026 - Oct 14, 2026", datetime(2026, 10, 1), datetime(2026, 10, 14)),
+    ("Oct 15, 2026 - Oct 28, 2026", datetime(2026, 10, 15), datetime(2026, 10, 28)),
+    ("Oct 29, 2026 - Nov 11, 2026", datetime(2026, 10, 29), datetime(2026, 11, 11)),
+    ("Nov 12, 2026 - Nov 25, 2026", datetime(2026, 11, 12), datetime(2026, 11, 25)),
+    ("Nov 26, 2026 - Dec 09, 2026", datetime(2026, 11, 26), datetime(2026, 12, 9)),
+    ("Dec 10, 2026 - Dec 23, 2026", datetime(2026, 12, 10), datetime(2026, 12, 23)),
+    ("Dec 24, 2026 - Jan 06, 2027", datetime(2026, 12, 24), datetime(2027, 1, 6)),
+    ("Jan 07, 2027 - Jan 20, 2027", datetime(2027, 1, 7), datetime(2027, 1, 20)),
+]
+
 # Models
 class ExcelConfig(BaseModel):
     model_config = ConfigDict(extra="ignore")
