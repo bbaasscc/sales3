@@ -3,7 +3,7 @@
     "tests_run": 11,
     "tests_passed": 11,
     "success_rate": 1.0,
-    "timestamp": "2026-02-08T15:59:18.666229"
+    "timestamp": "2026-02-08T16:16:15.546852"
   },
   "detailed_results": [
     {
@@ -14,7 +14,7 @@
         "message": "Sales Dashboard API"
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:17.309654"
+      "timestamp": "2026-02-08T16:16:13.713639"
     },
     {
       "test_name": "Set Excel Config",
@@ -22,22 +22,22 @@
       "status_code": 200,
       "response_data": {
         "message": "Excel configuration saved",
-        "id": "fdd499f0-2c04-4f41-807c-ff3c6bdaa9fb"
+        "id": "52e9930a-9314-4fe4-9fdc-03a0f1ee3782"
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:17.345426"
+      "timestamp": "2026-02-08T16:16:13.750065"
     },
     {
       "test_name": "Get Excel Config",
       "success": true,
       "status_code": 200,
       "response_data": {
-        "id": "fdd499f0-2c04-4f41-807c-ff3c6bdaa9fb",
+        "id": "52e9930a-9314-4fe4-9fdc-03a0f1ee3782",
         "excel_url": "https://customer-assets.emergentagent.com/job_sales-dashboard-321/artifacts/xdsih8ll_Stats_FSHAC_v22%20%284%29.xlsx",
-        "last_updated": "2026-02-08T15:59:17.341366+00:00"
+        "last_updated": "2026-02-08T16:16:13.746811+00:00"
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:17.382247"
+      "timestamp": "2026-02-08T16:16:13.830454"
     },
     {
       "test_name": "Pay Periods Endpoint",
@@ -188,7 +188,7 @@
         ]
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:17.415980"
+      "timestamp": "2026-02-08T16:16:13.868620"
     },
     {
       "test_name": "Dashboard KPIs (All Time) - New Features",
@@ -197,15 +197,24 @@
       "response_data": {
         "total_revenue": 197316.0,
         "total_commission": 17900.58,
-        "spiff_commission": 4482.81,
-        "total_commission_with_spiff": 22383.39,
-        "avg_commission_percent": 8.85,
         "closed_deals": 20,
         "closing_rate": 41.7,
-        "average_ticket": 9865.8,
         "total_visits": 48,
+        "average_ticket": 9865.8,
         "avg_sales_cycle_days": 116.7,
-        "price_margin": 17900.58,
+        "price_margin_total": 21645.0,
+        "price_margin_sales_count": 2,
+        "price_margin_commission": 1082.25,
+        "spiff_total": 4482.81,
+        "spiff_breakdown": {
+          "Other": {
+            "count": 9,
+            "commission": 4482.81,
+            "revenue": 111786.0,
+            "percent_of_sales": 45.0
+          }
+        },
+        "avg_commission_percent": 8.85,
         "unit_type_count": {
           "Furnace": 8,
           "Furnace + AC": 5,
@@ -1040,7 +1049,7 @@
         "selected_pay_period": null
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:17.626096"
+      "timestamp": "2026-02-08T16:16:14.142875"
     },
     {
       "test_name": "Pay Period Filtering",
@@ -1049,15 +1058,24 @@
       "response_data": {
         "total_revenue": 148940.0,
         "total_commission": 14034.65,
-        "spiff_commission": 3974.0,
-        "total_commission_with_spiff": 18008.65,
-        "avg_commission_percent": 9.27,
         "closed_deals": 15,
         "closing_rate": 41.7,
-        "average_ticket": 9929.33,
         "total_visits": 36,
+        "average_ticket": 9929.33,
         "avg_sales_cycle_days": 158.1,
-        "price_margin": 14034.65,
+        "price_margin_total": 15640.0,
+        "price_margin_sales_count": 1,
+        "price_margin_commission": 782.0,
+        "spiff_total": 3974.0,
+        "spiff_breakdown": {
+          "Other": {
+            "count": 7,
+            "commission": 3974.0,
+            "revenue": 87025.0,
+            "percent_of_sales": 46.7
+          }
+        },
+        "avg_commission_percent": 9.27,
         "unit_type_count": {
           "Furnace": 6,
           "Furnace + HP": 3,
@@ -1716,7 +1734,7 @@
         "selected_pay_period": "Jan 08, 2026 - Jan 21, 2026"
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:17.800407"
+      "timestamp": "2026-02-08T16:16:14.377844"
     },
     {
       "test_name": "Dashboard KPIs (week)",
@@ -1725,15 +1743,24 @@
       "response_data": {
         "total_revenue": 47175.0,
         "total_commission": 5135.35,
-        "spiff_commission": 2274.0,
-        "total_commission_with_spiff": 7409.35,
-        "avg_commission_percent": 10.25,
         "closed_deals": 4,
         "closing_rate": 40.0,
-        "average_ticket": 11793.75,
         "total_visits": 10,
+        "average_ticket": 11793.75,
         "avg_sales_cycle_days": 2.7,
-        "price_margin": 5135.35,
+        "price_margin_total": 0.0,
+        "price_margin_sales_count": 0,
+        "price_margin_commission": 0.0,
+        "spiff_total": 2274.0,
+        "spiff_breakdown": {
+          "Other": {
+            "count": 3,
+            "commission": 2274.0,
+            "revenue": 41045.0,
+            "percent_of_sales": 75.0
+          }
+        },
+        "avg_commission_percent": 10.25,
         "unit_type_count": {
           "Unknown": 1,
           "Furnace + AC": 1,
@@ -2070,7 +2097,7 @@
         "selected_pay_period": null
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:17.970092"
+      "timestamp": "2026-02-08T16:16:14.611645"
     },
     {
       "test_name": "Dashboard KPIs (2weeks)",
@@ -2079,15 +2106,24 @@
       "response_data": {
         "total_revenue": 79835.0,
         "total_commission": 7670.05,
-        "spiff_commission": 2599.0,
-        "total_commission_with_spiff": 10269.05,
-        "avg_commission_percent": 9.43,
         "closed_deals": 7,
         "closing_rate": 36.8,
-        "average_ticket": 11405.0,
         "total_visits": 19,
+        "average_ticket": 11405.0,
         "avg_sales_cycle_days": 2.0,
-        "price_margin": 7670.05,
+        "price_margin_total": 15640.0,
+        "price_margin_sales_count": 1,
+        "price_margin_commission": 782.0,
+        "spiff_total": 2599.0,
+        "spiff_breakdown": {
+          "Other": {
+            "count": 4,
+            "commission": 2599.0,
+            "revenue": 52090.0,
+            "percent_of_sales": 57.1
+          }
+        },
+        "avg_commission_percent": 9.43,
         "unit_type_count": {
           "Furnace": 3,
           "Unknown": 1,
@@ -2540,7 +2576,7 @@
         "selected_pay_period": null
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:18.145350"
+      "timestamp": "2026-02-08T16:16:14.851828"
     },
     {
       "test_name": "Dashboard KPIs (month)",
@@ -2549,15 +2585,24 @@
       "response_data": {
         "total_revenue": 148940.0,
         "total_commission": 14034.65,
-        "spiff_commission": 3974.0,
-        "total_commission_with_spiff": 18008.65,
-        "avg_commission_percent": 9.27,
         "closed_deals": 15,
         "closing_rate": 42.9,
-        "average_ticket": 9929.33,
         "total_visits": 35,
+        "average_ticket": 9929.33,
         "avg_sales_cycle_days": 158.1,
-        "price_margin": 14034.65,
+        "price_margin_total": 15640.0,
+        "price_margin_sales_count": 1,
+        "price_margin_commission": 782.0,
+        "spiff_total": 3974.0,
+        "spiff_breakdown": {
+          "Other": {
+            "count": 7,
+            "commission": 3974.0,
+            "revenue": 87025.0,
+            "percent_of_sales": 46.7
+          }
+        },
+        "avg_commission_percent": 9.27,
         "unit_type_count": {
           "Furnace": 6,
           "Furnace + HP": 3,
@@ -3204,7 +3249,7 @@
         "selected_pay_period": null
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:18.316109"
+      "timestamp": "2026-02-08T16:16:15.079787"
     },
     {
       "test_name": "Dashboard KPIs (year)",
@@ -3213,15 +3258,24 @@
       "response_data": {
         "total_revenue": 197316.0,
         "total_commission": 17900.58,
-        "spiff_commission": 4482.81,
-        "total_commission_with_spiff": 22383.39,
-        "avg_commission_percent": 8.85,
         "closed_deals": 20,
         "closing_rate": 42.6,
-        "average_ticket": 9865.8,
         "total_visits": 47,
+        "average_ticket": 9865.8,
         "avg_sales_cycle_days": 116.7,
-        "price_margin": 17900.58,
+        "price_margin_total": 21645.0,
+        "price_margin_sales_count": 2,
+        "price_margin_commission": 1082.25,
+        "spiff_total": 4482.81,
+        "spiff_breakdown": {
+          "Other": {
+            "count": 9,
+            "commission": 4482.81,
+            "revenue": 111786.0,
+            "percent_of_sales": 45.0
+          }
+        },
+        "avg_commission_percent": 8.85,
         "unit_type_count": {
           "Furnace": 8,
           "Furnace + AC": 5,
@@ -4020,7 +4074,7 @@
         "selected_pay_period": null
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:18.492038"
+      "timestamp": "2026-02-08T16:16:15.315165"
     },
     {
       "test_name": "Dashboard Refresh",
@@ -4031,15 +4085,24 @@
         "kpis": {
           "total_revenue": 197316.0,
           "total_commission": 17900.58,
-          "spiff_commission": 4482.81,
-          "total_commission_with_spiff": 22383.39,
-          "avg_commission_percent": 8.85,
           "closed_deals": 20,
           "closing_rate": 41.7,
-          "average_ticket": 9865.8,
           "total_visits": 48,
+          "average_ticket": 9865.8,
           "avg_sales_cycle_days": 116.7,
-          "price_margin": 17900.58,
+          "price_margin_total": 21645.0,
+          "price_margin_sales_count": 2,
+          "price_margin_commission": 1082.25,
+          "spiff_total": 4482.81,
+          "spiff_breakdown": {
+            "Other": {
+              "count": 9,
+              "commission": 4482.81,
+              "revenue": 111786.0,
+              "percent_of_sales": 45.0
+            }
+          },
+          "avg_commission_percent": 8.85,
           "unit_type_count": {
             "Furnace": 8,
             "Furnace + AC": 5,
@@ -4875,7 +4938,7 @@
         }
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:59:18.665405"
+      "timestamp": "2026-02-08T16:16:15.545976"
     }
   ]
 }
