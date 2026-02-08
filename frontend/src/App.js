@@ -67,18 +67,27 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Default Excel URL - Updated file
+// Default Excel URL
 const DEFAULT_EXCEL_URL = "https://customer-assets.emergentagent.com/job_sales-dashboard-321/artifacts/4chovh35_Stats_FSHAC_v22%20%285%29.xlsx";
 
-// Chart colors
-const CHART_COLORS = ["#0F172A", "#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899"];
+// Four Seasons brand colors
+const BRAND_COLORS = {
+  primary: '#C62828',      // Red
+  primaryDark: '#8E0000',  // Dark red
+  secondary: '#1E3A5F',    // Navy blue
+  accent: '#F5F5F5',       // Light gray
+  white: '#FFFFFF',
+  dark: '#212121',
+};
+
+// Chart colors matching Four Seasons brand
+const CHART_COLORS = ["#C62828", "#1E3A5F", "#4CAF50", "#FF9800", "#9C27B0", "#00BCD4"];
 const SPIFF_COLORS = {
-  'APCO X': '#3B82F6',
-  'Samsung': '#10B981',
-  'Mitsubishi': '#F59E0B',
-  'Surge Protector': '#8B5CF6',
-  'Duct Cleaning': '#EC4899',
-  'Other': '#94A3B8'
+  'APCO X': '#C62828',
+  'Samsung': '#1E3A5F',
+  'Mitsubishi': '#4CAF50',
+  'Surge Protector': '#FF9800',
+  'Duct Cleaning': '#9C27B0',
 };
 
 // Pay periods (bi-weekly)
@@ -116,24 +125,25 @@ const PAY_PERIODS = [
 // Summary KPI Card with description
 const SummaryCard = ({ title, value, description, icon: Icon, prefix = "", suffix = "", highlight = false }) => (
   <Card 
-    className={`bg-white border border-slate-200 shadow-sm rounded-xl hover:shadow-md transition-all duration-200 ${highlight ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`}
+    className={`bg-white border shadow-sm rounded-xl hover:shadow-md transition-all duration-200 ${highlight ? 'border-l-4' : 'border-gray-200'}`}
+    style={{ borderLeftColor: highlight ? BRAND_COLORS.primary : undefined }}
     data-testid={`kpi-${title.toLowerCase().replace(/\s+/g, '-')}`}
   >
     <CardContent className="p-5">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 bg-slate-100 rounded-md">
-              <Icon className="w-3.5 h-3.5 text-slate-600" strokeWidth={2} />
+            <div className="p-1.5 rounded-md" style={{ backgroundColor: '#FEE2E2' }}>
+              <Icon className="w-3.5 h-3.5" style={{ color: BRAND_COLORS.primary }} strokeWidth={2} />
             </div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 font-heading">
+            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 font-heading">
               {title}
             </p>
           </div>
-          <p className="text-2xl lg:text-3xl font-mono font-semibold tracking-tight text-slate-900 mt-2">
+          <p className="text-2xl lg:text-3xl font-mono font-semibold tracking-tight text-gray-900 mt-2">
             {prefix}{typeof value === 'number' ? value.toLocaleString('en-US', { maximumFractionDigits: 2 }) : value}{suffix}
           </p>
-          <p className="text-xs text-slate-400 mt-2 leading-relaxed">{description}</p>
+          <p className="text-xs text-gray-400 mt-2 leading-relaxed">{description}</p>
         </div>
       </div>
     </CardContent>
@@ -143,36 +153,36 @@ const SummaryCard = ({ title, value, description, icon: Icon, prefix = "", suffi
 // Section Header
 const SectionHeader = ({ title, description, icon: Icon }) => (
   <div className="flex items-center gap-3 mb-4">
-    <div className="p-2 bg-slate-900 rounded-lg">
+    <div className="p-2 rounded-lg" style={{ backgroundColor: BRAND_COLORS.primary }}>
       <Icon className="w-5 h-5 text-white" strokeWidth={2} />
     </div>
     <div>
-      <h2 className="text-lg font-bold text-slate-900 font-heading">{title}</h2>
-      <p className="text-sm text-slate-500">{description}</p>
+      <h2 className="text-lg font-bold text-gray-900 font-heading">{title}</h2>
+      <p className="text-sm text-gray-500">{description}</p>
     </div>
   </div>
 );
 
 // SPIFF Brand Card
 const SpiffBrandCard = ({ brand, data, color }) => (
-  <div className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md transition-all">
+  <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all">
     <div className="flex items-center justify-between mb-3">
       <div className="flex items-center gap-2">
         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
-        <span className="font-semibold text-slate-700">{brand}</span>
+        <span className="font-semibold text-gray-700">{brand}</span>
       </div>
-      <span className="text-xs font-mono bg-slate-100 px-2 py-1 rounded-full text-slate-600">
+      <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded-full text-gray-600">
         {data.percent_of_sales}% of sales
       </span>
     </div>
     <div className="grid grid-cols-2 gap-3">
       <div>
-        <p className="text-xs text-slate-400 uppercase tracking-wider">Sales</p>
-        <p className="text-lg font-mono font-semibold text-slate-900">{data.count}</p>
+        <p className="text-xs text-gray-400 uppercase tracking-wider">Sales</p>
+        <p className="text-lg font-mono font-semibold text-gray-900">{data.count}</p>
       </div>
       <div>
-        <p className="text-xs text-slate-400 uppercase tracking-wider">Commission</p>
-        <p className="text-lg font-mono font-semibold text-emerald-600">${data.commission.toLocaleString()}</p>
+        <p className="text-xs text-gray-400 uppercase tracking-wider">Commission</p>
+        <p className="text-lg font-mono font-semibold" style={{ color: BRAND_COLORS.primary }}>${data.commission.toLocaleString()}</p>
       </div>
     </div>
   </div>
@@ -180,13 +190,13 @@ const SpiffBrandCard = ({ brand, data, color }) => (
 
 // Chart Card Container
 const ChartCard = ({ title, description, children, icon: Icon }) => (
-  <Card className="bg-white border border-slate-200 shadow-sm rounded-xl">
-    <CardHeader className="pb-2 border-b border-slate-100">
+  <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
+    <CardHeader className="pb-2 border-b border-gray-100">
       <div className="flex items-center gap-2">
-        {Icon && <Icon className="w-4 h-4 text-slate-500" strokeWidth={1.5} />}
+        {Icon && <Icon className="w-4 h-4 text-gray-500" strokeWidth={1.5} />}
         <div>
-          <CardTitle className="text-sm font-semibold text-slate-700 font-heading">{title}</CardTitle>
-          {description && <CardDescription className="text-xs text-slate-400">{description}</CardDescription>}
+          <CardTitle className="text-sm font-semibold text-gray-700 font-heading">{title}</CardTitle>
+          {description && <CardDescription className="text-xs text-gray-400">{description}</CardDescription>}
         </div>
       </div>
     </CardHeader>
@@ -229,7 +239,7 @@ function App() {
       
       if (showToast) {
         toast.success("Data Updated Successfully", {
-          description: `${response.data.closed_deals} closed deals loaded from Excel`
+          description: `${response.data.closed_deals} closed deals loaded`
         });
       }
     } catch (err) {
@@ -295,28 +305,37 @@ function App() {
     : [];
 
   return (
-    <div className="min-h-screen bg-[#F4F5F7]">
+    <div className="min-h-screen" style={{ backgroundColor: '#F5F5F5' }}>
       <Toaster position="top-right" />
       
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      {/* Header - Four Seasons Branding */}
+      <header className="sticky top-0 z-10 shadow-md" style={{ backgroundColor: BRAND_COLORS.primary }}>
         <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div>
-              <h1 className="text-xl lg:text-2xl font-extrabold tracking-tight text-slate-900 font-heading" data-testid="dashboard-title">
-                Sales Performance Dashboard
-              </h1>
-              <p className="text-sm text-slate-500 mt-1">
-                HVAC Sales Analytics & Commission Tracking
-              </p>
+            <div className="flex items-center gap-4">
+              {/* Four Seasons Logo */}
+              <img 
+                src="https://www.fourseasonsheatingcooling.com/wp-content/themes/developer/assets/images/logo-white.svg" 
+                alt="Four Seasons" 
+                className="h-12"
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+              <div className="border-l border-white/30 pl-4">
+                <h1 className="text-xl lg:text-2xl font-bold tracking-tight text-white font-heading" data-testid="dashboard-title">
+                  Benjamin S. Cardarelli
+                </h1>
+                <p className="text-sm text-white/80 mt-0.5">
+                  Sales Performance Dashboard
+                </p>
+              </div>
             </div>
             
             <div className="flex flex-wrap items-center gap-3">
               {/* Pay Period Filter */}
               <div className="flex flex-col gap-1">
-                <Label className="text-xs text-slate-500 font-medium">Pay Period</Label>
+                <Label className="text-xs text-white/70 font-medium">Pay Period</Label>
                 <Select value={payPeriod} onValueChange={handlePayPeriodChange}>
-                  <SelectTrigger className="w-[200px] bg-white border-slate-200 text-sm">
+                  <SelectTrigger className="w-[200px] bg-white/10 border-white/20 text-white text-sm">
                     <SelectValue placeholder="Select pay period" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
@@ -330,9 +349,9 @@ function App() {
 
               {/* Quick Filter */}
               <div className="flex flex-col gap-1">
-                <Label className="text-xs text-slate-500 font-medium">Quick Filter</Label>
+                <Label className="text-xs text-white/70 font-medium">Quick Filter</Label>
                 <Select value={dateFilter} onValueChange={handleDateFilterChange}>
-                  <SelectTrigger className="w-[130px] bg-white border-slate-200 text-sm">
+                  <SelectTrigger className="w-[130px] bg-white/10 border-white/20 text-white text-sm">
                     <SelectValue placeholder="Period" />
                   </SelectTrigger>
                   <SelectContent>
@@ -348,7 +367,7 @@ function App() {
               {/* Settings */}
               <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="icon" className="mt-5">
+                  <Button variant="ghost" size="icon" className="mt-5 text-white hover:bg-white/10">
                     <Settings className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
@@ -365,7 +384,9 @@ function App() {
                         className="font-mono text-xs"
                       />
                     </div>
-                    <Button onClick={handleSaveSettings} className="w-full">Save</Button>
+                    <Button onClick={handleSaveSettings} className="w-full" style={{ backgroundColor: BRAND_COLORS.primary }}>
+                      Save
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -374,7 +395,8 @@ function App() {
               <Button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="bg-blue-600 text-white hover:bg-blue-700 shadow-md rounded-lg px-6 py-2 text-sm font-semibold mt-5"
+                className="shadow-md rounded-lg px-6 py-2 text-sm font-semibold mt-5"
+                style={{ backgroundColor: BRAND_COLORS.secondary }}
                 data-testid="refresh-button"
               >
                 <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
@@ -390,8 +412,8 @@ function App() {
         {loading ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <RefreshCw className="w-8 h-8 animate-spin text-slate-400 mx-auto mb-4" />
-              <p className="text-slate-500">Loading dashboard data...</p>
+              <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: BRAND_COLORS.primary }} />
+              <p className="text-gray-500">Loading dashboard data...</p>
             </div>
           </div>
         ) : error ? (
@@ -465,53 +487,53 @@ function App() {
                   icon={Phone}
                 />
                 
-                <Card className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
+                <Card className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-slate-50">
-                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Priority</TableHead>
-                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Name</TableHead>
-                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">City</TableHead>
-                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Status</TableHead>
-                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Follow-Up Date</TableHead>
-                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Days Until</TableHead>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Priority</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Name</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">City</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Status</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Follow-Up Date</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Days Until</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {kpiData.follow_ups.slice(0, 10).map((followUp, index) => (
                           <TableRow 
                             key={index} 
-                            className={`border-b border-slate-100 ${followUp.is_urgent ? 'bg-red-50' : 'hover:bg-slate-50/50'}`}
+                            className={`border-b border-gray-100 ${followUp.is_urgent ? 'bg-red-50' : 'hover:bg-gray-50/50'}`}
                           >
                             <TableCell className="py-2 px-4">
                               {followUp.is_urgent ? (
-                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: '#FEE2E2', color: BRAND_COLORS.primary }}>
                                   <AlertTriangle className="w-3 h-3" />
                                   URGENT
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
                                   <Clock className="w-3 h-3" />
                                   Normal
                                 </span>
                               )}
                             </TableCell>
-                            <TableCell className={`py-2 px-4 font-medium ${followUp.is_urgent ? 'text-red-700' : 'text-slate-700'}`}>
+                            <TableCell className={`py-2 px-4 font-medium ${followUp.is_urgent ? 'text-red-700' : 'text-gray-700'}`}>
                               {followUp.name}
                             </TableCell>
-                            <TableCell className="py-2 px-4 text-slate-600">{followUp.city}</TableCell>
+                            <TableCell className="py-2 px-4 text-gray-600">{followUp.city}</TableCell>
                             <TableCell className="py-2 px-4">
                               <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                followUp.status === 'PENDING' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'
+                                followUp.status === 'PENDING' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-600'
                               }`}>
                                 {followUp.status}
                               </span>
                             </TableCell>
-                            <TableCell className={`py-2 px-4 font-mono ${followUp.is_urgent ? 'text-red-700 font-bold' : 'text-slate-600'}`}>
+                            <TableCell className={`py-2 px-4 font-mono ${followUp.is_urgent ? 'font-bold' : ''}`} style={{ color: followUp.is_urgent ? BRAND_COLORS.primary : '#4B5563' }}>
                               {followUp.follow_up_date}
                             </TableCell>
-                            <TableCell className={`py-2 px-4 font-mono ${followUp.is_urgent ? 'text-red-700 font-bold' : 'text-slate-600'}`}>
+                            <TableCell className={`py-2 px-4 font-mono ${followUp.is_urgent ? 'font-bold' : ''}`} style={{ color: followUp.is_urgent ? BRAND_COLORS.primary : '#4B5563' }}>
                               {followUp.days_until !== null ? (
                                 followUp.days_until < 0 ? `${Math.abs(followUp.days_until)} days overdue` :
                                 followUp.days_until === 0 ? 'Today!' :
@@ -536,36 +558,36 @@ function App() {
               />
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200">
+                <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
                   <CardContent className="p-5">
                     <div className="flex items-center gap-2 mb-3">
-                      <ShoppingCart className="w-4 h-4 text-slate-500" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Sales at 5%</span>
+                      <ShoppingCart className="w-4 h-4 text-gray-500" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Sales at 5%</span>
                     </div>
-                    <p className="text-3xl font-mono font-bold text-slate-900">{kpiData.price_margin_sales_count}</p>
-                    <p className="text-xs text-slate-400 mt-2">Number of deals with exactly 5% commission rate</p>
+                    <p className="text-3xl font-mono font-bold text-gray-900">{kpiData.price_margin_sales_count}</p>
+                    <p className="text-xs text-gray-400 mt-2">Number of deals with exactly 5% commission rate</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200">
+                <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
                   <CardContent className="p-5">
                     <div className="flex items-center gap-2 mb-3">
-                      <DollarSign className="w-4 h-4 text-slate-500" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Revenue at 5%</span>
+                      <DollarSign className="w-4 h-4 text-gray-500" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Revenue at 5%</span>
                     </div>
-                    <p className="text-3xl font-mono font-bold text-slate-900">${kpiData.price_margin_total.toLocaleString()}</p>
-                    <p className="text-xs text-slate-400 mt-2">Total ticket value from 5% commission sales</p>
+                    <p className="text-3xl font-mono font-bold text-gray-900">${kpiData.price_margin_total.toLocaleString()}</p>
+                    <p className="text-xs text-gray-400 mt-2">Total ticket value from 5% commission sales</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+                <Card className="border-0" style={{ background: `linear-gradient(135deg, ${BRAND_COLORS.primary}15, ${BRAND_COLORS.primary}25)` }}>
                   <CardContent className="p-5">
                     <div className="flex items-center gap-2 mb-3">
-                      <BadgeDollarSign className="w-4 h-4 text-emerald-600" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">Commission at 5%</span>
+                      <BadgeDollarSign className="w-4 h-4" style={{ color: BRAND_COLORS.primary }} />
+                      <span className="text-xs font-bold uppercase tracking-wider" style={{ color: BRAND_COLORS.primary }}>Commission at 5%</span>
                     </div>
-                    <p className="text-3xl font-mono font-bold text-emerald-700">${kpiData.price_margin_commission.toLocaleString()}</p>
-                    <p className="text-xs text-emerald-600 mt-2">Commission earned from 5% rate sales</p>
+                    <p className="text-3xl font-mono font-bold" style={{ color: BRAND_COLORS.primaryDark }}>${kpiData.price_margin_commission.toLocaleString()}</p>
+                    <p className="text-xs mt-2" style={{ color: BRAND_COLORS.primary }}>Commission earned from 5% rate sales</p>
                   </CardContent>
                 </Card>
               </div>
@@ -575,26 +597,26 @@ function App() {
             <section>
               <SectionHeader 
                 title="SPIFF Commission Breakdown" 
-                description="Bonus commissions by brand partner (APCO X, Samsung, Mitsubishi, Surge Protector, Duct Cleaning)"
+                description="Bonus commissions by brand partner"
                 icon={Gift}
               />
               
               {/* SPIFF Total */}
-              <Card className="bg-gradient-to-r from-violet-600 to-purple-600 border-0 mb-4">
+              <Card className="border-0 mb-4" style={{ background: `linear-gradient(135deg, ${BRAND_COLORS.secondary}, ${BRAND_COLORS.primary})` }}>
                 <CardContent className="p-5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-violet-200 text-xs font-bold uppercase tracking-wider mb-1">Total SPIFF Commission</p>
+                      <p className="text-white/80 text-xs font-bold uppercase tracking-wider mb-1">Total SPIFF Commission</p>
                       <p className="text-4xl font-mono font-bold text-white">${kpiData.spiff_total.toLocaleString()}</p>
-                      <p className="text-violet-200 text-xs mt-2">Combined bonus commissions from all brand partners</p>
+                      <p className="text-white/70 text-xs mt-2">Combined bonus commissions from all product categories</p>
                     </div>
-                    <Gift className="w-12 h-12 text-violet-300 opacity-50" />
+                    <Gift className="w-12 h-12 text-white/30" />
                   </div>
                 </CardContent>
               </Card>
 
               {/* SPIFF by Brand */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 {Object.entries(kpiData.spiff_breakdown || {}).map(([brand, data]) => (
                   <SpiffBrandCard 
                     key={brand}
@@ -604,8 +626,8 @@ function App() {
                   />
                 ))}
                 {Object.keys(kpiData.spiff_breakdown || {}).length === 0 && (
-                  <div className="col-span-4 text-center py-8 text-slate-400">
-                    No SPIFF commissions recorded. Ensure your Excel has APCO X, Samsung, and Mitsubishi columns.
+                  <div className="col-span-5 text-center py-8 text-gray-400">
+                    No SPIFF commissions recorded for this period
                   </div>
                 )}
               </div>
@@ -613,7 +635,7 @@ function App() {
               {/* SPIFF Distribution Chart */}
               {spiffChartData.length > 0 && (
                 <div className="mt-4">
-                  <ChartCard title="SPIFF Distribution" description="Commission share by brand partner" icon={PieIcon}>
+                  <ChartCard title="SPIFF Distribution" description="Commission share by product category" icon={PieIcon}>
                     <ResponsiveContainer width="100%" height={250}>
                       <PieChart>
                         <Pie
@@ -632,7 +654,7 @@ function App() {
                         </Pie>
                         <Tooltip 
                           formatter={(value) => [`$${value.toLocaleString()}`, 'Commission']}
-                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }}
+                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }}
                         />
                         <Legend />
                       </PieChart>
@@ -670,12 +692,12 @@ function App() {
                             <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
                         <Legend />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="h-[280px] flex items-center justify-center text-slate-400">No data</div>
+                    <div className="h-[280px] flex items-center justify-center text-gray-400">No data</div>
                   )}
                 </ChartCard>
 
@@ -688,13 +710,13 @@ function App() {
                         <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11 }} />
                         <Tooltip 
                           formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']}
-                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }}
+                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }}
                         />
-                        <Bar dataKey="revenue" fill="#3B82F6" radius={[0, 4, 4, 0]} />
+                        <Bar dataKey="revenue" fill={BRAND_COLORS.primary} radius={[0, 4, 4, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="h-[280px] flex items-center justify-center text-slate-400">No data</div>
+                    <div className="h-[280px] flex items-center justify-center text-gray-400">No data</div>
                   )}
                 </ChartCard>
               </div>
@@ -716,19 +738,19 @@ function App() {
                       <BarChart data={statusData}>
                         <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                         <YAxis />
-                        <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
                         <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                           {statusData.map((entry, index) => (
                             <Cell 
                               key={`cell-${index}`} 
-                              fill={entry.name === 'SALE' ? '#10B981' : entry.name === 'LOST' ? '#EF4444' : '#F59E0B'} 
+                              fill={entry.name === 'SALE' ? '#4CAF50' : entry.name === 'LOST' ? BRAND_COLORS.primary : '#FF9800'} 
                             />
                           ))}
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="h-[240px] flex items-center justify-center text-slate-400">No data</div>
+                    <div className="h-[240px] flex items-center justify-center text-gray-400">No data</div>
                   )}
                 </ChartCard>
 
@@ -739,8 +761,8 @@ function App() {
                       <AreaChart data={monthlyData}>
                         <defs>
                           <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                            <stop offset="5%" stopColor={BRAND_COLORS.primary} stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor={BRAND_COLORS.primary} stopOpacity={0}/>
                           </linearGradient>
                         </defs>
                         <XAxis dataKey="month_short" tick={{ fontSize: 11 }} />
@@ -748,13 +770,13 @@ function App() {
                         <Tooltip 
                           formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']}
                           labelFormatter={(label, payload) => payload?.[0]?.payload?.month || label}
-                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }}
+                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }}
                         />
-                        <Area type="monotone" dataKey="revenue" stroke="#3B82F6" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
+                        <Area type="monotone" dataKey="revenue" stroke={BRAND_COLORS.primary} fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
                       </AreaChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="h-[240px] flex items-center justify-center text-slate-400">No data</div>
+                    <div className="h-[240px] flex items-center justify-center text-gray-400">No data</div>
                   )}
                 </ChartCard>
               </div>
@@ -768,42 +790,42 @@ function App() {
                 icon={Calendar}
               />
               
-              <Card className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
+              <Card className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-slate-50">
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Name</TableHead>
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">City</TableHead>
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Unit Type</TableHead>
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Ticket Value</TableHead>
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Comm %</TableHead>
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Commission</TableHead>
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">SPIFF</TableHead>
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Status</TableHead>
+                      <TableRow style={{ backgroundColor: BRAND_COLORS.accent }}>
+                        <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Name</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">City</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Unit Type</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Ticket Value</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Comm %</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Commission</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">SPIFF</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-gray-500 py-3 px-4">Status</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {kpiData.records?.slice(0, 15).map((record, index) => (
-                        <TableRow key={index} className="border-b border-slate-100 hover:bg-slate-50/50">
-                          <TableCell className="py-2 px-4 font-medium text-slate-700 text-sm">{record.name}</TableCell>
-                          <TableCell className="py-2 px-4 text-slate-600 text-sm">{record.city}</TableCell>
-                          <TableCell className="py-2 px-4 text-slate-600 text-sm">{record.unit_type}</TableCell>
-                          <TableCell className="py-2 px-4 font-mono text-slate-700 text-sm">
+                        <TableRow key={index} className="border-b border-gray-100 hover:bg-gray-50/50">
+                          <TableCell className="py-2 px-4 font-medium text-gray-700 text-sm">{record.name}</TableCell>
+                          <TableCell className="py-2 px-4 text-gray-600 text-sm">{record.city}</TableCell>
+                          <TableCell className="py-2 px-4 text-gray-600 text-sm">{record.unit_type}</TableCell>
+                          <TableCell className="py-2 px-4 font-mono text-gray-700 text-sm">
                             {record.ticket_value > 0 ? `$${record.ticket_value.toLocaleString()}` : '-'}
                           </TableCell>
-                          <TableCell className="py-2 px-4 font-mono text-slate-600 text-sm">
+                          <TableCell className="py-2 px-4 font-mono text-gray-600 text-sm">
                             {record.commission_percent > 0 ? `${record.commission_percent}%` : '-'}
                           </TableCell>
-                          <TableCell className="py-2 px-4 font-mono text-emerald-600 text-sm">
+                          <TableCell className="py-2 px-4 font-mono text-sm" style={{ color: BRAND_COLORS.primary }}>
                             {record.commission_value > 0 ? `$${record.commission_value.toLocaleString()}` : '-'}
                           </TableCell>
-                          <TableCell className="py-2 px-4 font-mono text-violet-600 text-sm">
+                          <TableCell className="py-2 px-4 font-mono text-sm" style={{ color: BRAND_COLORS.secondary }}>
                             {record.spif_total > 0 ? `$${record.spif_total.toLocaleString()}` : '-'}
                           </TableCell>
                           <TableCell className="py-2 px-4">
                             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                              record.status === 'SALE' ? 'bg-emerald-100 text-emerald-800' :
+                              record.status === 'SALE' ? 'bg-green-100 text-green-800' :
                               record.status === 'LOST' ? 'bg-red-100 text-red-800' :
                               'bg-amber-100 text-amber-800'
                             }`}>
@@ -822,12 +844,17 @@ function App() {
         ) : null}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-4 mt-8">
+      {/* Footer - Four Seasons Branding */}
+      <footer className="py-4 mt-8" style={{ backgroundColor: BRAND_COLORS.secondary }}>
         <div className="max-w-[1600px] mx-auto px-4 md:px-8">
-          <p className="text-xs text-slate-400 text-center">
-            Sales Performance Dashboard - Connected to SharePoint. Click <strong>"Update Data"</strong> to refresh.
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-white/60">
+              © {new Date().getFullYear()} Four Seasons Heating & Cooling - Sales Performance Dashboard
+            </p>
+            <p className="text-xs text-white/60">
+              Trusted HVAC Experts Since 1971
+            </p>
+          </div>
         </div>
       </footer>
     </div>
