@@ -390,11 +390,11 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
                 month_year_data[month_key]['deals'] += 1
                 # Calculate commission for this row
                 ticket = safe_float(row.get('ticket_value', 0))
-                comm_pct = safe_float(row.get('commission_percent', 0))
+                comm_pct = safe_float(row.get('commission_percent', 0))  # Already in percentage
                 if comm_pct > 0:
                     month_year_data[month_key]['commission'] += ticket * (comm_pct / 100)
                 else:
-                    month_year_data[month_key]['commission'] += ticket * commission_rate
+                    month_year_data[month_key]['commission'] += ticket * (commission_rate / 100)
             except (ValueError, AttributeError):
                 continue
     
