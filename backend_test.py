@@ -108,9 +108,9 @@ class SalesDashboardAPITester:
         return success
 
     def test_dashboard_kpis_all_time(self):
-        """Test GET /api/dashboard/kpis with all time filter"""
+        """Test GET /api/dashboard/kpis with all time filter - NEW FEATURES"""
         success, response, status_code = self.run_test(
-            "Dashboard KPIs (All Time)",
+            "Dashboard KPIs (All Time) - New Features",
             "GET",
             "dashboard/kpis",
             200,
@@ -118,12 +118,12 @@ class SalesDashboardAPITester:
         )
         
         if success and response:
-            # Verify KPI structure
+            # Verify NEW KPI structure with SPIFF and updated fields
             required_kpis = [
-                'total_revenue', 'total_commission', 'closed_deals', 
-                'closing_rate', 'average_ticket', 'total_visits',
-                'avg_sales_cycle_days', 'price_margin',
-                'unit_type_count', 'unit_type_revenue'
+                'total_revenue', 'total_commission', 'spiff_commission', 'total_commission_with_spiff', 
+                'avg_commission_percent', 'closed_deals', 'closing_rate', 'average_ticket', 'total_visits',
+                'avg_sales_cycle_days', 'price_margin', 'unit_type_count', 'unit_type_revenue',
+                'monthly_data', 'pay_periods'
             ]
             
             missing_kpis = [kpi for kpi in required_kpis if kpi not in response]
@@ -132,8 +132,14 @@ class SalesDashboardAPITester:
             else:
                 print(f"   ✓ All required KPIs present")
                 print(f"   Total Revenue: ${response.get('total_revenue', 0):,.2f}")
+                print(f"   Total Commission: ${response.get('total_commission', 0):,.2f}")
+                print(f"   SPIFF Commission: ${response.get('spiff_commission', 0):,.2f}")
+                print(f"   Total Commission with SPIFF: ${response.get('total_commission_with_spiff', 0):,.2f}")
+                print(f"   Avg Commission %: {response.get('avg_commission_percent', 0):.1f}%")
                 print(f"   Closed Deals: {response.get('closed_deals', 0)}")
                 print(f"   Closing Rate: {response.get('closing_rate', 0):.1f}%")
+                print(f"   Monthly Data Points: {len(response.get('monthly_data', []))}")
+                print(f"   Pay Periods Available: {len(response.get('pay_periods', []))}")
                 print(f"   Records: {len(response.get('records', []))}")
             
         return success
