@@ -575,7 +575,7 @@ function App() {
             <section>
               <SectionHeader 
                 title="SPIFF Commission Breakdown" 
-                description="Bonus commissions by brand partner (APCO X, Samsung, Mitsubishi)"
+                description="Bonus commissions by brand partner (APCO X, Samsung, Mitsubishi, Surge Protector, Duct Cleaning)"
                 icon={Gift}
               />
               
