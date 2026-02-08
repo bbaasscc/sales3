@@ -242,7 +242,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     # Ensure required columns exist
     for col in ['name', 'status', 'unit_type', 'ticket_value', 'commission_value', 'commission_percent', 
                 'visit_date', 'close_date', 'install_date', 'follow_up_date', 'spif_total',
-                'apco_x', 'samsung', 'mitsubishi']:
+                'apco_x', 'samsung', 'mitsubishi', 'surge_protector', 'duct_cleaning']:
         if col not in df.columns:
             df[col] = None
     
@@ -254,6 +254,8 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     df['apco_x'] = df['apco_x'].apply(lambda x: safe_float(x))
     df['samsung'] = df['samsung'].apply(lambda x: safe_float(x))
     df['mitsubishi'] = df['mitsubishi'].apply(lambda x: safe_float(x))
+    df['surge_protector'] = df['surge_protector'].apply(lambda x: safe_float(x))
+    df['duct_cleaning'] = df['duct_cleaning'].apply(lambda x: safe_float(x))
     
     # Commission percent handling
     def clean_commission_percent(x):
