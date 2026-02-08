@@ -7,18 +7,20 @@ Create a web dashboard from an Excel file online that displays real-time salespe
 - **Frontend**: React with Recharts for visualizations, Shadcn UI components
 - **Backend**: FastAPI with pandas/openpyxl for Excel parsing
 - **Database**: MongoDB for configuration storage
-- **Data Source**: Excel file from public URL
+- **Data Source**: Google Sheets (public URL)
 
 ## User Personas
-- Sales managers tracking HVAC salesperson performance
+- Sales managers tracking HVAC salesperson performance (Benjamin S. Cardarelli)
 - Company administrators needing quick insights on sales metrics
 
 ## Core Requirements (Static)
 1. KPI Display: Total Revenue, Commission, SPIFF Commission, Total Commission, Avg Commission %
-2. Performance Metrics: Closed Deals, Closing Rate, Average Ticket, Total Visits, Avg Sales Cycle
+2. Performance Metrics: Closed Deals, Closing Rate, Average Ticket, Total Visits
 3. Unit Type Analysis: Count and revenue by unit type
 4. Date Filtering: Week, 2 weeks, month, year, all time
 5. Pay Period Filtering: Bi-weekly periods based on install date
+6. Branding: Four Seasons Heating & Cooling logo, colors (Red #C62828, White, Dark Gray)
+7. Responsiveness: Mobile (iPhone/Samsung) and Tablet compatible
 
 ## What's Been Implemented (Feb 2026)
 ### Phase 1 (Initial MVP)
@@ -31,23 +33,31 @@ Create a web dashboard from an Excel file online that displays real-time salespe
 
 ### Phase 2 (Enhancements)
 - [x] Pay Period filter (bi-weekly based on install date)
-- [x] SPIFF Commission tracking (separate from regular commission)
-- [x] Total Commission with SPIFF
-- [x] Average Commission Percentage
+- [x] SPIFF Commission tracking by product (APCO X, Samsung, Mitsubishi, Surge Protector, Duct Cleaning)
+- [x] Price Margin (5%) section with dedicated metrics
+- [x] Follow-up section with urgency color-coding
 - [x] Monthly trend chart in chronological order
-- [x] Settings dialog with OneDrive/SharePoint connection instructions
+- [x] Settings dialog with Google Sheet connection
 
-## P0 Features (Critical)
-- [x] Excel data parsing
+### Phase 3 (Feb 8, 2026) - Branding & UX
+- [x] Four Seasons logo in header (from company URL)
+- [x] Fixed header layout - filters centered, buttons on right (no overlap)
+- [x] Mobile responsive header with collapsible filters
+- [x] Abbreviated name "B. Cardarelli" for mobile views
+- [x] Backend cleanup (removed avg_sales_cycle - already clean)
+
+## P0 Features (Critical) - COMPLETE
+- [x] Excel/Google Sheets data parsing
 - [x] KPI calculations
 - [x] Dashboard display
 - [x] Date filtering
 - [x] Pay period filtering
+- [x] Company branding
+- [x] Mobile responsiveness
 
 ## P1 Features (Important)
 - [ ] Export data to CSV/PDF
 - [ ] Custom date range picker (specific start/end dates)
-- [ ] Direct SharePoint API integration
 
 ## P2 Features (Nice to Have)
 - [ ] Email notifications for targets
@@ -56,6 +66,6 @@ Create a web dashboard from an Excel file online that displays real-time salespe
 - [ ] Multiple salesperson support
 
 ## Next Tasks
-1. Direct Microsoft Graph API integration for SharePoint
-2. Add export functionality (CSV/PDF)
-3. Add data caching to improve load times
+1. Add export functionality (CSV/PDF)
+2. Add data caching to improve load times
+3. Custom date range picker
