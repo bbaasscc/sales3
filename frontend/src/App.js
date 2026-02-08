@@ -630,11 +630,11 @@ function App() {
               </section>
             )}
 
-            {/* SECTION 3: PRICE MARGIN (5%) */}
+            {/* SECTION 2: UNDER BOOK PRICE */}
             <section>
               <SectionHeader 
-                title="Price Margin (5%)" 
-                description="Standard rate sales"
+                title="Under Book Price" 
+                description="Sales at 5% commission rate"
                 icon={Calculator}
               />
               
