@@ -118,7 +118,23 @@ def parse_excel_data(excel_url: str) -> pd.DataFrame:
     """Download and parse Excel file from URL"""
     try:
         logger.info(f"Downloading Excel from: {excel_url}")
-        response = requests.get(excel_url, timeout=30)
+        
+        # Handle SharePoint URLs - convert to download format
+        if 'sharepoint.com' in excel_url:
+            # Remove any query parameters and add download=1
+            if '?' in excel_url:
+                base_url = excel_url.split('?')[0]
+                excel_url = f"{base_url}?download=1"
+            else:
+                excel_url = f"{excel_url}?download=1"
+        
+        # Use session to handle redirects properly
+        session = requests.Session()
+        session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        })
+        
+        response = session.get(excel_url, timeout=60, allow_redirects=True)
         response.raise_for_status()
         
         excel_data = BytesIO(response.content)
