@@ -118,12 +118,18 @@ class SalesDashboardAPITester:
         )
         
         if success and response:
-            # Verify NEW KPI structure with SPIFF and updated fields
+            # Verify NEW KPI structure as per KPIResponse model
             required_kpis = [
-                'total_revenue', 'total_commission', 'spiff_commission', 'total_commission_with_spiff', 
-                'avg_commission_percent', 'closed_deals', 'closing_rate', 'average_ticket', 'total_visits',
-                'avg_sales_cycle_days', 'price_margin', 'unit_type_count', 'unit_type_revenue',
-                'monthly_data', 'pay_periods'
+                # Main Summary KPIs
+                'total_revenue', 'total_commission', 'closed_deals', 'closing_rate', 
+                'total_visits', 'average_ticket', 'avg_sales_cycle_days',
+                # NEW: Price Margin (5% commission sales)
+                'price_margin_total', 'price_margin_sales_count', 'price_margin_commission',
+                # NEW: SPIFF Section
+                'spiff_total', 'spiff_breakdown',
+                # Other metrics
+                'avg_commission_percent', 'unit_type_count', 'unit_type_revenue',
+                'monthly_data', 'status_distribution', 'records', 'pay_periods'
             ]
             
             missing_kpis = [kpi for kpi in required_kpis if kpi not in response]
@@ -131,16 +137,27 @@ class SalesDashboardAPITester:
                 print(f"   ⚠️  Missing KPIs: {missing_kpis}")
             else:
                 print(f"   ✓ All required KPIs present")
-                print(f"   Total Revenue: ${response.get('total_revenue', 0):,.2f}")
-                print(f"   Total Commission: ${response.get('total_commission', 0):,.2f}")
-                print(f"   SPIFF Commission: ${response.get('spiff_commission', 0):,.2f}")
-                print(f"   Total Commission with SPIFF: ${response.get('total_commission_with_spiff', 0):,.2f}")
-                print(f"   Avg Commission %: {response.get('avg_commission_percent', 0):.1f}%")
-                print(f"   Closed Deals: {response.get('closed_deals', 0)}")
-                print(f"   Closing Rate: {response.get('closing_rate', 0):.1f}%")
-                print(f"   Monthly Data Points: {len(response.get('monthly_data', []))}")
-                print(f"   Pay Periods Available: {len(response.get('pay_periods', []))}")
-                print(f"   Records: {len(response.get('records', []))}")
+                
+            print(f"   Total Revenue: ${response.get('total_revenue', 0):,.2f}")
+            print(f"   Total Commission: ${response.get('total_commission', 0):,.2f}")
+            print(f"   Closed Deals: {response.get('closed_deals', 0)}")
+            print(f"   Closing Rate: {response.get('closing_rate', 0):.1f}%")
+            
+            # NEW: Price Margin Analysis
+            print(f"   Price Margin Total: ${response.get('price_margin_total', 0):,.2f}")
+            print(f"   Price Margin Sales Count: {response.get('price_margin_sales_count', 0)}")
+            print(f"   Price Margin Commission: ${response.get('price_margin_commission', 0):,.2f}")
+            
+            # NEW: SPIFF Breakdown
+            print(f"   SPIFF Total: ${response.get('spiff_total', 0):,.2f}")
+            spiff_breakdown = response.get('spiff_breakdown', {})
+            print(f"   SPIFF Brands: {list(spiff_breakdown.keys())}")
+            for brand, data in spiff_breakdown.items():
+                print(f"     {brand}: {data.get('count', 0)} sales, ${data.get('commission', 0):,.2f}, {data.get('percent_of_sales', 0):.1f}%")
+            
+            print(f"   Monthly Data Points: {len(response.get('monthly_data', []))}")
+            print(f"   Pay Periods Available: {len(response.get('pay_periods', []))}")
+            print(f"   Records: {len(response.get('records', []))}")
             
         return success
 
