@@ -386,8 +386,29 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'percent_of_sales': round((mitsubishi_count / closed_deals * 100), 1) if closed_deals > 0 else 0
         }
     
-    # Other SPIFF from SPIF column (not in APCO/Samsung/Mitsubishi)
-    other_spiff = closed_deals_df['spif_total'].sum() - apco_total - samsung_total - mitsubishi_total
+    # Surge Protector
+    surge_total = closed_deals_df['surge_protector'].sum()
+    surge_count = len(closed_deals_df[closed_deals_df['surge_protector'] > 0])
+    if surge_total > 0 or surge_count > 0:
+        spiff_breakdown['Surge Protector'] = {
+            'count': surge_count,
+            'commission': round(surge_total, 2),
+            'percent_of_sales': round((surge_count / closed_deals * 100), 1) if closed_deals > 0 else 0
+        }
+    
+    # Duct Cleaning
+    duct_total = closed_deals_df['duct_cleaning'].sum()
+    duct_count = len(closed_deals_df[closed_deals_df['duct_cleaning'] > 0])
+    if duct_total > 0 or duct_count > 0:
+        spiff_breakdown['Duct Cleaning'] = {
+            'count': duct_count,
+            'commission': round(duct_total, 2),
+            'percent_of_sales': round((duct_count / closed_deals * 100), 1) if closed_deals > 0 else 0
+        }
+    
+    # Other SPIFF from SPIF column (not in named columns)
+    named_spiff_total = apco_total + samsung_total + mitsubishi_total + surge_total + duct_total
+    other_spiff = closed_deals_df['spif_total'].sum() - named_spiff_total
     if other_spiff < 0:
         other_spiff = closed_deals_df['spif_total'].sum()  # If columns don't exist, use total
     other_count = len(closed_deals_df[closed_deals_df['spif_total'] > 0]) - apco_count - samsung_count - mitsubishi_count
