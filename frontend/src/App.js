@@ -840,9 +840,215 @@ function App() {
               </Card>
             </section>
 
+            {/* SECTION 8: PENDING FOLLOW-UPS (at the end) */}
+            {kpiData.follow_ups && kpiData.follow_ups.length > 0 && (
+              <section>
+                <SectionHeader 
+                  title="Pending Follow-Ups" 
+                  description="Action required - Click on client for details"
+                  icon={Phone}
+                />
+                
+                <Card className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Priority</TableHead>
+                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Name</TableHead>
+                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 hidden sm:table-cell">City</TableHead>
+                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Follow-up Date</TableHead>
+                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Days</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {kpiData.follow_ups.slice(0, 10).map((followUp, index) => (
+                          <TableRow 
+                            key={index} 
+                            className={`border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${followUp.is_urgent ? 'bg-red-50 hover:bg-red-100' : ''}`}
+                            onClick={() => setSelectedClient(followUp)}
+                            data-testid={`followup-row-${index}`}
+                          >
+                            <TableCell className="py-2 px-2 sm:px-4">
+                              {followUp.is_urgent ? (
+                                <span className="inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold" style={{ backgroundColor: '#FEE2E2', color: BRAND_COLORS.primary }}>
+                                  <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                  <span className="hidden sm:inline">URGENT</span>
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-gray-100 text-gray-600">
+                                  <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                </span>
+                              )}
+                            </TableCell>
+                            <TableCell className={`py-2 px-2 sm:px-4 text-xs sm:text-sm font-medium ${followUp.is_urgent ? 'text-red-700' : 'text-gray-700'}`}>
+                              <span className="line-clamp-1 underline decoration-dotted">{followUp.name}</span>
+                            </TableCell>
+                            <TableCell className="py-2 px-2 sm:px-4 text-xs sm:text-sm text-gray-600 hidden sm:table-cell">{followUp.city}</TableCell>
+                            <TableCell className={`py-2 px-2 sm:px-4 font-mono text-[10px] sm:text-xs ${followUp.is_urgent ? 'font-bold' : ''}`} style={{ color: followUp.is_urgent ? BRAND_COLORS.primary : '#4B5563' }}>
+                              {followUp.follow_up_date}
+                            </TableCell>
+                            <TableCell className={`py-2 px-2 sm:px-4 font-mono text-[10px] sm:text-xs ${followUp.is_urgent ? 'font-bold' : ''}`} style={{ color: followUp.is_urgent ? BRAND_COLORS.primary : '#4B5563' }}>
+                              {followUp.days_until !== null ? (
+                                followUp.days_until < 0 ? `${Math.abs(followUp.days_until)}d ago` :
+                                followUp.days_until === 0 ? 'Today' :
+                                `${followUp.days_until}d`
+                              ) : '-'}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </Card>
+              </section>
+            )}
+
           </div>
         ) : null}
       </main>
+
+      {/* Client Detail Modal */}
+      {selectedClient && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedClient(null)}>
+          <div 
+            className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">{selectedClient.name}</h3>
+                <p className="text-sm text-gray-500">Client Details</p>
+              </div>
+              <button 
+                onClick={() => setSelectedClient(null)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                data-testid="close-client-modal"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="px-4 sm:px-6 py-4 space-y-4">
+              {/* Status & Priority */}
+              <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                  selectedClient.status === 'SALE' ? 'bg-green-100 text-green-800' :
+                  selectedClient.status === 'LOST' ? 'bg-red-100 text-red-800' :
+                  'bg-amber-100 text-amber-800'
+                }`}>
+                  {selectedClient.status}
+                </span>
+                {selectedClient.is_urgent && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                    <AlertTriangle className="w-3 h-3" />
+                    URGENT
+                  </span>
+                )}
+              </div>
+
+              {/* Contact Info */}
+              <div className="space-y-3">
+                {selectedClient.city && (
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wider">Location</p>
+                      <p className="text-sm text-gray-900">{selectedClient.address ? `${selectedClient.address}, ` : ''}{selectedClient.city}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {selectedClient.email && (
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wider">Email</p>
+                      <a href={`mailto:${selectedClient.email}`} className="text-sm text-blue-600 hover:underline">{selectedClient.email}</a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Dates */}
+              <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Last Visit Date</span>
+                  <span className="text-sm font-mono font-medium text-gray-900">{selectedClient.visit_date || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Follow-up Date</span>
+                  <span className="text-sm font-mono font-medium" style={{ color: selectedClient.is_urgent ? BRAND_COLORS.primary : '#111' }}>
+                    {selectedClient.follow_up_date}
+                  </span>
+                </div>
+              </div>
+
+              {/* Equipment Quoted */}
+              {selectedClient.unit_type && (
+                <div className="flex items-start gap-3">
+                  <Settings className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Equipment Quoted</p>
+                    <p className="text-sm text-gray-900">{selectedClient.unit_type}</p>
+                    {selectedClient.ticket_value > 0 && (
+                      <p className="text-sm font-mono font-semibold" style={{ color: BRAND_COLORS.primary }}>
+                        ${selectedClient.ticket_value.toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Feeling */}
+              {selectedClient.feeling && (
+                <div className="flex items-start gap-3">
+                  <User className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Feeling</p>
+                    <p className="text-sm text-gray-900">{selectedClient.feeling}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Objections */}
+              {selectedClient.objections && (
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Objections</p>
+                    <p className="text-sm text-gray-900">{selectedClient.objections}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Comments */}
+              {selectedClient.comments && (
+                <div className="flex items-start gap-3">
+                  <FileText className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Comments</p>
+                    <p className="text-sm text-gray-700">{selectedClient.comments}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3">
+              <Button 
+                onClick={() => setSelectedClient(null)}
+                className="w-full"
+                style={{ backgroundColor: BRAND_COLORS.primary }}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer - Mobile Responsive */}
       <footer className="py-3 sm:py-4 mt-6 sm:mt-8" style={{ backgroundColor: BRAND_COLORS.secondary }}>
