@@ -1,0 +1,133 @@
+{
+  "identity": {
+    "name": "E1 - The Anti-AI Designer",
+    "tone": "Swiss Utility, Precision, High-Contrast, Data-First",
+    "description": "A focused, minimal design language that prioritizes data legibility using strict grids, monochromatic foundations, and deliberate asymmetry."
+  },
+  "typography": {
+    "fonts": {
+      "heading": {
+        "family": "Manrope",
+        "url": "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap",
+        "usage": "Use for all section titles, card headers, and major labels."
+      },
+      "body": {
+        "family": "DM Sans",
+        "url": "https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&display=swap",
+        "usage": "Use for general text, labels, and descriptions."
+      },
+      "mono": {
+        "family": "JetBrains Mono",
+        "url": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap",
+        "usage": "MANDATORY for all currency values, percentages, and tabular data."
+      }
+    },
+    "scale": {
+      "h1": "text-4xl font-extrabold tracking-tight lg:text-5xl",
+      "h2": "text-3xl font-bold tracking-tight",
+      "h3": "text-2xl font-semibold tracking-tight",
+      "kpi_value": "text-4xl font-mono font-medium tracking-tighter",
+      "label": "text-xs font-bold uppercase tracking-widest text-muted-foreground",
+      "body": "text-sm font-normal leading-relaxed text-muted-foreground"
+    }
+  },
+  "colors": {
+    "theme": "light",
+    "background": {
+      "app": "#F4F5F7",
+      "card": "#FFFFFF",
+      "sidebar": "#FFFFFF"
+    },
+    "text": {
+      "primary": "#0F172A",
+      "secondary": "#64748B",
+      "muted": "#94A3B8"
+    },
+    "brand": {
+      "primary": "#0F172A",
+      "secondary": "#F1F5F9",
+      "accent": "#2563EB"
+    },
+    "functional": {
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "error": "#EF4444",
+      "info": "#3B82F6",
+      "border": "#E2E8F0"
+    },
+    "charts": {
+      "palette": [
+        "#0F172A",
+        "#3B82F6",
+        "#94A3B8",
+        "#CBD5E1",
+        "#64748B"
+      ]
+    }
+  },
+  "layout": {
+    "grid_system": "Use a 12-column grid. KPI cards span 3 columns on desktop, 6 on tablet, 12 on mobile.",
+    "spacing": {
+      "page_padding": "p-6 md:p-10",
+      "card_padding": "p-6",
+      "gap": "gap-6"
+    },
+    "container": "max-w-[1600px] mx-auto",
+    "radius": "rounded-none"
+  },
+  "components": {
+    "kpi_card": {
+      "style": "bg-white border border-border shadow-sm rounded-xl p-6 hover:shadow-md transition-all duration-200",
+      "structure": "Label (top, uppercase) -> Value (middle, mono, huge) -> Trend/Icon (bottom, subtle)",
+      "highlight": "Use a subtle left border strip (4px) in brand color for active/primary KPIs."
+    },
+    "chart_card": {
+      "style": "bg-white border border-border shadow-sm rounded-xl p-6",
+      "header": "Flex row, Title left, Action/Filter right. Minimal divider."
+    },
+    "button": {
+      "primary": "bg-slate-900 text-white hover:bg-slate-800 shadow-sm rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+      "ghost": "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+      "refresh": "Use a ghost button with a rotation animation on click."
+    },
+    "table": {
+      "style": "w-full text-sm text-left",
+      "header": "bg-slate-50 text-slate-500 uppercase font-bold text-xs tracking-wider border-b border-border py-3 px-4",
+      "row": "border-b border-border hover:bg-slate-50/50 transition-colors",
+      "cell": "py-3 px-4 font-medium text-slate-700 font-mono"
+    }
+  },
+  "motion": {
+    "hover": "transform transition-all duration-200 ease-out hover:-translate-y-1",
+    "click": "active:scale-95 transition-transform",
+    "page_load": "animate-in fade-in slide-in-from-bottom-4 duration-500"
+  },
+  "icons": {
+    "library": "lucide-react",
+    "style": "stroke-width={1.5} className='w-5 h-5 text-slate-500'"
+  },
+  "universal_guidelines": [
+    "DO NOT use gradients for backgrounds. Keep it flat and clean.",
+    "DO NOT center text in cards. Left align everything for better scanability.",
+    "Use 'JetBrains Mono' for ALL numbers, currency, and percentages.",
+    "Use 'Manrope' for all headings.",
+    "KPI Cards must be simple: Label (small) + Number (Big) + Context (tiny).",
+    "Charts must use the monochrome+blue palette defined in colors.charts.",
+    "The Refresh button must be visible in the header.",
+    "Ensure the Date Filter is prominent and easy to use (use Shadcn Select or Popover).",
+    "All components must use 'rounded-xl' except where specified otherwise.",
+    "Use 'sonner' for notifications (e.g. 'Data refreshed successfully')."
+  ],
+  "image_urls": {},
+  "instructions_to_main_agent": [
+    "1. Install dependencies: `npm install lucide-react recharts` or `yarn add lucide-react recharts`.",
+    "2. Setup the font imports in `index.css`.",
+    "3. Create a `DashboardLayout` component that handles the max-width and padding.",
+    "4. Create atomic components for `KPICard`, `ChartContainer`, and `RecentSalesList`.",
+    "5. Use the defined color palette in `tailwind.config.js` or directly in classes.",
+    "6. Mock the Excel data processing if the backend isn't ready, but ensure the frontend expects the exact fields listed in the prompt.",
+    "7. Implement the 'Refresh' button to trigger a re-fetch of data.",
+    "8. Use Recharts for the visualizations: AreaChart for Revenue Trend, BarChart for Unit Breakdown.",
+    "9. Ensure mobile responsiveness: Grid 1 col on mobile, 4 cols on desktop."
+  ]
+}
