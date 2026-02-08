@@ -49,6 +49,11 @@ import {
   Clock,
   Phone,
   Menu,
+  Mail,
+  MapPin,
+  FileText,
+  User,
+  X,
 } from "lucide-react";
 import {
   AreaChart,
