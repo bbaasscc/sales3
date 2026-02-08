@@ -295,7 +295,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     total_revenue = closed_deals_df['ticket_value'].sum()
     
     # Commission calculations
-    commission_rate = 0.05  # Default 5%
+    commission_rate = 5.0  # Default 5%
     
     # Calculate commission based on ticket value
     # If commission_percent is filled, use it; otherwise use default 5%
@@ -304,15 +304,15 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
     for _, row in closed_deals_df.iterrows():
         ticket = safe_float(row.get('ticket_value', 0))
-        comm_pct = safe_float(row.get('commission_percent', 0))
+        comm_pct = safe_float(row.get('commission_percent', 0))  # Already converted to percentage
         
         if ticket > 0:
             if comm_pct > 0:
                 commission_values.append(ticket * (comm_pct / 100))
                 commission_percents_used.append(comm_pct)
             else:
-                commission_values.append(ticket * commission_rate)
-                commission_percents_used.append(commission_rate * 100)
+                commission_values.append(ticket * (commission_rate / 100))
+                commission_percents_used.append(commission_rate)
     
     total_commission = sum(commission_values)
     
@@ -323,7 +323,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     total_commission_with_spiff = total_commission + spiff_commission
     
     # Average Commission Percentage (from actually used percentages)
-    avg_commission_percent = sum(commission_percents_used) / len(commission_percents_used) if commission_percents_used else commission_rate * 100
+    avg_commission_percent = sum(commission_percents_used) / len(commission_percents_used) if commission_percents_used else commission_rate
     
     # Closed Deals count
     closed_deals = len(closed_deals_df)
