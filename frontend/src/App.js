@@ -334,10 +334,10 @@ function App() {
             <div className="hidden md:flex items-center gap-3 flex-1 justify-center">
               <div className="flex items-center gap-3">
                 <div className="flex flex-col gap-1">
-                  <Label className="text-[10px] text-white/70">Pay Period</Label>
+                  <Label className="text-[10px] text-white/70" title="Commission payment based on installation dates">Pay Period (by Install Date)</Label>
                   <Select value={payPeriod} onValueChange={handlePayPeriodChange}>
-                    <SelectTrigger className="w-[180px] bg-white/10 border-white/20 text-white text-xs h-9">
-                      <SelectValue placeholder="Pay period" />
+                    <SelectTrigger className="w-[200px] bg-white/10 border-white/20 text-white text-xs h-9">
+                      <SelectValue placeholder="Select pay period" />
                     </SelectTrigger>
                     <SelectContent className="max-h-[300px]">
                       <SelectItem value="all">All Periods</SelectItem>
