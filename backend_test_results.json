@@ -1,9 +1,9 @@
 {
   "summary": {
-    "tests_run": 9,
-    "tests_passed": 9,
+    "tests_run": 11,
+    "tests_passed": 11,
     "success_rate": 1.0,
-    "timestamp": "2026-02-08T15:47:01.424411"
+    "timestamp": "2026-02-08T15:59:18.666229"
   },
   "detailed_results": [
     {
@@ -14,7 +14,7 @@
         "message": "Sales Dashboard API"
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:46:59.666562"
+      "timestamp": "2026-02-08T15:59:17.309654"
     },
     {
       "test_name": "Set Excel Config",
@@ -22,36 +22,190 @@
       "status_code": 200,
       "response_data": {
         "message": "Excel configuration saved",
-        "id": "4c67fff7-7b52-4b5b-add2-bea51746b086"
+        "id": "fdd499f0-2c04-4f41-807c-ff3c6bdaa9fb"
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:46:59.705234"
+      "timestamp": "2026-02-08T15:59:17.345426"
     },
     {
       "test_name": "Get Excel Config",
       "success": true,
       "status_code": 200,
       "response_data": {
-        "id": "4c67fff7-7b52-4b5b-add2-bea51746b086",
+        "id": "fdd499f0-2c04-4f41-807c-ff3c6bdaa9fb",
         "excel_url": "https://customer-assets.emergentagent.com/job_sales-dashboard-321/artifacts/xdsih8ll_Stats_FSHAC_v22%20%284%29.xlsx",
-        "last_updated": "2026-02-08T15:46:59.700970+00:00"
+        "last_updated": "2026-02-08T15:59:17.341366+00:00"
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:46:59.737449"
+      "timestamp": "2026-02-08T15:59:17.382247"
     },
     {
-      "test_name": "Dashboard KPIs (All Time)",
+      "test_name": "Pay Periods Endpoint",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "pay_periods": [
+          {
+            "name": "Dec 25, 2025 - Jan 07, 2026",
+            "start": "2025-12-25T00:00:00",
+            "end": "2026-01-07T00:00:00"
+          },
+          {
+            "name": "Jan 08, 2026 - Jan 21, 2026",
+            "start": "2026-01-08T00:00:00",
+            "end": "2026-01-21T00:00:00"
+          },
+          {
+            "name": "Jan 22, 2026 - Feb 04, 2026",
+            "start": "2026-01-22T00:00:00",
+            "end": "2026-02-04T00:00:00"
+          },
+          {
+            "name": "Feb 05, 2026 - Feb 18, 2026",
+            "start": "2026-02-05T00:00:00",
+            "end": "2026-02-18T00:00:00"
+          },
+          {
+            "name": "Feb 19, 2026 - Mar 04, 2026",
+            "start": "2026-02-19T00:00:00",
+            "end": "2026-03-04T00:00:00"
+          },
+          {
+            "name": "Mar 05, 2026 - Mar 18, 2026",
+            "start": "2026-03-05T00:00:00",
+            "end": "2026-03-18T00:00:00"
+          },
+          {
+            "name": "Mar 19, 2026 - Apr 01, 2026",
+            "start": "2026-03-19T00:00:00",
+            "end": "2026-04-01T00:00:00"
+          },
+          {
+            "name": "Apr 02, 2026 - Apr 15, 2026",
+            "start": "2026-04-02T00:00:00",
+            "end": "2026-04-15T00:00:00"
+          },
+          {
+            "name": "Apr 16, 2026 - Apr 29, 2026",
+            "start": "2026-04-16T00:00:00",
+            "end": "2026-04-29T00:00:00"
+          },
+          {
+            "name": "Apr 30, 2026 - May 13, 2026",
+            "start": "2026-04-30T00:00:00",
+            "end": "2026-05-13T00:00:00"
+          },
+          {
+            "name": "May 14, 2026 - May 27, 2026",
+            "start": "2026-05-14T00:00:00",
+            "end": "2026-05-27T00:00:00"
+          },
+          {
+            "name": "May 28, 2026 - Jun 10, 2026",
+            "start": "2026-05-28T00:00:00",
+            "end": "2026-06-10T00:00:00"
+          },
+          {
+            "name": "Jun 11, 2026 - Jun 24, 2026",
+            "start": "2026-06-11T00:00:00",
+            "end": "2026-06-24T00:00:00"
+          },
+          {
+            "name": "Jun 25, 2026 - Jul 08, 2026",
+            "start": "2026-06-25T00:00:00",
+            "end": "2026-07-08T00:00:00"
+          },
+          {
+            "name": "Jul 09, 2026 - Jul 22, 2026",
+            "start": "2026-07-09T00:00:00",
+            "end": "2026-07-22T00:00:00"
+          },
+          {
+            "name": "Jul 23, 2026 - Aug 05, 2026",
+            "start": "2026-07-23T00:00:00",
+            "end": "2026-08-05T00:00:00"
+          },
+          {
+            "name": "Aug 06, 2026 - Aug 19, 2026",
+            "start": "2026-08-06T00:00:00",
+            "end": "2026-08-19T00:00:00"
+          },
+          {
+            "name": "Aug 20, 2026 - Sep 02, 2026",
+            "start": "2026-08-20T00:00:00",
+            "end": "2026-09-02T00:00:00"
+          },
+          {
+            "name": "Sep 03, 2026 - Sep 16, 2026",
+            "start": "2026-09-03T00:00:00",
+            "end": "2026-09-16T00:00:00"
+          },
+          {
+            "name": "Sep 17, 2026 - Sep 30, 2026",
+            "start": "2026-09-17T00:00:00",
+            "end": "2026-09-30T00:00:00"
+          },
+          {
+            "name": "Oct 01, 2026 - Oct 14, 2026",
+            "start": "2026-10-01T00:00:00",
+            "end": "2026-10-14T00:00:00"
+          },
+          {
+            "name": "Oct 15, 2026 - Oct 28, 2026",
+            "start": "2026-10-15T00:00:00",
+            "end": "2026-10-28T00:00:00"
+          },
+          {
+            "name": "Oct 29, 2026 - Nov 11, 2026",
+            "start": "2026-10-29T00:00:00",
+            "end": "2026-11-11T00:00:00"
+          },
+          {
+            "name": "Nov 12, 2026 - Nov 25, 2026",
+            "start": "2026-11-12T00:00:00",
+            "end": "2026-11-25T00:00:00"
+          },
+          {
+            "name": "Nov 26, 2026 - Dec 09, 2026",
+            "start": "2026-11-26T00:00:00",
+            "end": "2026-12-09T00:00:00"
+          },
+          {
+            "name": "Dec 10, 2026 - Dec 23, 2026",
+            "start": "2026-12-10T00:00:00",
+            "end": "2026-12-23T00:00:00"
+          },
+          {
+            "name": "Dec 24, 2026 - Jan 06, 2027",
+            "start": "2026-12-24T00:00:00",
+            "end": "2027-01-06T00:00:00"
+          },
+          {
+            "name": "Jan 07, 2027 - Jan 20, 2027",
+            "start": "2027-01-07T00:00:00",
+            "end": "2027-01-20T00:00:00"
+          }
+        ]
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:59:17.415980"
+    },
+    {
+      "test_name": "Dashboard KPIs (All Time) - New Features",
       "success": true,
       "status_code": 200,
       "response_data": {
         "total_revenue": 197316.0,
-        "total_commission": 9865.8,
+        "total_commission": 17900.58,
+        "spiff_commission": 4482.81,
+        "total_commission_with_spiff": 22383.39,
+        "avg_commission_percent": 8.85,
         "closed_deals": 20,
         "closing_rate": 41.7,
         "average_ticket": 9865.8,
         "total_visits": 48,
         "avg_sales_cycle_days": 116.7,
-        "price_margin": 9865.8,
+        "price_margin": 17900.58,
         "unit_type_count": {
           "Furnace": 8,
           "Furnace + AC": 5,
@@ -68,76 +222,28 @@
         },
         "monthly_data": [
           {
-            "month": "Jan",
-            "revenue": 132315.0,
-            "deals": 14,
-            "commission": 6615.75
-          },
-          {
-            "month": "Feb",
-            "revenue": 41045.0,
-            "deals": 3,
-            "commission": 2052.25
-          },
-          {
-            "month": "Mar",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Apr",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "May",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Jun",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Jul",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Aug",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Sep",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Oct",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Nov",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Dec",
+            "month": "Dec 2025",
+            "month_short": "Dec",
+            "year": 2025,
             "revenue": 17826.0,
             "deals": 2,
-            "commission": 891.3000000000001
+            "commission": 1356.63
+          },
+          {
+            "month": "Jan 2026",
+            "month_short": "Jan",
+            "year": 2026,
+            "revenue": 116675.0,
+            "deals": 13,
+            "commission": 10626.6
+          },
+          {
+            "month": "Feb 2026",
+            "month_short": "Feb",
+            "year": 2026,
+            "revenue": 56685.0,
+            "deals": 4,
+            "commission": 5365.65
           }
         ],
         "weekly_data": [
@@ -193,1003 +299,765 @@
             "city": "Addison",
             "unit_type": "Furnace",
             "ticket_value": 6945.0,
+            "commission_percent": 7.000000000000001,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2025-12-20",
-            "close_date": "2025-12-20"
+            "close_date": "2025-12-20",
+            "install_date": "2025-12-29"
           },
           {
             "name": "JAKE GRAFSTEIN",
             "city": "DEERFIELD",
             "unit_type": "Furnace",
             "ticket_value": 4250.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2025-12-22",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "SANDEEP BUTAPATI",
             "city": "LAKE ZURICH",
             "unit_type": "Furnace + AC",
             "ticket_value": 11790.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2025-12-23",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ELENA NIKOLOVA",
             "city": "LAKE ZURICH",
             "unit_type": "Furnace + HP",
             "ticket_value": 12750.0,
+            "commission_percent": 8.0,
+            "spif_commission": 450.0,
             "status": "LOST",
             "visit_date": "2025-12-23",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "MATT FUQUA",
             "city": "HINDSDALE",
             "unit_type": "Furnace + AC",
             "ticket_value": 10881.0,
+            "commission_percent": 8.0,
+            "spif_commission": 183.81,
             "status": "SALE",
             "visit_date": "2025-12-27",
-            "close_date": "2025-12-27"
+            "close_date": "2025-12-27",
+            "install_date": "2025-12-29"
           },
           {
             "name": "RICHARD BREHM",
             "city": "Lake Forest",
             "unit_type": "Furnace",
             "ticket_value": 4250.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2025-12-20",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "NICK JENNINGS",
             "city": "FRANKLIN PARK",
             "unit_type": "Furnace + AC",
             "ticket_value": 10665.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2025-12-31",
-            "close_date": "2026-01-02"
+            "close_date": "2026-01-02",
+            "install_date": "2026-01-02"
           },
           {
             "name": " DIVA EDWARDS",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 6005.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-01",
-            "close_date": "2026-01-02"
+            "close_date": "2026-01-02",
+            "install_date": "2026-01-02"
           },
           {
             "name": "JOSHUA CHESMORE",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 13880.0,
+            "commission_percent": 9.0,
+            "spif_commission": 325.0,
             "status": "SALE",
             "visit_date": "2026-01-02",
-            "close_date": "2026-01-02"
+            "close_date": "2026-01-02",
+            "install_date": "2026-01-02"
           },
           {
             "name": "Tom Kenner",
             "city": "Palatine",
             "unit_type": "Furnace",
             "ticket_value": 12019.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "Rebecca Moore",
             "city": "Wonder Lake",
             "unit_type": "Furnace",
             "ticket_value": 4900.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "RYAN OBERMEYER",
             "city": "LINDENHURST",
             "unit_type": "Furnace",
             "ticket_value": 6595.0,
+            "commission_percent": 10.0,
+            "spif_commission": 75.0,
             "status": "SALE",
             "visit_date": "2026-01-07",
-            "close_date": "2026-01-14"
+            "close_date": "2026-01-14",
+            "install_date": "2026-01-16"
           },
           {
             "name": "CARLOS GARCIA",
             "city": "MOUNT PROSPECT",
             "unit_type": "Furnace + AC",
             "ticket_value": 11860.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-09",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "KATHRYN DAGRES",
             "city": "NORTH AURORA",
             "unit_type": "Furnace + HP",
             "ticket_value": 14755.0,
+            "commission_percent": 11.0,
+            "spif_commission": 650.0,
             "status": "SALE",
             "visit_date": "2026-01-12",
-            "close_date": "2026-01-12"
+            "close_date": "2026-01-12",
+            "install_date": "2026-01-14"
           },
           {
             "name": "JACKSON KRECIOCH",
             "city": "SKOKIE",
             "unit_type": "Furnace + HP",
             "ticket_value": 13585.0,
+            "commission_percent": 8.0,
+            "spif_commission": 650.0,
             "status": "SALE",
             "visit_date": "2026-01-13",
-            "close_date": "2026-01-13"
+            "close_date": "2026-01-13",
+            "install_date": "2026-01-14"
           },
           {
             "name": "PAUL JONES",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 9740.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-15",
-            "close_date": "2026-01-18"
+            "close_date": "2026-01-18",
+            "install_date": "2026-01-20"
           },
           {
             "name": "WILL JANFLAND",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 6185.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-15",
-            "close_date": "2026-01-15"
+            "close_date": "2026-01-15",
+            "install_date": "2026-01-16"
           },
           {
             "name": "ISHRAT MERCHANT",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 5120.0,
+            "commission_percent": 10.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2020-01-16",
-            "close_date": "2026-01-16"
+            "close_date": "2026-01-16",
+            "install_date": "2026-01-16"
           },
           {
             "name": "TRISTRAM BONE",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2020-01-16",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JASMINE MCEWEN",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-16",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "CHRISTIAN GARCIA",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 6995.0,
+            "commission_percent": 8.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-19",
-            "close_date": "2026-01-19"
+            "close_date": "2026-01-19",
+            "install_date": "2026-01-20"
           },
           {
             "name": "KYLE MERCHANT",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-20",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JASON LENHAHAN",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-19",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JASMINE ADKINS",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-19",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "RAMON CARRANZA",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-19",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "SARA GAYNOR",
             "city": "BUFFALO GROVE",
             "unit_type": "Furnace + HP",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-20",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "AMER QURAISHI",
             "city": "WOOD DALE",
             "unit_type": "Furnace",
             "ticket_value": 5785.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-23",
-            "close_date": "2026-01-23"
+            "close_date": "2026-01-23",
+            "install_date": "2026-01-24"
           },
           {
             "name": "TED KELOEZIEJ",
             "city": "BROOKFIELD",
             "unit_type": "Furnace",
             "ticket_value": 6130.0,
+            "commission_percent": 8.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-23",
-            "close_date": "2026-01-23"
+            "close_date": "2026-01-23",
+            "install_date": "2026-01-24"
           },
           {
             "name": "ARMANDO GARDUNO",
             "city": "DOWNERS GROVE",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-23",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "MELANIE SHOW",
             "city": "SAINT CHARLES",
             "unit_type": "Furnace",
             "ticket_value": 11045.0,
+            "commission_percent": 11.0,
+            "spif_commission": 325.0,
             "status": "SALE",
             "visit_date": "2026-01-24",
-            "close_date": "2026-01-25"
+            "close_date": "2026-01-25",
+            "install_date": "2026-01-26"
           },
           {
             "name": "ERIC SORENASON",
             "city": "EVANSTONE",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-26",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ORTENSIA ZERMENO",
             "city": "CHICAGO",
             "unit_type": "BOILER",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-26",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "TJ RICKERT",
             "city": "CHICAGO",
             "unit_type": "",
             "ticket_value": 4455.0,
+            "commission_percent": 9.0,
+            "spif_commission": 75.0,
             "status": "SALE",
             "visit_date": "2026-01-27",
-            "close_date": "2026-02-01"
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-06"
           },
           {
             "name": "WILL MCDERMITH",
             "city": "LAKE ZURICH",
             "unit_type": "Furnace + AC",
             "ticket_value": 15640.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-27",
-            "close_date": "2026-01-30"
+            "close_date": "2026-01-30",
+            "install_date": "2026-02-01"
           },
           {
             "name": "STEPHANIE MORALES",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 5975.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-28",
-            "close_date": "2026-01-28"
+            "close_date": "2026-01-28",
+            "install_date": "2026-01-29"
           },
           {
             "name": "GWEN KENDRICK",
             "city": "BELLWOOD",
             "unit_type": "Furnace + AC",
             "ticket_value": 15780.0,
+            "commission_percent": 12.0,
+            "spif_commission": 1175.0,
             "status": "SALE",
             "visit_date": "2026-01-29",
-            "close_date": "2026-02-01"
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-11"
           },
           {
             "name": "ERIK RAESTS",
             "city": "GRAYSLAKE",
             "unit_type": "AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-30",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JENNY RICCIARDI",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-30",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "NATSUMI TSUZUKI",
             "city": "ELK GROVE",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-31",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JOSH DENIZ",
             "city": "NAPERVILLE",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-31",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "RACHEL ROSALES",
             "city": "CHCIAGO",
             "unit_type": "Furnace + HP",
             "ticket_value": 20810.0,
+            "commission_percent": 11.0,
+            "spif_commission": 1024.0,
             "status": "SALE",
             "visit_date": "2026-02-02",
-            "close_date": "2026-02-02"
+            "close_date": "2026-02-02",
+            "install_date": "2026-02-12"
           },
           {
             "name": "LAURIE SHAPIRO",
             "city": "ELMWOOD PARK",
             "unit_type": "HEAT PUMP",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-02",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ISAAC CASTRO",
             "city": "AURORA",
             "unit_type": "AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-02",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JENNIFER MORSE",
             "city": "LIVERTYVILLE",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "MIKE AB",
             "city": "BUFFALO GROVE",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "EDITH RODRIGUEZ",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-07",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ALEX KUCHER",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 6130.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-02-06",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ROBERTO RODRIGUEZ",
             "city": "CHICAGO",
             "unit_type": "FUrnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-06",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "nan",
             "city": "",
             "unit_type": "",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "UNKNOWN",
             "visit_date": "",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "nan",
             "city": "",
             "unit_type": "",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "UNKNOWN",
             "visit_date": "",
-            "close_date": ""
-          }
-        ]
-      },
-      "error_msg": null,
-      "timestamp": "2026-02-08T15:47:00.343974"
-    },
-    {
-      "test_name": "Dashboard KPIs (week)",
-      "success": true,
-      "status_code": 200,
-      "response_data": {
-        "total_revenue": 26940.0,
-        "total_commission": 1347.0,
-        "closed_deals": 2,
-        "closing_rate": 25.0,
-        "average_ticket": 13470.0,
-        "total_visits": 8,
-        "avg_sales_cycle_days": 0.0,
-        "price_margin": 1347.0,
-        "unit_type_count": {
-          "Furnace + HP": 1,
-          "Furnace": 1
-        },
-        "unit_type_revenue": {
-          "Furnace + HP": 20810.0,
-          "Furnace": 6130.0
-        },
-        "monthly_data": [
-          {
-            "month": "Jan",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Feb",
-            "revenue": 20810.0,
-            "deals": 1,
-            "commission": 1040.5
-          },
-          {
-            "month": "Mar",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Apr",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "May",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Jun",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Jul",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Aug",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Sep",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Oct",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Nov",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Dec",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "close_date": "",
+            "install_date": ""
           }
         ],
-        "weekly_data": [
+        "pay_periods": [
           {
-            "week": "W1",
-            "revenue": 0.0,
-            "deals": 0
+            "name": "Dec 25, 2025 - Jan 07, 2026",
+            "deals": 5,
+            "revenue": 48376.0
           },
           {
-            "week": "W2",
-            "revenue": 0.0,
-            "deals": 0
+            "name": "Jan 08, 2026 - Jan 21, 2026",
+            "deals": 7,
+            "revenue": 62975.0
           },
           {
-            "week": "W3",
-            "revenue": 0.0,
-            "deals": 0
+            "name": "Jan 22, 2026 - Feb 04, 2026",
+            "deals": 4,
+            "revenue": 38790.0
           },
           {
-            "week": "W4",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W5",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W6",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W7",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W8",
-            "revenue": 20810.0,
-            "deals": 1
-          }
-        ],
-        "status_distribution": {
-          "SALE": 2,
-          "LOST": 0,
-          "PENDING": 6
-        },
-        "records": [
-          {
-            "name": "RACHEL ROSALES",
-            "city": "CHCIAGO",
-            "unit_type": "Furnace + HP",
-            "ticket_value": 20810.0,
-            "status": "SALE",
-            "visit_date": "2026-02-02",
-            "close_date": "2026-02-02"
-          },
-          {
-            "name": "LAURIE SHAPIRO",
-            "city": "ELMWOOD PARK",
-            "unit_type": "HEAT PUMP",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-02",
-            "close_date": ""
-          },
-          {
-            "name": "ISAAC CASTRO",
-            "city": "AURORA",
-            "unit_type": "AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-02",
-            "close_date": ""
-          },
-          {
-            "name": "JENNIFER MORSE",
-            "city": "LIVERTYVILLE",
-            "unit_type": "Furnace + AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-05",
-            "close_date": ""
-          },
-          {
-            "name": "MIKE AB",
-            "city": "BUFFALO GROVE",
-            "unit_type": "Furnace + AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-05",
-            "close_date": ""
-          },
-          {
-            "name": "EDITH RODRIGUEZ",
-            "city": "CHICAGO",
-            "unit_type": "Furnace + AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-07",
-            "close_date": ""
-          },
-          {
-            "name": "ALEX KUCHER",
-            "city": "CHICAGO",
-            "unit_type": "Furnace",
-            "ticket_value": 6130.0,
-            "status": "SALE",
-            "visit_date": "2026-02-06",
-            "close_date": ""
-          },
-          {
-            "name": "ROBERTO RODRIGUEZ",
-            "city": "CHICAGO",
-            "unit_type": "FUrnace + AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-06",
-            "close_date": ""
-          }
-        ]
-      },
-      "error_msg": null,
-      "timestamp": "2026-02-08T15:47:00.569711"
-    },
-    {
-      "test_name": "Dashboard KPIs (2weeks)",
-      "success": true,
-      "status_code": 200,
-      "response_data": {
-        "total_revenue": 68790.0,
-        "total_commission": 3439.5,
-        "closed_deals": 6,
-        "closing_rate": 33.3,
-        "average_ticket": 11465.0,
-        "total_visits": 18,
-        "avg_sales_cycle_days": 2.2,
-        "price_margin": 3439.5,
-        "unit_type_count": {
-          "Unknown": 1,
-          "Furnace + AC": 2,
-          "Furnace": 2,
-          "Furnace + HP": 1
-        },
-        "unit_type_revenue": {
-          "Unknown": 4455.0,
-          "Furnace + AC": 31420.0,
-          "Furnace": 12105.0,
-          "Furnace + HP": 20810.0
-        },
-        "monthly_data": [
-          {
-            "month": "Jan",
-            "revenue": 21615.0,
-            "deals": 2,
-            "commission": 1080.75
-          },
-          {
-            "month": "Feb",
-            "revenue": 41045.0,
+            "name": "Feb 05, 2026 - Feb 18, 2026",
             "deals": 3,
-            "commission": 2052.25
+            "revenue": 41045.0
           },
           {
-            "month": "Mar",
-            "revenue": 0.0,
+            "name": "Feb 19, 2026 - Mar 04, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
           },
           {
-            "month": "Apr",
-            "revenue": 0.0,
+            "name": "Mar 05, 2026 - Mar 18, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
           },
           {
-            "month": "May",
-            "revenue": 0.0,
+            "name": "Mar 19, 2026 - Apr 01, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
           },
           {
-            "month": "Jun",
-            "revenue": 0.0,
+            "name": "Apr 02, 2026 - Apr 15, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
           },
           {
-            "month": "Jul",
-            "revenue": 0.0,
+            "name": "Apr 16, 2026 - Apr 29, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
           },
           {
-            "month": "Aug",
-            "revenue": 0.0,
+            "name": "Apr 30, 2026 - May 13, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
           },
           {
-            "month": "Sep",
-            "revenue": 0.0,
+            "name": "May 14, 2026 - May 27, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
           },
           {
-            "month": "Oct",
-            "revenue": 0.0,
+            "name": "May 28, 2026 - Jun 10, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
           },
           {
-            "month": "Nov",
-            "revenue": 0.0,
+            "name": "Jun 11, 2026 - Jun 24, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
           },
           {
-            "month": "Dec",
-            "revenue": 0.0,
+            "name": "Jun 25, 2026 - Jul 08, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 09, 2026 - Jul 22, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 23, 2026 - Aug 05, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 06, 2026 - Aug 19, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 20, 2026 - Sep 02, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 03, 2026 - Sep 16, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 17, 2026 - Sep 30, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 01, 2026 - Oct 14, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 15, 2026 - Oct 28, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 29, 2026 - Nov 11, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 12, 2026 - Nov 25, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 26, 2026 - Dec 09, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 10, 2026 - Dec 23, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 24, 2026 - Jan 06, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jan 07, 2027 - Jan 20, 2027",
+            "deals": 0,
+            "revenue": 0.0
           }
         ],
-        "weekly_data": [
-          {
-            "week": "W1",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W2",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W3",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W4",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W5",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W6",
-            "revenue": 0.0,
-            "deals": 0
-          },
-          {
-            "week": "W7",
-            "revenue": 41850.0,
-            "deals": 4
-          },
-          {
-            "week": "W8",
-            "revenue": 20810.0,
-            "deals": 1
-          }
-        ],
-        "status_distribution": {
-          "SALE": 6,
-          "LOST": 1,
-          "PENDING": 11
-        },
-        "records": [
-          {
-            "name": "ERIC SORENASON",
-            "city": "EVANSTONE",
-            "unit_type": "Furnace",
-            "ticket_value": 0.0,
-            "status": "LOST",
-            "visit_date": "2026-01-26",
-            "close_date": ""
-          },
-          {
-            "name": "ORTENSIA ZERMENO",
-            "city": "CHICAGO",
-            "unit_type": "BOILER",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-01-26",
-            "close_date": ""
-          },
-          {
-            "name": "TJ RICKERT",
-            "city": "CHICAGO",
-            "unit_type": "",
-            "ticket_value": 4455.0,
-            "status": "SALE",
-            "visit_date": "2026-01-27",
-            "close_date": "2026-02-01"
-          },
-          {
-            "name": "WILL MCDERMITH",
-            "city": "LAKE ZURICH",
-            "unit_type": "Furnace + AC",
-            "ticket_value": 15640.0,
-            "status": "SALE",
-            "visit_date": "2026-01-27",
-            "close_date": "2026-01-30"
-          },
-          {
-            "name": "STEPHANIE MORALES",
-            "city": "CHICAGO",
-            "unit_type": "Furnace",
-            "ticket_value": 5975.0,
-            "status": "SALE",
-            "visit_date": "2026-01-28",
-            "close_date": "2026-01-28"
-          },
-          {
-            "name": "GWEN KENDRICK",
-            "city": "BELLWOOD",
-            "unit_type": "Furnace + AC",
-            "ticket_value": 15780.0,
-            "status": "SALE",
-            "visit_date": "2026-01-29",
-            "close_date": "2026-02-01"
-          },
-          {
-            "name": "ERIK RAESTS",
-            "city": "GRAYSLAKE",
-            "unit_type": "AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-01-30",
-            "close_date": ""
-          },
-          {
-            "name": "JENNY RICCIARDI",
-            "city": "CHICAGO",
-            "unit_type": "Furnace",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-01-30",
-            "close_date": ""
-          },
-          {
-            "name": "NATSUMI TSUZUKI",
-            "city": "ELK GROVE",
-            "unit_type": "Furnace + AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-01-31",
-            "close_date": ""
-          },
-          {
-            "name": "JOSH DENIZ",
-            "city": "NAPERVILLE",
-            "unit_type": "Furnace",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-01-31",
-            "close_date": ""
-          },
-          {
-            "name": "RACHEL ROSALES",
-            "city": "CHCIAGO",
-            "unit_type": "Furnace + HP",
-            "ticket_value": 20810.0,
-            "status": "SALE",
-            "visit_date": "2026-02-02",
-            "close_date": "2026-02-02"
-          },
-          {
-            "name": "LAURIE SHAPIRO",
-            "city": "ELMWOOD PARK",
-            "unit_type": "HEAT PUMP",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-02",
-            "close_date": ""
-          },
-          {
-            "name": "ISAAC CASTRO",
-            "city": "AURORA",
-            "unit_type": "AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-02",
-            "close_date": ""
-          },
-          {
-            "name": "JENNIFER MORSE",
-            "city": "LIVERTYVILLE",
-            "unit_type": "Furnace + AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-05",
-            "close_date": ""
-          },
-          {
-            "name": "MIKE AB",
-            "city": "BUFFALO GROVE",
-            "unit_type": "Furnace + AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-05",
-            "close_date": ""
-          },
-          {
-            "name": "EDITH RODRIGUEZ",
-            "city": "CHICAGO",
-            "unit_type": "Furnace + AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-07",
-            "close_date": ""
-          },
-          {
-            "name": "ALEX KUCHER",
-            "city": "CHICAGO",
-            "unit_type": "Furnace",
-            "ticket_value": 6130.0,
-            "status": "SALE",
-            "visit_date": "2026-02-06",
-            "close_date": ""
-          },
-          {
-            "name": "ROBERTO RODRIGUEZ",
-            "city": "CHICAGO",
-            "unit_type": "FUrnace + AC",
-            "ticket_value": 0.0,
-            "status": "PENDING",
-            "visit_date": "2026-02-06",
-            "close_date": ""
-          }
-        ]
+        "selected_pay_period": null
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:47:00.771885"
+      "timestamp": "2026-02-08T15:59:17.626096"
     },
     {
-      "test_name": "Dashboard KPIs (month)",
+      "test_name": "Pay Period Filtering",
       "success": true,
       "status_code": 200,
       "response_data": {
         "total_revenue": 148940.0,
-        "total_commission": 7447.0,
+        "total_commission": 14034.65,
+        "spiff_commission": 3974.0,
+        "total_commission_with_spiff": 18008.65,
+        "avg_commission_percent": 9.27,
         "closed_deals": 15,
-        "closing_rate": 42.9,
+        "closing_rate": 41.7,
         "average_ticket": 9929.33,
-        "total_visits": 35,
+        "total_visits": 36,
         "avg_sales_cycle_days": 158.1,
-        "price_margin": 7447.0,
+        "price_margin": 14034.65,
         "unit_type_count": {
           "Furnace": 6,
           "Furnace + HP": 3,
@@ -1206,76 +1074,1520 @@
         },
         "monthly_data": [
           {
-            "month": "Jan",
-            "revenue": 101765.0,
-            "deals": 11,
-            "commission": 5088.25
+            "month": "Jan 2026",
+            "month_short": "Jan",
+            "year": 2026,
+            "revenue": 86125.0,
+            "deals": 10,
+            "commission": 8117.3
           },
           {
-            "month": "Feb",
+            "month": "Feb 2026",
+            "month_short": "Feb",
+            "year": 2026,
+            "revenue": 56685.0,
+            "deals": 4,
+            "commission": 5365.65
+          }
+        ],
+        "weekly_data": [
+          {
+            "week": "W1",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W2",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W3",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W4",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W5",
+            "revenue": 55980.0,
+            "deals": 6
+          },
+          {
+            "week": "W6",
+            "revenue": 24170.0,
+            "deals": 3
+          },
+          {
+            "week": "W7",
+            "revenue": 41850.0,
+            "deals": 4
+          },
+          {
+            "week": "W8",
+            "revenue": 20810.0,
+            "deals": 1
+          }
+        ],
+        "status_distribution": {
+          "SALE": 15,
+          "LOST": 4,
+          "PENDING": 17
+        },
+        "records": [
+          {
+            "name": "RYAN OBERMEYER",
+            "city": "LINDENHURST",
+            "unit_type": "Furnace",
+            "ticket_value": 6595.0,
+            "commission_percent": 10.0,
+            "spif_commission": 75.0,
+            "status": "SALE",
+            "visit_date": "2026-01-07",
+            "close_date": "2026-01-14",
+            "install_date": "2026-01-16"
+          },
+          {
+            "name": "CARLOS GARCIA",
+            "city": "MOUNT PROSPECT",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 11860.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-09",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "KATHRYN DAGRES",
+            "city": "NORTH AURORA",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 14755.0,
+            "commission_percent": 11.0,
+            "spif_commission": 650.0,
+            "status": "SALE",
+            "visit_date": "2026-01-12",
+            "close_date": "2026-01-12",
+            "install_date": "2026-01-14"
+          },
+          {
+            "name": "JACKSON KRECIOCH",
+            "city": "SKOKIE",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 13585.0,
+            "commission_percent": 8.0,
+            "spif_commission": 650.0,
+            "status": "SALE",
+            "visit_date": "2026-01-13",
+            "close_date": "2026-01-13",
+            "install_date": "2026-01-14"
+          },
+          {
+            "name": "PAUL JONES",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 9740.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-01-15",
+            "close_date": "2026-01-18",
+            "install_date": "2026-01-20"
+          },
+          {
+            "name": "WILL JANFLAND",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 6185.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-01-15",
+            "close_date": "2026-01-15",
+            "install_date": "2026-01-16"
+          },
+          {
+            "name": "ISHRAT MERCHANT",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 5120.0,
+            "commission_percent": 10.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2020-01-16",
+            "close_date": "2026-01-16",
+            "install_date": "2026-01-16"
+          },
+          {
+            "name": "JASMINE MCEWEN",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-16",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "CHRISTIAN GARCIA",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6995.0,
+            "commission_percent": 8.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-01-19",
+            "close_date": "2026-01-19",
+            "install_date": "2026-01-20"
+          },
+          {
+            "name": "KYLE MERCHANT",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-20",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "JASON LENHAHAN",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "JASMINE ADKINS",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "RAMON CARRANZA",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "SARA GAYNOR",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-20",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "AMER QURAISHI",
+            "city": "WOOD DALE",
+            "unit_type": "Furnace",
+            "ticket_value": 5785.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-23",
+            "close_date": "2026-01-23",
+            "install_date": "2026-01-24"
+          },
+          {
+            "name": "TED KELOEZIEJ",
+            "city": "BROOKFIELD",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "commission_percent": 8.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-01-23",
+            "close_date": "2026-01-23",
+            "install_date": "2026-01-24"
+          },
+          {
+            "name": "ARMANDO GARDUNO",
+            "city": "DOWNERS GROVE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-23",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "MELANIE SHOW",
+            "city": "SAINT CHARLES",
+            "unit_type": "Furnace",
+            "ticket_value": 11045.0,
+            "commission_percent": 11.0,
+            "spif_commission": 325.0,
+            "status": "SALE",
+            "visit_date": "2026-01-24",
+            "close_date": "2026-01-25",
+            "install_date": "2026-01-26"
+          },
+          {
+            "name": "ERIC SORENASON",
+            "city": "EVANSTONE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-26",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ORTENSIA ZERMENO",
+            "city": "CHICAGO",
+            "unit_type": "BOILER",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-26",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "TJ RICKERT",
+            "city": "CHICAGO",
+            "unit_type": "",
+            "ticket_value": 4455.0,
+            "commission_percent": 9.0,
+            "spif_commission": 75.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-06"
+          },
+          {
+            "name": "WILL MCDERMITH",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15640.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-01-30",
+            "install_date": "2026-02-01"
+          },
+          {
+            "name": "STEPHANIE MORALES",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 5975.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-01-28",
+            "close_date": "2026-01-28",
+            "install_date": "2026-01-29"
+          },
+          {
+            "name": "GWEN KENDRICK",
+            "city": "BELLWOOD",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15780.0,
+            "commission_percent": 12.0,
+            "spif_commission": 1175.0,
+            "status": "SALE",
+            "visit_date": "2026-01-29",
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-11"
+          },
+          {
+            "name": "ERIK RAESTS",
+            "city": "GRAYSLAKE",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "JENNY RICCIARDI",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "NATSUMI TSUZUKI",
+            "city": "ELK GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "JOSH DENIZ",
+            "city": "NAPERVILLE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "RACHEL ROSALES",
+            "city": "CHCIAGO",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 20810.0,
+            "commission_percent": 11.0,
+            "spif_commission": 1024.0,
+            "status": "SALE",
+            "visit_date": "2026-02-02",
+            "close_date": "2026-02-02",
+            "install_date": "2026-02-12"
+          },
+          {
+            "name": "LAURIE SHAPIRO",
+            "city": "ELMWOOD PARK",
+            "unit_type": "HEAT PUMP",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ISAAC CASTRO",
+            "city": "AURORA",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "JENNIFER MORSE",
+            "city": "LIVERTYVILLE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "MIKE AB",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "EDITH RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-07",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ALEX KUCHER",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-02-06",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ROBERTO RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "FUrnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-06",
+            "close_date": "",
+            "install_date": ""
+          }
+        ],
+        "pay_periods": [
+          {
+            "name": "Dec 25, 2025 - Jan 07, 2026",
+            "deals": 5,
+            "revenue": 48376.0
+          },
+          {
+            "name": "Jan 08, 2026 - Jan 21, 2026",
+            "deals": 7,
+            "revenue": 62975.0
+          },
+          {
+            "name": "Jan 22, 2026 - Feb 04, 2026",
+            "deals": 4,
+            "revenue": 38790.0
+          },
+          {
+            "name": "Feb 05, 2026 - Feb 18, 2026",
+            "deals": 3,
+            "revenue": 41045.0
+          },
+          {
+            "name": "Feb 19, 2026 - Mar 04, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 05, 2026 - Mar 18, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 19, 2026 - Apr 01, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 02, 2026 - Apr 15, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 16, 2026 - Apr 29, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 30, 2026 - May 13, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 14, 2026 - May 27, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 28, 2026 - Jun 10, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 11, 2026 - Jun 24, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 25, 2026 - Jul 08, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 09, 2026 - Jul 22, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 23, 2026 - Aug 05, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 06, 2026 - Aug 19, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 20, 2026 - Sep 02, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 03, 2026 - Sep 16, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 17, 2026 - Sep 30, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 01, 2026 - Oct 14, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 15, 2026 - Oct 28, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 29, 2026 - Nov 11, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 12, 2026 - Nov 25, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 26, 2026 - Dec 09, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 10, 2026 - Dec 23, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 24, 2026 - Jan 06, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jan 07, 2027 - Jan 20, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          }
+        ],
+        "selected_pay_period": "Jan 08, 2026 - Jan 21, 2026"
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:59:17.800407"
+    },
+    {
+      "test_name": "Dashboard KPIs (week)",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "total_revenue": 47175.0,
+        "total_commission": 5135.35,
+        "spiff_commission": 2274.0,
+        "total_commission_with_spiff": 7409.35,
+        "avg_commission_percent": 10.25,
+        "closed_deals": 4,
+        "closing_rate": 40.0,
+        "average_ticket": 11793.75,
+        "total_visits": 10,
+        "avg_sales_cycle_days": 2.7,
+        "price_margin": 5135.35,
+        "unit_type_count": {
+          "Unknown": 1,
+          "Furnace + AC": 1,
+          "Furnace + HP": 1,
+          "Furnace": 1
+        },
+        "unit_type_revenue": {
+          "Unknown": 4455.0,
+          "Furnace + AC": 15780.0,
+          "Furnace + HP": 20810.0,
+          "Furnace": 6130.0
+        },
+        "monthly_data": [
+          {
+            "month": "Feb 2026",
+            "month_short": "Feb",
+            "year": 2026,
             "revenue": 41045.0,
             "deals": 3,
-            "commission": 2052.25
+            "commission": 4583.65
+          }
+        ],
+        "weekly_data": [
+          {
+            "week": "W1",
+            "revenue": 0.0,
+            "deals": 0
           },
           {
-            "month": "Mar",
+            "week": "W2",
             "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "deals": 0
           },
           {
-            "month": "Apr",
+            "week": "W3",
             "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "deals": 0
           },
           {
-            "month": "May",
+            "week": "W4",
             "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "deals": 0
           },
           {
-            "month": "Jun",
+            "week": "W5",
             "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "deals": 0
           },
           {
-            "month": "Jul",
+            "week": "W6",
             "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "deals": 0
           },
           {
-            "month": "Aug",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "week": "W7",
+            "revenue": 20235.0,
+            "deals": 2
           },
           {
-            "month": "Sep",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "week": "W8",
+            "revenue": 20810.0,
+            "deals": 1
+          }
+        ],
+        "status_distribution": {
+          "SALE": 4,
+          "LOST": 0,
+          "PENDING": 6
+        },
+        "records": [
+          {
+            "name": "TJ RICKERT",
+            "city": "CHICAGO",
+            "unit_type": "",
+            "ticket_value": 4455.0,
+            "commission_percent": 9.0,
+            "spif_commission": 75.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-06"
           },
           {
-            "month": "Oct",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "name": "GWEN KENDRICK",
+            "city": "BELLWOOD",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15780.0,
+            "commission_percent": 12.0,
+            "spif_commission": 1175.0,
+            "status": "SALE",
+            "visit_date": "2026-01-29",
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-11"
           },
           {
-            "month": "Nov",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
+            "name": "RACHEL ROSALES",
+            "city": "CHCIAGO",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 20810.0,
+            "commission_percent": 11.0,
+            "spif_commission": 1024.0,
+            "status": "SALE",
+            "visit_date": "2026-02-02",
+            "close_date": "2026-02-02",
+            "install_date": "2026-02-12"
           },
           {
-            "month": "Dec",
-            "revenue": 0.0,
+            "name": "LAURIE SHAPIRO",
+            "city": "ELMWOOD PARK",
+            "unit_type": "HEAT PUMP",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ISAAC CASTRO",
+            "city": "AURORA",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "JENNIFER MORSE",
+            "city": "LIVERTYVILLE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "MIKE AB",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "EDITH RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-07",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ALEX KUCHER",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-02-06",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ROBERTO RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "FUrnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-06",
+            "close_date": "",
+            "install_date": ""
+          }
+        ],
+        "pay_periods": [
+          {
+            "name": "Dec 25, 2025 - Jan 07, 2026",
+            "deals": 5,
+            "revenue": 48376.0
+          },
+          {
+            "name": "Jan 08, 2026 - Jan 21, 2026",
+            "deals": 7,
+            "revenue": 62975.0
+          },
+          {
+            "name": "Jan 22, 2026 - Feb 04, 2026",
+            "deals": 4,
+            "revenue": 38790.0
+          },
+          {
+            "name": "Feb 05, 2026 - Feb 18, 2026",
+            "deals": 3,
+            "revenue": 41045.0
+          },
+          {
+            "name": "Feb 19, 2026 - Mar 04, 2026",
             "deals": 0,
-            "commission": 0.0
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 05, 2026 - Mar 18, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 19, 2026 - Apr 01, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 02, 2026 - Apr 15, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 16, 2026 - Apr 29, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 30, 2026 - May 13, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 14, 2026 - May 27, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 28, 2026 - Jun 10, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 11, 2026 - Jun 24, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 25, 2026 - Jul 08, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 09, 2026 - Jul 22, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 23, 2026 - Aug 05, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 06, 2026 - Aug 19, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 20, 2026 - Sep 02, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 03, 2026 - Sep 16, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 17, 2026 - Sep 30, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 01, 2026 - Oct 14, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 15, 2026 - Oct 28, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 29, 2026 - Nov 11, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 12, 2026 - Nov 25, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 26, 2026 - Dec 09, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 10, 2026 - Dec 23, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 24, 2026 - Jan 06, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jan 07, 2027 - Jan 20, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          }
+        ],
+        "selected_pay_period": null
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:59:17.970092"
+    },
+    {
+      "test_name": "Dashboard KPIs (2weeks)",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "total_revenue": 79835.0,
+        "total_commission": 7670.05,
+        "spiff_commission": 2599.0,
+        "total_commission_with_spiff": 10269.05,
+        "avg_commission_percent": 9.43,
+        "closed_deals": 7,
+        "closing_rate": 36.8,
+        "average_ticket": 11405.0,
+        "total_visits": 19,
+        "avg_sales_cycle_days": 2.0,
+        "price_margin": 7670.05,
+        "unit_type_count": {
+          "Furnace": 3,
+          "Unknown": 1,
+          "Furnace + AC": 2,
+          "Furnace + HP": 1
+        },
+        "unit_type_revenue": {
+          "Furnace": 23150.0,
+          "Unknown": 4455.0,
+          "Furnace + AC": 31420.0,
+          "Furnace + HP": 20810.0
+        },
+        "monthly_data": [
+          {
+            "month": "Jan 2026",
+            "month_short": "Jan",
+            "year": 2026,
+            "revenue": 17020.0,
+            "deals": 2,
+            "commission": 1752.7
+          },
+          {
+            "month": "Feb 2026",
+            "month_short": "Feb",
+            "year": 2026,
+            "revenue": 56685.0,
+            "deals": 4,
+            "commission": 5365.65
+          }
+        ],
+        "weekly_data": [
+          {
+            "week": "W1",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W2",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W3",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W4",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W5",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W6",
+            "revenue": 11045.0,
+            "deals": 1
+          },
+          {
+            "week": "W7",
+            "revenue": 41850.0,
+            "deals": 4
+          },
+          {
+            "week": "W8",
+            "revenue": 20810.0,
+            "deals": 1
+          }
+        ],
+        "status_distribution": {
+          "SALE": 7,
+          "LOST": 1,
+          "PENDING": 11
+        },
+        "records": [
+          {
+            "name": "MELANIE SHOW",
+            "city": "SAINT CHARLES",
+            "unit_type": "Furnace",
+            "ticket_value": 11045.0,
+            "commission_percent": 11.0,
+            "spif_commission": 325.0,
+            "status": "SALE",
+            "visit_date": "2026-01-24",
+            "close_date": "2026-01-25",
+            "install_date": "2026-01-26"
+          },
+          {
+            "name": "ERIC SORENASON",
+            "city": "EVANSTONE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-26",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ORTENSIA ZERMENO",
+            "city": "CHICAGO",
+            "unit_type": "BOILER",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-26",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "TJ RICKERT",
+            "city": "CHICAGO",
+            "unit_type": "",
+            "ticket_value": 4455.0,
+            "commission_percent": 9.0,
+            "spif_commission": 75.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-06"
+          },
+          {
+            "name": "WILL MCDERMITH",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15640.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-01-30",
+            "install_date": "2026-02-01"
+          },
+          {
+            "name": "STEPHANIE MORALES",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 5975.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-01-28",
+            "close_date": "2026-01-28",
+            "install_date": "2026-01-29"
+          },
+          {
+            "name": "GWEN KENDRICK",
+            "city": "BELLWOOD",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15780.0,
+            "commission_percent": 12.0,
+            "spif_commission": 1175.0,
+            "status": "SALE",
+            "visit_date": "2026-01-29",
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-11"
+          },
+          {
+            "name": "ERIK RAESTS",
+            "city": "GRAYSLAKE",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "JENNY RICCIARDI",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "NATSUMI TSUZUKI",
+            "city": "ELK GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "JOSH DENIZ",
+            "city": "NAPERVILLE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "RACHEL ROSALES",
+            "city": "CHCIAGO",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 20810.0,
+            "commission_percent": 11.0,
+            "spif_commission": 1024.0,
+            "status": "SALE",
+            "visit_date": "2026-02-02",
+            "close_date": "2026-02-02",
+            "install_date": "2026-02-12"
+          },
+          {
+            "name": "LAURIE SHAPIRO",
+            "city": "ELMWOOD PARK",
+            "unit_type": "HEAT PUMP",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ISAAC CASTRO",
+            "city": "AURORA",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "JENNIFER MORSE",
+            "city": "LIVERTYVILLE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "MIKE AB",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "EDITH RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-07",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ALEX KUCHER",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
+            "status": "SALE",
+            "visit_date": "2026-02-06",
+            "close_date": "",
+            "install_date": ""
+          },
+          {
+            "name": "ROBERTO RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "FUrnace + AC",
+            "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-06",
+            "close_date": "",
+            "install_date": ""
+          }
+        ],
+        "pay_periods": [
+          {
+            "name": "Dec 25, 2025 - Jan 07, 2026",
+            "deals": 5,
+            "revenue": 48376.0
+          },
+          {
+            "name": "Jan 08, 2026 - Jan 21, 2026",
+            "deals": 7,
+            "revenue": 62975.0
+          },
+          {
+            "name": "Jan 22, 2026 - Feb 04, 2026",
+            "deals": 4,
+            "revenue": 38790.0
+          },
+          {
+            "name": "Feb 05, 2026 - Feb 18, 2026",
+            "deals": 3,
+            "revenue": 41045.0
+          },
+          {
+            "name": "Feb 19, 2026 - Mar 04, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 05, 2026 - Mar 18, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 19, 2026 - Apr 01, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 02, 2026 - Apr 15, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 16, 2026 - Apr 29, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 30, 2026 - May 13, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 14, 2026 - May 27, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 28, 2026 - Jun 10, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 11, 2026 - Jun 24, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 25, 2026 - Jul 08, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 09, 2026 - Jul 22, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 23, 2026 - Aug 05, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 06, 2026 - Aug 19, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 20, 2026 - Sep 02, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 03, 2026 - Sep 16, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 17, 2026 - Sep 30, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 01, 2026 - Oct 14, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 15, 2026 - Oct 28, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 29, 2026 - Nov 11, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 12, 2026 - Nov 25, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 26, 2026 - Dec 09, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 10, 2026 - Dec 23, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 24, 2026 - Jan 06, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jan 07, 2027 - Jan 20, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          }
+        ],
+        "selected_pay_period": null
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:59:18.145350"
+    },
+    {
+      "test_name": "Dashboard KPIs (month)",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "total_revenue": 148940.0,
+        "total_commission": 14034.65,
+        "spiff_commission": 3974.0,
+        "total_commission_with_spiff": 18008.65,
+        "avg_commission_percent": 9.27,
+        "closed_deals": 15,
+        "closing_rate": 42.9,
+        "average_ticket": 9929.33,
+        "total_visits": 35,
+        "avg_sales_cycle_days": 158.1,
+        "price_margin": 14034.65,
+        "unit_type_count": {
+          "Furnace": 6,
+          "Furnace + HP": 3,
+          "FURNACE": 3,
+          "Unknown": 1,
+          "Furnace + AC": 2
+        },
+        "unit_type_revenue": {
+          "Furnace": 42870.0,
+          "Furnace + HP": 49150.0,
+          "FURNACE": 21045.0,
+          "Unknown": 4455.0,
+          "Furnace + AC": 31420.0
+        },
+        "monthly_data": [
+          {
+            "month": "Jan 2026",
+            "month_short": "Jan",
+            "year": 2026,
+            "revenue": 86125.0,
+            "deals": 10,
+            "commission": 8117.3
+          },
+          {
+            "month": "Feb 2026",
+            "month_short": "Feb",
+            "year": 2026,
+            "revenue": 56685.0,
+            "deals": 4,
+            "commission": 5365.65
           }
         ],
         "weekly_data": [
@@ -1331,320 +2643,568 @@
             "city": "LINDENHURST",
             "unit_type": "Furnace",
             "ticket_value": 6595.0,
+            "commission_percent": 10.0,
+            "spif_commission": 75.0,
             "status": "SALE",
             "visit_date": "2026-01-07",
-            "close_date": "2026-01-14"
+            "close_date": "2026-01-14",
+            "install_date": "2026-01-16"
           },
           {
             "name": "KATHRYN DAGRES",
             "city": "NORTH AURORA",
             "unit_type": "Furnace + HP",
             "ticket_value": 14755.0,
+            "commission_percent": 11.0,
+            "spif_commission": 650.0,
             "status": "SALE",
             "visit_date": "2026-01-12",
-            "close_date": "2026-01-12"
+            "close_date": "2026-01-12",
+            "install_date": "2026-01-14"
           },
           {
             "name": "JACKSON KRECIOCH",
             "city": "SKOKIE",
             "unit_type": "Furnace + HP",
             "ticket_value": 13585.0,
+            "commission_percent": 8.0,
+            "spif_commission": 650.0,
             "status": "SALE",
             "visit_date": "2026-01-13",
-            "close_date": "2026-01-13"
+            "close_date": "2026-01-13",
+            "install_date": "2026-01-14"
           },
           {
             "name": "PAUL JONES",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 9740.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-15",
-            "close_date": "2026-01-18"
+            "close_date": "2026-01-18",
+            "install_date": "2026-01-20"
           },
           {
             "name": "WILL JANFLAND",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 6185.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-15",
-            "close_date": "2026-01-15"
+            "close_date": "2026-01-15",
+            "install_date": "2026-01-16"
           },
           {
             "name": "ISHRAT MERCHANT",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 5120.0,
+            "commission_percent": 10.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2020-01-16",
-            "close_date": "2026-01-16"
+            "close_date": "2026-01-16",
+            "install_date": "2026-01-16"
           },
           {
             "name": "JASMINE MCEWEN",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-16",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "CHRISTIAN GARCIA",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 6995.0,
+            "commission_percent": 8.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-19",
-            "close_date": "2026-01-19"
+            "close_date": "2026-01-19",
+            "install_date": "2026-01-20"
           },
           {
             "name": "KYLE MERCHANT",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-20",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JASON LENHAHAN",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-19",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JASMINE ADKINS",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-19",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "RAMON CARRANZA",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-19",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "SARA GAYNOR",
             "city": "BUFFALO GROVE",
             "unit_type": "Furnace + HP",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-20",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "AMER QURAISHI",
             "city": "WOOD DALE",
             "unit_type": "Furnace",
             "ticket_value": 5785.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-23",
-            "close_date": "2026-01-23"
+            "close_date": "2026-01-23",
+            "install_date": "2026-01-24"
           },
           {
             "name": "TED KELOEZIEJ",
             "city": "BROOKFIELD",
             "unit_type": "Furnace",
             "ticket_value": 6130.0,
+            "commission_percent": 8.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-23",
-            "close_date": "2026-01-23"
+            "close_date": "2026-01-23",
+            "install_date": "2026-01-24"
           },
           {
             "name": "ARMANDO GARDUNO",
             "city": "DOWNERS GROVE",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-23",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "MELANIE SHOW",
             "city": "SAINT CHARLES",
             "unit_type": "Furnace",
             "ticket_value": 11045.0,
+            "commission_percent": 11.0,
+            "spif_commission": 325.0,
             "status": "SALE",
             "visit_date": "2026-01-24",
-            "close_date": "2026-01-25"
+            "close_date": "2026-01-25",
+            "install_date": "2026-01-26"
           },
           {
             "name": "ERIC SORENASON",
             "city": "EVANSTONE",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-26",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ORTENSIA ZERMENO",
             "city": "CHICAGO",
             "unit_type": "BOILER",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-26",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "TJ RICKERT",
             "city": "CHICAGO",
             "unit_type": "",
             "ticket_value": 4455.0,
+            "commission_percent": 9.0,
+            "spif_commission": 75.0,
             "status": "SALE",
             "visit_date": "2026-01-27",
-            "close_date": "2026-02-01"
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-06"
           },
           {
             "name": "WILL MCDERMITH",
             "city": "LAKE ZURICH",
             "unit_type": "Furnace + AC",
             "ticket_value": 15640.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-27",
-            "close_date": "2026-01-30"
+            "close_date": "2026-01-30",
+            "install_date": "2026-02-01"
           },
           {
             "name": "STEPHANIE MORALES",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 5975.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-28",
-            "close_date": "2026-01-28"
+            "close_date": "2026-01-28",
+            "install_date": "2026-01-29"
           },
           {
             "name": "GWEN KENDRICK",
             "city": "BELLWOOD",
             "unit_type": "Furnace + AC",
             "ticket_value": 15780.0,
+            "commission_percent": 12.0,
+            "spif_commission": 1175.0,
             "status": "SALE",
             "visit_date": "2026-01-29",
-            "close_date": "2026-02-01"
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-11"
           },
           {
             "name": "ERIK RAESTS",
             "city": "GRAYSLAKE",
             "unit_type": "AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-30",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JENNY RICCIARDI",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-30",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "NATSUMI TSUZUKI",
             "city": "ELK GROVE",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-31",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JOSH DENIZ",
             "city": "NAPERVILLE",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-31",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "RACHEL ROSALES",
             "city": "CHCIAGO",
             "unit_type": "Furnace + HP",
             "ticket_value": 20810.0,
+            "commission_percent": 11.0,
+            "spif_commission": 1024.0,
             "status": "SALE",
             "visit_date": "2026-02-02",
-            "close_date": "2026-02-02"
+            "close_date": "2026-02-02",
+            "install_date": "2026-02-12"
           },
           {
             "name": "LAURIE SHAPIRO",
             "city": "ELMWOOD PARK",
             "unit_type": "HEAT PUMP",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-02",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ISAAC CASTRO",
             "city": "AURORA",
             "unit_type": "AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-02",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JENNIFER MORSE",
             "city": "LIVERTYVILLE",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "MIKE AB",
             "city": "BUFFALO GROVE",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "EDITH RODRIGUEZ",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-07",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ALEX KUCHER",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 6130.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-02-06",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ROBERTO RODRIGUEZ",
             "city": "CHICAGO",
             "unit_type": "FUrnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-06",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           }
-        ]
+        ],
+        "pay_periods": [
+          {
+            "name": "Dec 25, 2025 - Jan 07, 2026",
+            "deals": 5,
+            "revenue": 48376.0
+          },
+          {
+            "name": "Jan 08, 2026 - Jan 21, 2026",
+            "deals": 7,
+            "revenue": 62975.0
+          },
+          {
+            "name": "Jan 22, 2026 - Feb 04, 2026",
+            "deals": 4,
+            "revenue": 38790.0
+          },
+          {
+            "name": "Feb 05, 2026 - Feb 18, 2026",
+            "deals": 3,
+            "revenue": 41045.0
+          },
+          {
+            "name": "Feb 19, 2026 - Mar 04, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 05, 2026 - Mar 18, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 19, 2026 - Apr 01, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 02, 2026 - Apr 15, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 16, 2026 - Apr 29, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 30, 2026 - May 13, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 14, 2026 - May 27, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 28, 2026 - Jun 10, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 11, 2026 - Jun 24, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 25, 2026 - Jul 08, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 09, 2026 - Jul 22, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 23, 2026 - Aug 05, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 06, 2026 - Aug 19, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 20, 2026 - Sep 02, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 03, 2026 - Sep 16, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 17, 2026 - Sep 30, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 01, 2026 - Oct 14, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 15, 2026 - Oct 28, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 29, 2026 - Nov 11, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 12, 2026 - Nov 25, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 26, 2026 - Dec 09, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 10, 2026 - Dec 23, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 24, 2026 - Jan 06, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jan 07, 2027 - Jan 20, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          }
+        ],
+        "selected_pay_period": null
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:47:00.988467"
+      "timestamp": "2026-02-08T15:59:18.316109"
     },
     {
       "test_name": "Dashboard KPIs (year)",
@@ -1652,13 +3212,16 @@
       "status_code": 200,
       "response_data": {
         "total_revenue": 197316.0,
-        "total_commission": 9865.8,
+        "total_commission": 17900.58,
+        "spiff_commission": 4482.81,
+        "total_commission_with_spiff": 22383.39,
+        "avg_commission_percent": 8.85,
         "closed_deals": 20,
         "closing_rate": 42.6,
         "average_ticket": 9865.8,
         "total_visits": 47,
         "avg_sales_cycle_days": 116.7,
-        "price_margin": 9865.8,
+        "price_margin": 17900.58,
         "unit_type_count": {
           "Furnace": 8,
           "Furnace + AC": 5,
@@ -1675,76 +3238,28 @@
         },
         "monthly_data": [
           {
-            "month": "Jan",
-            "revenue": 132315.0,
-            "deals": 14,
-            "commission": 6615.75
-          },
-          {
-            "month": "Feb",
-            "revenue": 41045.0,
-            "deals": 3,
-            "commission": 2052.25
-          },
-          {
-            "month": "Mar",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Apr",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "May",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Jun",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Jul",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Aug",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Sep",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Oct",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Nov",
-            "revenue": 0.0,
-            "deals": 0,
-            "commission": 0.0
-          },
-          {
-            "month": "Dec",
+            "month": "Dec 2025",
+            "month_short": "Dec",
+            "year": 2025,
             "revenue": 17826.0,
             "deals": 2,
-            "commission": 891.3000000000001
+            "commission": 1356.63
+          },
+          {
+            "month": "Jan 2026",
+            "month_short": "Jan",
+            "year": 2026,
+            "revenue": 116675.0,
+            "deals": 13,
+            "commission": 10626.6
+          },
+          {
+            "month": "Feb 2026",
+            "month_short": "Feb",
+            "year": 2026,
+            "revenue": 56685.0,
+            "deals": 4,
+            "commission": 5365.65
           }
         ],
         "weekly_data": [
@@ -1800,428 +3315,712 @@
             "city": "Addison",
             "unit_type": "Furnace",
             "ticket_value": 6945.0,
+            "commission_percent": 7.000000000000001,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2025-12-20",
-            "close_date": "2025-12-20"
+            "close_date": "2025-12-20",
+            "install_date": "2025-12-29"
           },
           {
             "name": "JAKE GRAFSTEIN",
             "city": "DEERFIELD",
             "unit_type": "Furnace",
             "ticket_value": 4250.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2025-12-22",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "SANDEEP BUTAPATI",
             "city": "LAKE ZURICH",
             "unit_type": "Furnace + AC",
             "ticket_value": 11790.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2025-12-23",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ELENA NIKOLOVA",
             "city": "LAKE ZURICH",
             "unit_type": "Furnace + HP",
             "ticket_value": 12750.0,
+            "commission_percent": 8.0,
+            "spif_commission": 450.0,
             "status": "LOST",
             "visit_date": "2025-12-23",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "MATT FUQUA",
             "city": "HINDSDALE",
             "unit_type": "Furnace + AC",
             "ticket_value": 10881.0,
+            "commission_percent": 8.0,
+            "spif_commission": 183.81,
             "status": "SALE",
             "visit_date": "2025-12-27",
-            "close_date": "2025-12-27"
+            "close_date": "2025-12-27",
+            "install_date": "2025-12-29"
           },
           {
             "name": "RICHARD BREHM",
             "city": "Lake Forest",
             "unit_type": "Furnace",
             "ticket_value": 4250.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2025-12-20",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "NICK JENNINGS",
             "city": "FRANKLIN PARK",
             "unit_type": "Furnace + AC",
             "ticket_value": 10665.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2025-12-31",
-            "close_date": "2026-01-02"
+            "close_date": "2026-01-02",
+            "install_date": "2026-01-02"
           },
           {
             "name": " DIVA EDWARDS",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 6005.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-01",
-            "close_date": "2026-01-02"
+            "close_date": "2026-01-02",
+            "install_date": "2026-01-02"
           },
           {
             "name": "JOSHUA CHESMORE",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 13880.0,
+            "commission_percent": 9.0,
+            "spif_commission": 325.0,
             "status": "SALE",
             "visit_date": "2026-01-02",
-            "close_date": "2026-01-02"
+            "close_date": "2026-01-02",
+            "install_date": "2026-01-02"
           },
           {
             "name": "Tom Kenner",
             "city": "Palatine",
             "unit_type": "Furnace",
             "ticket_value": 12019.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "Rebecca Moore",
             "city": "Wonder Lake",
             "unit_type": "Furnace",
             "ticket_value": 4900.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "RYAN OBERMEYER",
             "city": "LINDENHURST",
             "unit_type": "Furnace",
             "ticket_value": 6595.0,
+            "commission_percent": 10.0,
+            "spif_commission": 75.0,
             "status": "SALE",
             "visit_date": "2026-01-07",
-            "close_date": "2026-01-14"
+            "close_date": "2026-01-14",
+            "install_date": "2026-01-16"
           },
           {
             "name": "CARLOS GARCIA",
             "city": "MOUNT PROSPECT",
             "unit_type": "Furnace + AC",
             "ticket_value": 11860.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-09",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "KATHRYN DAGRES",
             "city": "NORTH AURORA",
             "unit_type": "Furnace + HP",
             "ticket_value": 14755.0,
+            "commission_percent": 11.0,
+            "spif_commission": 650.0,
             "status": "SALE",
             "visit_date": "2026-01-12",
-            "close_date": "2026-01-12"
+            "close_date": "2026-01-12",
+            "install_date": "2026-01-14"
           },
           {
             "name": "JACKSON KRECIOCH",
             "city": "SKOKIE",
             "unit_type": "Furnace + HP",
             "ticket_value": 13585.0,
+            "commission_percent": 8.0,
+            "spif_commission": 650.0,
             "status": "SALE",
             "visit_date": "2026-01-13",
-            "close_date": "2026-01-13"
+            "close_date": "2026-01-13",
+            "install_date": "2026-01-14"
           },
           {
             "name": "PAUL JONES",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 9740.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-15",
-            "close_date": "2026-01-18"
+            "close_date": "2026-01-18",
+            "install_date": "2026-01-20"
           },
           {
             "name": "WILL JANFLAND",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 6185.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-15",
-            "close_date": "2026-01-15"
+            "close_date": "2026-01-15",
+            "install_date": "2026-01-16"
           },
           {
             "name": "ISHRAT MERCHANT",
             "city": "CHICAGO",
             "unit_type": "FURNACE",
             "ticket_value": 5120.0,
+            "commission_percent": 10.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2020-01-16",
-            "close_date": "2026-01-16"
+            "close_date": "2026-01-16",
+            "install_date": "2026-01-16"
           },
           {
             "name": "JASMINE MCEWEN",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-16",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "CHRISTIAN GARCIA",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 6995.0,
+            "commission_percent": 8.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-19",
-            "close_date": "2026-01-19"
+            "close_date": "2026-01-19",
+            "install_date": "2026-01-20"
           },
           {
             "name": "KYLE MERCHANT",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-20",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JASON LENHAHAN",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-19",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JASMINE ADKINS",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-19",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "RAMON CARRANZA",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-19",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "SARA GAYNOR",
             "city": "BUFFALO GROVE",
             "unit_type": "Furnace + HP",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-20",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "AMER QURAISHI",
             "city": "WOOD DALE",
             "unit_type": "Furnace",
             "ticket_value": 5785.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-23",
-            "close_date": "2026-01-23"
+            "close_date": "2026-01-23",
+            "install_date": "2026-01-24"
           },
           {
             "name": "TED KELOEZIEJ",
             "city": "BROOKFIELD",
             "unit_type": "Furnace",
             "ticket_value": 6130.0,
+            "commission_percent": 8.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-23",
-            "close_date": "2026-01-23"
+            "close_date": "2026-01-23",
+            "install_date": "2026-01-24"
           },
           {
             "name": "ARMANDO GARDUNO",
             "city": "DOWNERS GROVE",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-23",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "MELANIE SHOW",
             "city": "SAINT CHARLES",
             "unit_type": "Furnace",
             "ticket_value": 11045.0,
+            "commission_percent": 11.0,
+            "spif_commission": 325.0,
             "status": "SALE",
             "visit_date": "2026-01-24",
-            "close_date": "2026-01-25"
+            "close_date": "2026-01-25",
+            "install_date": "2026-01-26"
           },
           {
             "name": "ERIC SORENASON",
             "city": "EVANSTONE",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "LOST",
             "visit_date": "2026-01-26",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ORTENSIA ZERMENO",
             "city": "CHICAGO",
             "unit_type": "BOILER",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-26",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "TJ RICKERT",
             "city": "CHICAGO",
             "unit_type": "",
             "ticket_value": 4455.0,
+            "commission_percent": 9.0,
+            "spif_commission": 75.0,
             "status": "SALE",
             "visit_date": "2026-01-27",
-            "close_date": "2026-02-01"
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-06"
           },
           {
             "name": "WILL MCDERMITH",
             "city": "LAKE ZURICH",
             "unit_type": "Furnace + AC",
             "ticket_value": 15640.0,
+            "commission_percent": 5.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-27",
-            "close_date": "2026-01-30"
+            "close_date": "2026-01-30",
+            "install_date": "2026-02-01"
           },
           {
             "name": "STEPHANIE MORALES",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 5975.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-01-28",
-            "close_date": "2026-01-28"
+            "close_date": "2026-01-28",
+            "install_date": "2026-01-29"
           },
           {
             "name": "GWEN KENDRICK",
             "city": "BELLWOOD",
             "unit_type": "Furnace + AC",
             "ticket_value": 15780.0,
+            "commission_percent": 12.0,
+            "spif_commission": 1175.0,
             "status": "SALE",
             "visit_date": "2026-01-29",
-            "close_date": "2026-02-01"
+            "close_date": "2026-02-01",
+            "install_date": "2026-02-11"
           },
           {
             "name": "ERIK RAESTS",
             "city": "GRAYSLAKE",
             "unit_type": "AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-30",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JENNY RICCIARDI",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-30",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "NATSUMI TSUZUKI",
             "city": "ELK GROVE",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-31",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JOSH DENIZ",
             "city": "NAPERVILLE",
             "unit_type": "Furnace",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-01-31",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "RACHEL ROSALES",
             "city": "CHCIAGO",
             "unit_type": "Furnace + HP",
             "ticket_value": 20810.0,
+            "commission_percent": 11.0,
+            "spif_commission": 1024.0,
             "status": "SALE",
             "visit_date": "2026-02-02",
-            "close_date": "2026-02-02"
+            "close_date": "2026-02-02",
+            "install_date": "2026-02-12"
           },
           {
             "name": "LAURIE SHAPIRO",
             "city": "ELMWOOD PARK",
             "unit_type": "HEAT PUMP",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-02",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ISAAC CASTRO",
             "city": "AURORA",
             "unit_type": "AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-02",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "JENNIFER MORSE",
             "city": "LIVERTYVILLE",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "MIKE AB",
             "city": "BUFFALO GROVE",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-05",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "EDITH RODRIGUEZ",
             "city": "CHICAGO",
             "unit_type": "Furnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-07",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ALEX KUCHER",
             "city": "CHICAGO",
             "unit_type": "Furnace",
             "ticket_value": 6130.0,
+            "commission_percent": 9.0,
+            "spif_commission": 0.0,
             "status": "SALE",
             "visit_date": "2026-02-06",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           },
           {
             "name": "ROBERTO RODRIGUEZ",
             "city": "CHICAGO",
             "unit_type": "FUrnace + AC",
             "ticket_value": 0.0,
+            "commission_percent": 0.0,
+            "spif_commission": 0.0,
             "status": "PENDING",
             "visit_date": "2026-02-06",
-            "close_date": ""
+            "close_date": "",
+            "install_date": ""
           }
-        ]
+        ],
+        "pay_periods": [
+          {
+            "name": "Dec 25, 2025 - Jan 07, 2026",
+            "deals": 5,
+            "revenue": 48376.0
+          },
+          {
+            "name": "Jan 08, 2026 - Jan 21, 2026",
+            "deals": 7,
+            "revenue": 62975.0
+          },
+          {
+            "name": "Jan 22, 2026 - Feb 04, 2026",
+            "deals": 4,
+            "revenue": 38790.0
+          },
+          {
+            "name": "Feb 05, 2026 - Feb 18, 2026",
+            "deals": 3,
+            "revenue": 41045.0
+          },
+          {
+            "name": "Feb 19, 2026 - Mar 04, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 05, 2026 - Mar 18, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Mar 19, 2026 - Apr 01, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 02, 2026 - Apr 15, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 16, 2026 - Apr 29, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Apr 30, 2026 - May 13, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 14, 2026 - May 27, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "May 28, 2026 - Jun 10, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 11, 2026 - Jun 24, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jun 25, 2026 - Jul 08, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 09, 2026 - Jul 22, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jul 23, 2026 - Aug 05, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 06, 2026 - Aug 19, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Aug 20, 2026 - Sep 02, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 03, 2026 - Sep 16, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Sep 17, 2026 - Sep 30, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 01, 2026 - Oct 14, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 15, 2026 - Oct 28, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Oct 29, 2026 - Nov 11, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 12, 2026 - Nov 25, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Nov 26, 2026 - Dec 09, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 10, 2026 - Dec 23, 2026",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Dec 24, 2026 - Jan 06, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          },
+          {
+            "name": "Jan 07, 2027 - Jan 20, 2027",
+            "deals": 0,
+            "revenue": 0.0
+          }
+        ],
+        "selected_pay_period": null
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:47:01.204029"
+      "timestamp": "2026-02-08T15:59:18.492038"
     },
     {
       "test_name": "Dashboard Refresh",
@@ -2231,13 +4030,16 @@
         "message": "Data refreshed successfully",
         "kpis": {
           "total_revenue": 197316.0,
-          "total_commission": 9865.8,
+          "total_commission": 17900.58,
+          "spiff_commission": 4482.81,
+          "total_commission_with_spiff": 22383.39,
+          "avg_commission_percent": 8.85,
           "closed_deals": 20,
           "closing_rate": 41.7,
           "average_ticket": 9865.8,
           "total_visits": 48,
           "avg_sales_cycle_days": 116.7,
-          "price_margin": 9865.8,
+          "price_margin": 17900.58,
           "unit_type_count": {
             "Furnace": 8,
             "Furnace + AC": 5,
@@ -2254,76 +4056,28 @@
           },
           "monthly_data": [
             {
-              "month": "Jan",
-              "revenue": 132315.0,
-              "deals": 14,
-              "commission": 6615.75
-            },
-            {
-              "month": "Feb",
-              "revenue": 41045.0,
-              "deals": 3,
-              "commission": 2052.25
-            },
-            {
-              "month": "Mar",
-              "revenue": 0.0,
-              "deals": 0,
-              "commission": 0.0
-            },
-            {
-              "month": "Apr",
-              "revenue": 0.0,
-              "deals": 0,
-              "commission": 0.0
-            },
-            {
-              "month": "May",
-              "revenue": 0.0,
-              "deals": 0,
-              "commission": 0.0
-            },
-            {
-              "month": "Jun",
-              "revenue": 0.0,
-              "deals": 0,
-              "commission": 0.0
-            },
-            {
-              "month": "Jul",
-              "revenue": 0.0,
-              "deals": 0,
-              "commission": 0.0
-            },
-            {
-              "month": "Aug",
-              "revenue": 0.0,
-              "deals": 0,
-              "commission": 0.0
-            },
-            {
-              "month": "Sep",
-              "revenue": 0.0,
-              "deals": 0,
-              "commission": 0.0
-            },
-            {
-              "month": "Oct",
-              "revenue": 0.0,
-              "deals": 0,
-              "commission": 0.0
-            },
-            {
-              "month": "Nov",
-              "revenue": 0.0,
-              "deals": 0,
-              "commission": 0.0
-            },
-            {
-              "month": "Dec",
+              "month": "Dec 2025",
+              "month_short": "Dec",
+              "year": 2025,
               "revenue": 17826.0,
               "deals": 2,
-              "commission": 891.3000000000001
+              "commission": 1356.63
+            },
+            {
+              "month": "Jan 2026",
+              "month_short": "Jan",
+              "year": 2026,
+              "revenue": 116675.0,
+              "deals": 13,
+              "commission": 10626.6
+            },
+            {
+              "month": "Feb 2026",
+              "month_short": "Feb",
+              "year": 2026,
+              "revenue": 56685.0,
+              "deals": 4,
+              "commission": 5365.65
             }
           ],
           "weekly_data": [
@@ -2379,456 +4133,749 @@
               "city": "Addison",
               "unit_type": "Furnace",
               "ticket_value": 6945.0,
+              "commission_percent": 7.000000000000001,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2025-12-20",
-              "close_date": "2025-12-20"
+              "close_date": "2025-12-20",
+              "install_date": "2025-12-29"
             },
             {
               "name": "JAKE GRAFSTEIN",
               "city": "DEERFIELD",
               "unit_type": "Furnace",
               "ticket_value": 4250.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "LOST",
               "visit_date": "2025-12-22",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "SANDEEP BUTAPATI",
               "city": "LAKE ZURICH",
               "unit_type": "Furnace + AC",
               "ticket_value": 11790.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "LOST",
               "visit_date": "2025-12-23",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "ELENA NIKOLOVA",
               "city": "LAKE ZURICH",
               "unit_type": "Furnace + HP",
               "ticket_value": 12750.0,
+              "commission_percent": 8.0,
+              "spif_commission": 450.0,
               "status": "LOST",
               "visit_date": "2025-12-23",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "MATT FUQUA",
               "city": "HINDSDALE",
               "unit_type": "Furnace + AC",
               "ticket_value": 10881.0,
+              "commission_percent": 8.0,
+              "spif_commission": 183.81,
               "status": "SALE",
               "visit_date": "2025-12-27",
-              "close_date": "2025-12-27"
+              "close_date": "2025-12-27",
+              "install_date": "2025-12-29"
             },
             {
               "name": "RICHARD BREHM",
               "city": "Lake Forest",
               "unit_type": "Furnace",
               "ticket_value": 4250.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "LOST",
               "visit_date": "2025-12-20",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "NICK JENNINGS",
               "city": "FRANKLIN PARK",
               "unit_type": "Furnace + AC",
               "ticket_value": 10665.0,
+              "commission_percent": 9.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2025-12-31",
-              "close_date": "2026-01-02"
+              "close_date": "2026-01-02",
+              "install_date": "2026-01-02"
             },
             {
               "name": " DIVA EDWARDS",
               "city": "CHICAGO",
               "unit_type": "Furnace",
               "ticket_value": 6005.0,
+              "commission_percent": 5.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2026-01-01",
-              "close_date": "2026-01-02"
+              "close_date": "2026-01-02",
+              "install_date": "2026-01-02"
             },
             {
               "name": "JOSHUA CHESMORE",
               "city": "CHICAGO",
               "unit_type": "Furnace + AC",
               "ticket_value": 13880.0,
+              "commission_percent": 9.0,
+              "spif_commission": 325.0,
               "status": "SALE",
               "visit_date": "2026-01-02",
-              "close_date": "2026-01-02"
+              "close_date": "2026-01-02",
+              "install_date": "2026-01-02"
             },
             {
               "name": "Tom Kenner",
               "city": "Palatine",
               "unit_type": "Furnace",
               "ticket_value": 12019.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "LOST",
               "visit_date": "2026-01-05",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "Rebecca Moore",
               "city": "Wonder Lake",
               "unit_type": "Furnace",
               "ticket_value": 4900.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "LOST",
               "visit_date": "2026-01-05",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "RYAN OBERMEYER",
               "city": "LINDENHURST",
               "unit_type": "Furnace",
               "ticket_value": 6595.0,
+              "commission_percent": 10.0,
+              "spif_commission": 75.0,
               "status": "SALE",
               "visit_date": "2026-01-07",
-              "close_date": "2026-01-14"
+              "close_date": "2026-01-14",
+              "install_date": "2026-01-16"
             },
             {
               "name": "CARLOS GARCIA",
               "city": "MOUNT PROSPECT",
               "unit_type": "Furnace + AC",
               "ticket_value": 11860.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "LOST",
               "visit_date": "2026-01-09",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "KATHRYN DAGRES",
               "city": "NORTH AURORA",
               "unit_type": "Furnace + HP",
               "ticket_value": 14755.0,
+              "commission_percent": 11.0,
+              "spif_commission": 650.0,
               "status": "SALE",
               "visit_date": "2026-01-12",
-              "close_date": "2026-01-12"
+              "close_date": "2026-01-12",
+              "install_date": "2026-01-14"
             },
             {
               "name": "JACKSON KRECIOCH",
               "city": "SKOKIE",
               "unit_type": "Furnace + HP",
               "ticket_value": 13585.0,
+              "commission_percent": 8.0,
+              "spif_commission": 650.0,
               "status": "SALE",
               "visit_date": "2026-01-13",
-              "close_date": "2026-01-13"
+              "close_date": "2026-01-13",
+              "install_date": "2026-01-14"
             },
             {
               "name": "PAUL JONES",
               "city": "CHICAGO",
               "unit_type": "FURNACE",
               "ticket_value": 9740.0,
+              "commission_percent": 9.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2026-01-15",
-              "close_date": "2026-01-18"
+              "close_date": "2026-01-18",
+              "install_date": "2026-01-20"
             },
             {
               "name": "WILL JANFLAND",
               "city": "CHICAGO",
               "unit_type": "FURNACE",
               "ticket_value": 6185.0,
+              "commission_percent": 9.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2026-01-15",
-              "close_date": "2026-01-15"
+              "close_date": "2026-01-15",
+              "install_date": "2026-01-16"
             },
             {
               "name": "ISHRAT MERCHANT",
               "city": "CHICAGO",
               "unit_type": "FURNACE",
               "ticket_value": 5120.0,
+              "commission_percent": 10.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2020-01-16",
-              "close_date": "2026-01-16"
+              "close_date": "2026-01-16",
+              "install_date": "2026-01-16"
             },
             {
               "name": "TRISTRAM BONE",
               "city": "CHICAGO",
               "unit_type": "FURNACE",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2020-01-16",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "JASMINE MCEWEN",
               "city": "CHICAGO",
               "unit_type": "Furnace",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "LOST",
               "visit_date": "2026-01-16",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "CHRISTIAN GARCIA",
               "city": "CHICAGO",
               "unit_type": "Furnace",
               "ticket_value": 6995.0,
+              "commission_percent": 8.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2026-01-19",
-              "close_date": "2026-01-19"
+              "close_date": "2026-01-19",
+              "install_date": "2026-01-20"
             },
             {
               "name": "KYLE MERCHANT",
               "city": "CHICAGO",
               "unit_type": "Furnace",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-20",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "JASON LENHAHAN",
               "city": "CHICAGO",
               "unit_type": "Furnace + AC",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-19",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "JASMINE ADKINS",
               "city": "CHICAGO",
               "unit_type": "Furnace",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-19",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "RAMON CARRANZA",
               "city": "CHICAGO",
               "unit_type": "Furnace + AC",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-19",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "SARA GAYNOR",
               "city": "BUFFALO GROVE",
               "unit_type": "Furnace + HP",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-20",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "AMER QURAISHI",
               "city": "WOOD DALE",
               "unit_type": "Furnace",
               "ticket_value": 5785.0,
+              "commission_percent": 5.0,
+              "spif_commission": 0.0,
               "status": "LOST",
               "visit_date": "2026-01-23",
-              "close_date": "2026-01-23"
+              "close_date": "2026-01-23",
+              "install_date": "2026-01-24"
             },
             {
               "name": "TED KELOEZIEJ",
               "city": "BROOKFIELD",
               "unit_type": "Furnace",
               "ticket_value": 6130.0,
+              "commission_percent": 8.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2026-01-23",
-              "close_date": "2026-01-23"
+              "close_date": "2026-01-23",
+              "install_date": "2026-01-24"
             },
             {
               "name": "ARMANDO GARDUNO",
               "city": "DOWNERS GROVE",
               "unit_type": "Furnace",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-23",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "MELANIE SHOW",
               "city": "SAINT CHARLES",
               "unit_type": "Furnace",
               "ticket_value": 11045.0,
+              "commission_percent": 11.0,
+              "spif_commission": 325.0,
               "status": "SALE",
               "visit_date": "2026-01-24",
-              "close_date": "2026-01-25"
+              "close_date": "2026-01-25",
+              "install_date": "2026-01-26"
             },
             {
               "name": "ERIC SORENASON",
               "city": "EVANSTONE",
               "unit_type": "Furnace",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "LOST",
               "visit_date": "2026-01-26",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "ORTENSIA ZERMENO",
               "city": "CHICAGO",
               "unit_type": "BOILER",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-26",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "TJ RICKERT",
               "city": "CHICAGO",
               "unit_type": "",
               "ticket_value": 4455.0,
+              "commission_percent": 9.0,
+              "spif_commission": 75.0,
               "status": "SALE",
               "visit_date": "2026-01-27",
-              "close_date": "2026-02-01"
+              "close_date": "2026-02-01",
+              "install_date": "2026-02-06"
             },
             {
               "name": "WILL MCDERMITH",
               "city": "LAKE ZURICH",
               "unit_type": "Furnace + AC",
               "ticket_value": 15640.0,
+              "commission_percent": 5.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2026-01-27",
-              "close_date": "2026-01-30"
+              "close_date": "2026-01-30",
+              "install_date": "2026-02-01"
             },
             {
               "name": "STEPHANIE MORALES",
               "city": "CHICAGO",
               "unit_type": "Furnace",
               "ticket_value": 5975.0,
+              "commission_percent": 9.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2026-01-28",
-              "close_date": "2026-01-28"
+              "close_date": "2026-01-28",
+              "install_date": "2026-01-29"
             },
             {
               "name": "GWEN KENDRICK",
               "city": "BELLWOOD",
               "unit_type": "Furnace + AC",
               "ticket_value": 15780.0,
+              "commission_percent": 12.0,
+              "spif_commission": 1175.0,
               "status": "SALE",
               "visit_date": "2026-01-29",
-              "close_date": "2026-02-01"
+              "close_date": "2026-02-01",
+              "install_date": "2026-02-11"
             },
             {
               "name": "ERIK RAESTS",
               "city": "GRAYSLAKE",
               "unit_type": "AC",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-30",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "JENNY RICCIARDI",
               "city": "CHICAGO",
               "unit_type": "Furnace",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-30",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "NATSUMI TSUZUKI",
               "city": "ELK GROVE",
               "unit_type": "Furnace + AC",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-31",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "JOSH DENIZ",
               "city": "NAPERVILLE",
               "unit_type": "Furnace",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-01-31",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "RACHEL ROSALES",
               "city": "CHCIAGO",
               "unit_type": "Furnace + HP",
               "ticket_value": 20810.0,
+              "commission_percent": 11.0,
+              "spif_commission": 1024.0,
               "status": "SALE",
               "visit_date": "2026-02-02",
-              "close_date": "2026-02-02"
+              "close_date": "2026-02-02",
+              "install_date": "2026-02-12"
             },
             {
               "name": "LAURIE SHAPIRO",
               "city": "ELMWOOD PARK",
               "unit_type": "HEAT PUMP",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-02-02",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "ISAAC CASTRO",
               "city": "AURORA",
               "unit_type": "AC",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-02-02",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "JENNIFER MORSE",
               "city": "LIVERTYVILLE",
               "unit_type": "Furnace + AC",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-02-05",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "MIKE AB",
               "city": "BUFFALO GROVE",
               "unit_type": "Furnace + AC",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-02-05",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "EDITH RODRIGUEZ",
               "city": "CHICAGO",
               "unit_type": "Furnace + AC",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-02-07",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "ALEX KUCHER",
               "city": "CHICAGO",
               "unit_type": "Furnace",
               "ticket_value": 6130.0,
+              "commission_percent": 9.0,
+              "spif_commission": 0.0,
               "status": "SALE",
               "visit_date": "2026-02-06",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "ROBERTO RODRIGUEZ",
               "city": "CHICAGO",
               "unit_type": "FUrnace + AC",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "PENDING",
               "visit_date": "2026-02-06",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "nan",
               "city": "",
               "unit_type": "",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "UNKNOWN",
               "visit_date": "",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             },
             {
               "name": "nan",
               "city": "",
               "unit_type": "",
               "ticket_value": 0.0,
+              "commission_percent": 0.0,
+              "spif_commission": 0.0,
               "status": "UNKNOWN",
               "visit_date": "",
-              "close_date": ""
+              "close_date": "",
+              "install_date": ""
             }
-          ]
+          ],
+          "pay_periods": [
+            {
+              "name": "Dec 25, 2025 - Jan 07, 2026",
+              "deals": 5,
+              "revenue": 48376.0
+            },
+            {
+              "name": "Jan 08, 2026 - Jan 21, 2026",
+              "deals": 7,
+              "revenue": 62975.0
+            },
+            {
+              "name": "Jan 22, 2026 - Feb 04, 2026",
+              "deals": 4,
+              "revenue": 38790.0
+            },
+            {
+              "name": "Feb 05, 2026 - Feb 18, 2026",
+              "deals": 3,
+              "revenue": 41045.0
+            },
+            {
+              "name": "Feb 19, 2026 - Mar 04, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Mar 05, 2026 - Mar 18, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Mar 19, 2026 - Apr 01, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Apr 02, 2026 - Apr 15, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Apr 16, 2026 - Apr 29, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Apr 30, 2026 - May 13, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "May 14, 2026 - May 27, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "May 28, 2026 - Jun 10, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Jun 11, 2026 - Jun 24, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Jun 25, 2026 - Jul 08, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Jul 09, 2026 - Jul 22, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Jul 23, 2026 - Aug 05, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Aug 06, 2026 - Aug 19, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Aug 20, 2026 - Sep 02, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Sep 03, 2026 - Sep 16, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Sep 17, 2026 - Sep 30, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Oct 01, 2026 - Oct 14, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Oct 15, 2026 - Oct 28, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Oct 29, 2026 - Nov 11, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Nov 12, 2026 - Nov 25, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Nov 26, 2026 - Dec 09, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Dec 10, 2026 - Dec 23, 2026",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Dec 24, 2026 - Jan 06, 2027",
+              "deals": 0,
+              "revenue": 0.0
+            },
+            {
+              "name": "Jan 07, 2027 - Jan 20, 2027",
+              "deals": 0,
+              "revenue": 0.0
+            }
+          ],
+          "selected_pay_period": null
         }
       },
       "error_msg": null,
-      "timestamp": "2026-02-08T15:47:01.423588"
+      "timestamp": "2026-02-08T15:59:18.665405"
     }
   ]
 }
