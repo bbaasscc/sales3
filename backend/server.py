@@ -284,12 +284,17 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     start_date = None
     end_date = None
     
+    logger.info(f"Filtering with pay_period='{pay_period}', date_filter='{date_filter}'")
+    
     if pay_period and pay_period != "all":
         for period_name, period_start, period_end in PAY_PERIODS:
             if period_name == pay_period:
                 start_date = period_start
                 end_date = period_end
+                logger.info(f"Found matching period: {period_name}, start={period_start}, end={period_end}")
                 break
+        if not start_date:
+            logger.warning(f"Pay period '{pay_period}' not found in PAY_PERIODS list")
     elif date_filter == "week":
         start_date = now - timedelta(days=7)
     elif date_filter == "2weeks":
@@ -303,12 +308,20 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         start_naive = start_date.replace(tzinfo=None) if hasattr(start_date, 'tzinfo') and start_date.tzinfo else start_date
         end_naive = end_date.replace(tzinfo=None) if end_date and hasattr(end_date, 'tzinfo') and end_date.tzinfo else None
         
+        logger.info(f"Date range: {start_naive} to {end_naive}")
+        
+        # Log install dates for debugging
+        install_dates = df[df['install_date'].notna()]['install_date'].tolist()
+        logger.info(f"Install dates in data: {install_dates[:5]}...")
+        
         if end_naive:
+            # Pay period filter - ONLY by install date
             df_filtered = df[
                 df['install_date'].notna() & 
                 (df['install_date'] >= start_naive) & 
                 (df['install_date'] <= end_naive)
             ]
+            logger.info(f"Pay period filter result: {len(df_filtered)} records")
         else:
             df_filtered = df[
                 (df['visit_date'].notna() & (df['visit_date'] >= start_naive)) |
@@ -316,8 +329,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
                 (df['install_date'].notna() & (df['install_date'] >= start_naive))
             ]
         
-        if len(df_filtered) == 0:
-            df_filtered = df
+        # DO NOT fallback to all data - keep the filtered result even if empty
+        # if len(df_filtered) == 0:
+        #     df_filtered = df
     else:
         df_filtered = df
     
