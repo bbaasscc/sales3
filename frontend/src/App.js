@@ -67,8 +67,8 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Default Excel URL
-const DEFAULT_EXCEL_URL = "https://customer-assets.emergentagent.com/job_sales-dashboard-321/artifacts/4chovh35_Stats_FSHAC_v22%20%285%29.xlsx";
+// Default Excel URL - Google Sheets (auto-updates on refresh)
+const DEFAULT_EXCEL_URL = "https://docs.google.com/spreadsheets/d/1h2ZMumcAsYYYvV1JTQPRXTa3kOcZ5K4-/edit";
 
 // Four Seasons brand colors
 const BRAND_COLORS = {
