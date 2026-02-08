@@ -353,8 +353,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     price_margin_sales_count = len(price_margin_df)
     price_margin_commission = price_margin_df['commission_value'].sum()
     
-    # === SPIFF BREAKDOWN from dedicated columns ===
+    # === SPIFF BREAKDOWN from dedicated columns ONLY (no Other) ===
     spiff_breakdown = {}
+    spiff_total = 0.0
     
     # APCO X
     apco_total = closed_deals_df['apco_x'].sum()
@@ -365,6 +366,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'commission': round(apco_total, 2),
             'percent_of_sales': round((apco_count / closed_deals * 100), 1) if closed_deals > 0 else 0
         }
+        spiff_total += apco_total
     
     # Samsung
     samsung_total = closed_deals_df['samsung'].sum()
@@ -375,6 +377,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'commission': round(samsung_total, 2),
             'percent_of_sales': round((samsung_count / closed_deals * 100), 1) if closed_deals > 0 else 0
         }
+        spiff_total += samsung_total
     
     # Mitsubishi
     mitsubishi_total = closed_deals_df['mitsubishi'].sum()
@@ -385,6 +388,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'commission': round(mitsubishi_total, 2),
             'percent_of_sales': round((mitsubishi_count / closed_deals * 100), 1) if closed_deals > 0 else 0
         }
+        spiff_total += mitsubishi_total
     
     # Surge Protector
     surge_total = closed_deals_df['surge_protector'].sum()
@@ -395,6 +399,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'commission': round(surge_total, 2),
             'percent_of_sales': round((surge_count / closed_deals * 100), 1) if closed_deals > 0 else 0
         }
+        spiff_total += surge_total
     
     # Duct Cleaning
     duct_total = closed_deals_df['duct_cleaning'].sum()
@@ -405,10 +410,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'commission': round(duct_total, 2),
             'percent_of_sales': round((duct_count / closed_deals * 100), 1) if closed_deals > 0 else 0
         }
-    
-    # Other SPIFF from SPIF column (not in named columns)
-    named_spiff_total = apco_total + samsung_total + mitsubishi_total + surge_total + duct_total
-    other_spiff = closed_deals_df['spif_total'].sum() - named_spiff_total
+        spiff_total += duct_total
     if other_spiff < 0:
         other_spiff = closed_deals_df['spif_total'].sum()  # If columns don't exist, use total
     other_count = len(closed_deals_df[closed_deals_df['spif_total'] > 0]) - apco_count - samsung_count - mitsubishi_count
