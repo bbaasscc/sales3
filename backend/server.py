@@ -94,17 +94,26 @@ class SalesRecord(BaseModel):
     sales_cycle_days: Optional[int] = None
 
 class KPIResponse(BaseModel):
+    # Main Summary KPIs
     total_revenue: float
     total_commission: float
-    spiff_commission: float
-    total_commission_with_spiff: float
-    avg_commission_percent: float
     closed_deals: int
     closing_rate: float
-    average_ticket: float
     total_visits: int
+    average_ticket: float
     avg_sales_cycle_days: float
-    price_margin: float
+    
+    # Price Margin (5% commission sales)
+    price_margin_total: float
+    price_margin_sales_count: int
+    price_margin_commission: float
+    
+    # SPIFF Section
+    spiff_total: float
+    spiff_breakdown: Dict[str, Any]  # {brand: {count, commission, percent_of_sales}}
+    
+    # Other metrics
+    avg_commission_percent: float
     unit_type_count: Dict[str, int]
     unit_type_revenue: Dict[str, float]
     monthly_data: List[Dict[str, Any]]
