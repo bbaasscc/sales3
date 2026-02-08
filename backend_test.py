@@ -238,7 +238,9 @@ class SalesDashboardAPITester:
             ("Root Endpoint", self.test_root_endpoint),
             ("Set Excel Config", self.test_set_excel_config), 
             ("Get Excel Config", self.test_get_excel_config),
+            ("Pay Periods Endpoint", self.test_pay_periods_endpoint),
             ("Dashboard KPIs All Time", self.test_dashboard_kpis_all_time),
+            ("Pay Period Filtering", self.test_pay_period_filtering),
             ("Dashboard KPIs Filtered", self.test_dashboard_kpis_filtered),
             ("Dashboard Refresh", self.test_dashboard_refresh)
         ]
