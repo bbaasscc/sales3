@@ -417,14 +417,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     if other_count < 0:
         other_count = len(closed_deals_df[closed_deals_df['spif_total'] > 0])
     
-    if other_spiff > 0 or other_count > 0:
-        spiff_breakdown['Other'] = {
-            'count': max(0, other_count),
-            'commission': round(max(0, other_spiff), 2),
-            'percent_of_sales': round((max(0, other_count) / closed_deals * 100), 1) if closed_deals > 0 else 0
-        }
-    
-    spiff_total = apco_total + samsung_total + mitsubishi_total + surge_total + duct_total + max(0, other_spiff)
+    # Total SPIFF is already calculated above
     
     # === FOLLOW-UPS (pending follow-ups with dates) ===
     follow_ups = []
