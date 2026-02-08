@@ -179,7 +179,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     column_mapping = {}
     for col in df.columns:
         col_lower = str(col).lower().strip()
-        if 'name' in col_lower:
+        if 'name' in col_lower and col_lower == 'name':
             column_mapping[col] = 'name'
         elif 'address' in col_lower:
             column_mapping[col] = 'address'
@@ -191,11 +191,13 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             column_mapping[col] = 'ticket_value'
         elif 'commission' in col_lower and '%' in col_lower:
             column_mapping[col] = 'commission_percent'
-        elif 'spif' in col_lower and 'commission' in col_lower and 'value' in col_lower:
+        elif col_lower == 'spif':
             column_mapping[col] = 'spif_commission'
+        elif col_lower == 'commission value':
+            column_mapping[col] = 'calc_commission'
         elif 'spif' in col_lower and 'description' in col_lower:
             column_mapping[col] = 'spif_description'
-        elif 'status' in col_lower:
+        elif col_lower == 'status':
             column_mapping[col] = 'status'
         elif 'visit' in col_lower and 'date' in col_lower:
             column_mapping[col] = 'visit_date'
