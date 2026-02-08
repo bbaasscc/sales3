@@ -36,7 +36,6 @@ import {
   Target,
   TrendingUp,
   Users,
-  Clock,
   PieChart as PieIcon,
   BarChart3,
   Settings,
@@ -46,6 +45,9 @@ import {
   Award,
   ShoppingCart,
   BadgeDollarSign,
+  AlertTriangle,
+  Clock,
+  Phone,
 } from "lucide-react";
 import {
   AreaChart,
@@ -150,7 +152,7 @@ const SectionHeader = ({ title, description, icon: Icon }) => (
 );
 
 // SPIFF Brand Card
-const SpiffBrandCard = ({ brand, data, totalDeals, color }) => (
+const SpiffBrandCard = ({ brand, data, color }) => (
   <div className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md transition-all">
     <div className="flex items-center justify-between mb-3">
       <div className="flex items-center gap-2">
@@ -406,13 +408,13 @@ function App() {
                 icon={BarChart3}
               />
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 <SummaryCard
                   title="Total Revenue"
                   value={kpiData.total_revenue}
                   prefix="$"
                   icon={DollarSign}
-                  description="Sum of all closed deal values"
+                  description="Sum of Ticket Value for all closed deals"
                   highlight={true}
                 />
                 <SummaryCard
@@ -420,49 +422,114 @@ function App() {
                   value={kpiData.total_commission}
                   prefix="$"
                   icon={BadgeDollarSign}
-                  description="Total earned from all commission rates"
+                  description="Sum of Commission Value for all SALE rows"
+                  highlight={true}
                 />
                 <SummaryCard
                   title="Closed Deals"
                   value={kpiData.closed_deals}
                   icon={Target}
-                  description="Number of successfully closed sales"
+                  description="Total number of deals with SALE status"
                 />
                 <SummaryCard
                   title="Closing Rate"
                   value={kpiData.closing_rate}
                   suffix="%"
                   icon={Percent}
-                  description="Deals closed ÷ Total opportunities"
+                  description="Closed deals / Total opportunities"
                 />
                 <SummaryCard
                   title="Total Visits"
                   value={kpiData.total_visits}
                   icon={Users}
-                  description="Customer visits made"
+                  description="Number of customer visits made"
                 />
                 <SummaryCard
                   title="Average Ticket"
                   value={kpiData.average_ticket}
                   prefix="$"
                   icon={ShoppingCart}
-                  description="Revenue ÷ Closed deals"
-                />
-                <SummaryCard
-                  title="Avg Sales Cycle"
-                  value={kpiData.avg_sales_cycle_days}
-                  suffix=" days"
-                  icon={Clock}
-                  description="Average days from visit to close"
+                  description="Total Revenue / Closed Deals"
                 />
               </div>
             </section>
 
-            {/* ==================== SECTION 2: PRICE MARGIN (5%) ==================== */}
+            {/* ==================== SECTION 2: FOLLOW-UPS ==================== */}
+            {kpiData.follow_ups && kpiData.follow_ups.length > 0 && (
+              <section>
+                <SectionHeader 
+                  title="Pending Follow-Ups" 
+                  description="Customers requiring follow-up action, sorted by urgency"
+                  icon={Phone}
+                />
+                
+                <Card className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-slate-50">
+                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Priority</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Name</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">City</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Status</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Follow-Up Date</TableHead>
+                          <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Days Until</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {kpiData.follow_ups.slice(0, 10).map((followUp, index) => (
+                          <TableRow 
+                            key={index} 
+                            className={`border-b border-slate-100 ${followUp.is_urgent ? 'bg-red-50' : 'hover:bg-slate-50/50'}`}
+                          >
+                            <TableCell className="py-2 px-4">
+                              {followUp.is_urgent ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                  <AlertTriangle className="w-3 h-3" />
+                                  URGENT
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                                  <Clock className="w-3 h-3" />
+                                  Normal
+                                </span>
+                              )}
+                            </TableCell>
+                            <TableCell className={`py-2 px-4 font-medium ${followUp.is_urgent ? 'text-red-700' : 'text-slate-700'}`}>
+                              {followUp.name}
+                            </TableCell>
+                            <TableCell className="py-2 px-4 text-slate-600">{followUp.city}</TableCell>
+                            <TableCell className="py-2 px-4">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                followUp.status === 'PENDING' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'
+                              }`}>
+                                {followUp.status}
+                              </span>
+                            </TableCell>
+                            <TableCell className={`py-2 px-4 font-mono ${followUp.is_urgent ? 'text-red-700 font-bold' : 'text-slate-600'}`}>
+                              {followUp.follow_up_date}
+                            </TableCell>
+                            <TableCell className={`py-2 px-4 font-mono ${followUp.is_urgent ? 'text-red-700 font-bold' : 'text-slate-600'}`}>
+                              {followUp.days_until !== null ? (
+                                followUp.days_until < 0 ? `${Math.abs(followUp.days_until)} days overdue` :
+                                followUp.days_until === 0 ? 'Today!' :
+                                `${followUp.days_until} days`
+                              ) : '-'}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </Card>
+              </section>
+            )}
+
+            {/* ==================== SECTION 3: PRICE MARGIN (5%) ==================== */}
             <section>
               <SectionHeader 
                 title="Price Margin Analysis" 
-                description="Sales and commissions at the standard 5% rate"
+                description="Sales and commissions at the standard 5% rate only"
                 icon={Calculator}
               />
               
@@ -474,7 +541,7 @@ function App() {
                       <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Sales at 5%</span>
                     </div>
                     <p className="text-3xl font-mono font-bold text-slate-900">{kpiData.price_margin_sales_count}</p>
-                    <p className="text-xs text-slate-400 mt-2">Number of deals closed with standard 5% commission rate</p>
+                    <p className="text-xs text-slate-400 mt-2">Number of deals with exactly 5% commission rate</p>
                   </CardContent>
                 </Card>
                 
@@ -485,7 +552,7 @@ function App() {
                       <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Revenue at 5%</span>
                     </div>
                     <p className="text-3xl font-mono font-bold text-slate-900">${kpiData.price_margin_total.toLocaleString()}</p>
-                    <p className="text-xs text-slate-400 mt-2">Total revenue from sales with 5% commission</p>
+                    <p className="text-xs text-slate-400 mt-2">Total ticket value from 5% commission sales</p>
                   </CardContent>
                 </Card>
                 
@@ -496,17 +563,17 @@ function App() {
                       <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">Commission at 5%</span>
                     </div>
                     <p className="text-3xl font-mono font-bold text-emerald-700">${kpiData.price_margin_commission.toLocaleString()}</p>
-                    <p className="text-xs text-emerald-600 mt-2">Total commission earned at 5% rate</p>
+                    <p className="text-xs text-emerald-600 mt-2">Commission earned from 5% rate sales</p>
                   </CardContent>
                 </Card>
               </div>
             </section>
 
-            {/* ==================== SECTION 3: SPIFF COMMISSIONS ==================== */}
+            {/* ==================== SECTION 4: SPIFF COMMISSIONS ==================== */}
             <section>
               <SectionHeader 
                 title="SPIFF Commission Breakdown" 
-                description="Bonus commissions by brand partner"
+                description="Bonus commissions by brand partner (APCO X, Samsung, Mitsubishi)"
                 icon={Gift}
               />
               
@@ -531,13 +598,12 @@ function App() {
                     key={brand}
                     brand={brand}
                     data={data}
-                    totalDeals={kpiData.closed_deals}
                     color={SPIFF_COLORS[brand] || '#94A3B8'}
                   />
                 ))}
                 {Object.keys(kpiData.spiff_breakdown || {}).length === 0 && (
                   <div className="col-span-4 text-center py-8 text-slate-400">
-                    No SPIFF commissions recorded for this period
+                    No SPIFF commissions recorded. Ensure your Excel has APCO X, Samsung, and Mitsubishi columns.
                   </div>
                 )}
               </div>
@@ -574,7 +640,7 @@ function App() {
               )}
             </section>
 
-            {/* ==================== SECTION 4: SALES ANALYSIS ==================== */}
+            {/* ==================== SECTION 5: SALES ANALYSIS ==================== */}
             <section>
               <SectionHeader 
                 title="Sales Analysis" 
@@ -632,7 +698,7 @@ function App() {
               </div>
             </section>
 
-            {/* ==================== SECTION 5: PERFORMANCE TRENDS ==================== */}
+            {/* ==================== SECTION 6: PERFORMANCE TRENDS ==================== */}
             <section>
               <SectionHeader 
                 title="Performance Trends" 
@@ -692,7 +758,7 @@ function App() {
               </div>
             </section>
 
-            {/* ==================== SECTION 6: DETAILED RECORDS ==================== */}
+            {/* ==================== SECTION 7: DETAILED RECORDS ==================== */}
             <section>
               <SectionHeader 
                 title="Recent Sales Records" 
@@ -708,10 +774,10 @@ function App() {
                         <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Name</TableHead>
                         <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">City</TableHead>
                         <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Unit Type</TableHead>
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Value</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Ticket Value</TableHead>
                         <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Comm %</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Commission</TableHead>
                         <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">SPIFF</TableHead>
-                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Install</TableHead>
                         <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Status</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -727,10 +793,12 @@ function App() {
                           <TableCell className="py-2 px-4 font-mono text-slate-600 text-sm">
                             {record.commission_percent > 0 ? `${record.commission_percent}%` : '-'}
                           </TableCell>
-                          <TableCell className="py-2 px-4 font-mono text-slate-600 text-sm">
-                            {record.spif_commission > 0 ? `$${record.spif_commission.toLocaleString()}` : '-'}
+                          <TableCell className="py-2 px-4 font-mono text-emerald-600 text-sm">
+                            {record.commission_value > 0 ? `$${record.commission_value.toLocaleString()}` : '-'}
                           </TableCell>
-                          <TableCell className="py-2 px-4 text-slate-600 text-sm">{record.install_date || '-'}</TableCell>
+                          <TableCell className="py-2 px-4 font-mono text-violet-600 text-sm">
+                            {record.spif_total > 0 ? `$${record.spif_total.toLocaleString()}` : '-'}
+                          </TableCell>
                           <TableCell className="py-2 px-4">
                             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                               record.status === 'SALE' ? 'bg-emerald-100 text-emerald-800' :
