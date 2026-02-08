@@ -234,7 +234,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [dateFilter, setDateFilter] = useState("all");
-  const [payPeriod, setPayPeriod] = useState("all");
+  const [payPeriod, setPayPeriod] = useState(() => getCurrentPayPeriod()); // Auto-select current period
   const [kpiData, setKpiData] = useState(null);
   const [error, setError] = useState(null);
   const [excelUrl, setExcelUrl] = useState(DEFAULT_EXCEL_URL);
@@ -242,13 +242,19 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const fetchDashboardData = useCallback(async (showToast = false) => {
+  const fetchDashboardData = useCallback(async (showToast = false, resetToCurrentPeriod = false) => {
     if (showToast) {
       setRefreshing(true);
     } else {
       setLoading(true);
     }
     setError(null);
+
+    // On refresh, update to current pay period
+    const currentPeriod = resetToCurrentPeriod ? getCurrentPayPeriod() : payPeriod;
+    if (resetToCurrentPeriod && currentPeriod !== payPeriod) {
+      setPayPeriod(currentPeriod);
+    }
 
     try {
       await axios.post(`${API}/config/excel`, { excel_url: excelUrl });
