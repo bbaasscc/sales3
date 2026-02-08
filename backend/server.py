@@ -363,19 +363,22 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     month_year_data = {}
     for _, row in closed_deals_df.iterrows():
         date_field = row.get('install_date') or row.get('close_date')
-        if date_field:
-            month_key = (date_field.year, date_field.month)
-            if month_key not in month_year_data:
-                month_year_data[month_key] = {'revenue': 0, 'deals': 0, 'commission': 0}
-            month_year_data[month_key]['revenue'] += safe_float(row.get('ticket_value', 0))
-            month_year_data[month_key]['deals'] += 1
-            # Calculate commission for this row
-            ticket = safe_float(row.get('ticket_value', 0))
-            comm_pct = safe_float(row.get('commission_percent', 0))
-            if comm_pct > 0:
-                month_year_data[month_key]['commission'] += ticket * (comm_pct / 100)
-            else:
-                month_year_data[month_key]['commission'] += ticket * commission_rate
+        if date_field and pd.notna(date_field):
+            try:
+                month_key = (int(date_field.year), int(date_field.month))
+                if month_key not in month_year_data:
+                    month_year_data[month_key] = {'revenue': 0, 'deals': 0, 'commission': 0}
+                month_year_data[month_key]['revenue'] += safe_float(row.get('ticket_value', 0))
+                month_year_data[month_key]['deals'] += 1
+                # Calculate commission for this row
+                ticket = safe_float(row.get('ticket_value', 0))
+                comm_pct = safe_float(row.get('commission_percent', 0))
+                if comm_pct > 0:
+                    month_year_data[month_key]['commission'] += ticket * (comm_pct / 100)
+                else:
+                    month_year_data[month_key]['commission'] += ticket * commission_rate
+            except (ValueError, AttributeError):
+                continue
     
     # Sort by year and month
     sorted_months = sorted(month_year_data.keys())
@@ -383,11 +386,11 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
     for year, month in sorted_months:
         data = month_year_data[(year, month)]
-        month_idx = int(month) - 1  # Ensure integer index
+        month_idx = month - 1
         monthly_data.append({
-            'month': f"{month_names[month_idx]} {int(year)}",
+            'month': f"{month_names[month_idx]} {year}",
             'month_short': month_names[month_idx],
-            'year': int(year),
+            'year': year,
             'revenue': round(data['revenue'], 2),
             'deals': data['deals'],
             'commission': round(data['commission'], 2)
