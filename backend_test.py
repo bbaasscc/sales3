@@ -166,6 +166,49 @@ class SalesDashboardAPITester:
         
         return all_passed
 
+    def test_pay_periods_endpoint(self):
+        """Test GET /api/pay-periods endpoint"""
+        success, response, status_code = self.run_test(
+            "Pay Periods Endpoint",
+            "GET",
+            "pay-periods",
+            200
+        )
+        
+        if success and response:
+            pay_periods = response.get('pay_periods', [])
+            print(f"   Pay Periods Available: {len(pay_periods)}")
+            if pay_periods:
+                print(f"   First Period: {pay_periods[0].get('name', 'N/A')}")
+                print(f"   Last Period: {pay_periods[-1].get('name', 'N/A')}")
+            
+        return success
+
+    def test_pay_period_filtering(self):
+        """Test pay period filtering functionality"""
+        # Test with specific pay period
+        test_pay_period = "Jan 08, 2026 - Jan 21, 2026"
+        
+        success, response, status_code = self.run_test(
+            "Pay Period Filtering",
+            "GET",
+            "dashboard/kpis",
+            200,
+            params={"pay_period": test_pay_period}
+        )
+        
+        if success and response:
+            print(f"   Selected Pay Period: {response.get('selected_pay_period', 'N/A')}")
+            print(f"   Total Revenue: ${response.get('total_revenue', 0):,.2f}")
+            print(f"   Filtered Records: {len(response.get('records', []))}")
+            
+            # Verify chronological monthly data
+            monthly_data = response.get('monthly_data', [])
+            if len(monthly_data) >= 2:
+                print(f"   Monthly Data (Chronological): {[m['month'] for m in monthly_data[:3]]}")
+            
+        return success
+
     def test_dashboard_refresh(self):
         """Test POST /api/dashboard/refresh endpoint"""
         success, response, status_code = self.run_test(
