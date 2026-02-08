@@ -548,17 +548,26 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         })
     
     return KPIResponse(
+        # Main Summary KPIs
         total_revenue=round(total_revenue, 2),
         total_commission=round(total_commission, 2),
-        spiff_commission=round(spiff_commission, 2),
-        total_commission_with_spiff=round(total_commission_with_spiff, 2),
-        avg_commission_percent=round(avg_commission_percent, 2),
         closed_deals=closed_deals,
         closing_rate=round(closing_rate, 1),
-        average_ticket=round(average_ticket, 2),
         total_visits=total_visits,
+        average_ticket=round(average_ticket, 2),
         avg_sales_cycle_days=round(avg_sales_cycle, 1),
-        price_margin=round(price_margin, 2),
+        
+        # Price Margin (5% commission)
+        price_margin_total=round(price_margin_total, 2),
+        price_margin_sales_count=price_margin_sales_count,
+        price_margin_commission=round(price_margin_commission, 2),
+        
+        # SPIFF
+        spiff_total=round(spiff_total, 2),
+        spiff_breakdown=spiff_breakdown,
+        
+        # Other
+        avg_commission_percent=round(avg_commission_percent, 2),
         unit_type_count=unit_type_count,
         unit_type_revenue=unit_type_revenue,
         monthly_data=monthly_data,
