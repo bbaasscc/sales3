@@ -229,6 +229,12 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             column_mapping[col] = 'samsung'
         elif 'mitsubishi' in col_lower or 'mits' in col_lower:
             column_mapping[col] = 'mitsubishi'
+        elif 'surge' in col_lower and 'protector' in col_lower:
+            column_mapping[col] = 'surge_protector'
+        elif 'surge' in col_lower:
+            column_mapping[col] = 'surge_protector'
+        elif 'duct' in col_lower or 'dusct' in col_lower or 'celaning' in col_lower:
+            column_mapping[col] = 'duct_cleaning'
     
     df = df.rename(columns=column_mapping)
     logger.info(f"Mapped columns: {list(df.columns)}")
