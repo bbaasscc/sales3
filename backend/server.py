@@ -383,10 +383,11 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
     for year, month in sorted_months:
         data = month_year_data[(year, month)]
+        month_idx = int(month) - 1  # Ensure integer index
         monthly_data.append({
-            'month': f"{month_names[month-1]} {year}",
-            'month_short': month_names[month-1],
-            'year': year,
+            'month': f"{month_names[month_idx]} {int(year)}",
+            'month_short': month_names[month_idx],
+            'year': int(year),
             'revenue': round(data['revenue'], 2),
             'deals': data['deals'],
             'commission': round(data['commission'], 2)
