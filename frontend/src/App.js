@@ -67,8 +67,8 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Default Excel URL - SharePoint link
-const DEFAULT_EXCEL_URL = "https://cloudsynergys-my.sharepoint.com/:x:/g/personal/antoniosanchez_cloudsynergys_onmicrosoft_com/IQD8bj0HqQI2R6bpHxKBdqTGATXx35YklsARZFcwgsfRvvs";
+// Default Excel URL - Updated file
+const DEFAULT_EXCEL_URL = "https://customer-assets.emergentagent.com/job_sales-dashboard-321/artifacts/4chovh35_Stats_FSHAC_v22%20%285%29.xlsx";
 
 // Chart colors
 const CHART_COLORS = ["#0F172A", "#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899"];
@@ -76,6 +76,8 @@ const SPIFF_COLORS = {
   'APCO X': '#3B82F6',
   'Samsung': '#10B981',
   'Mitsubishi': '#F59E0B',
+  'Surge Protector': '#8B5CF6',
+  'Duct Cleaning': '#EC4899',
   'Other': '#94A3B8'
 };
 
