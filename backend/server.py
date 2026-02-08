@@ -422,7 +422,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'percent_of_sales': round((max(0, other_count) / closed_deals * 100), 1) if closed_deals > 0 else 0
         }
     
-    spiff_total = apco_total + samsung_total + mitsubishi_total + max(0, other_spiff)
+    spiff_total = apco_total + samsung_total + mitsubishi_total + surge_total + duct_total + max(0, other_spiff)
     
     # === FOLLOW-UPS (pending follow-ups with dates) ===
     follow_ups = []
