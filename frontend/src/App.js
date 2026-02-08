@@ -62,8 +62,8 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Default Excel URL
-const DEFAULT_EXCEL_URL = "https://customer-assets.emergentagent.com/job_sales-dashboard-321/artifacts/xdsih8ll_Stats_FSHAC_v22%20%284%29.xlsx";
+// Default Excel URL - SharePoint link
+const DEFAULT_EXCEL_URL = "https://cloudsynergys-my.sharepoint.com/:x:/g/personal/antoniosanchez_cloudsynergys_onmicrosoft_com/IQD8bj0HqQI2R6bpHxKBdqTGATXx35YklsARZFcwgsfRvvs";
 
 // Chart colors from design guidelines
 const CHART_COLORS = ["#0F172A", "#3B82F6", "#94A3B8", "#CBD5E1", "#64748B"];
