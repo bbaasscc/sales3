@@ -683,7 +683,7 @@ function App() {
       <footer className="bg-white border-t border-slate-200 py-4">
         <div className="max-w-[1600px] mx-auto px-4 md:px-8">
           <p className="text-xs text-slate-400 text-center">
-            Sales Dashboard - Click Settings (gear icon) to connect your OneDrive/SharePoint Excel file. Click Refresh to update data.
+            Sales Dashboard - Connected to SharePoint Excel. Click <strong>"Actualizar Datos"</strong> to refresh with latest data.
           </p>
         </div>
       </footer>
