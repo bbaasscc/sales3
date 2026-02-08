@@ -108,12 +108,20 @@ class KPIResponse(BaseModel):
     selected_pay_period: Optional[str] = None
 
 def parse_excel_data(excel_url: str) -> pd.DataFrame:
-    """Download and parse Excel file from URL"""
+    """Download and parse Excel file from URL (supports Google Sheets, SharePoint, direct URLs)"""
     try:
         logger.info(f"Downloading Excel from: {excel_url}")
         
+        # Handle Google Sheets URLs - convert to export format
+        if 'docs.google.com/spreadsheets' in excel_url:
+            # Extract sheet ID from various Google Sheets URL formats
+            if '/d/' in excel_url:
+                sheet_id = excel_url.split('/d/')[1].split('/')[0].split('?')[0]
+                excel_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=xlsx"
+                logger.info(f"Converted to Google Sheets export URL: {excel_url}")
+        
         # Handle SharePoint URLs - convert to download format
-        if 'sharepoint.com' in excel_url:
+        elif 'sharepoint.com' in excel_url:
             if '?' in excel_url:
                 base_url = excel_url.split('?')[0]
                 excel_url = f"{base_url}?download=1"
