@@ -172,7 +172,7 @@ def safe_date(value) -> Optional[datetime]:
     except:
         return None
 
-def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIResponse:
+def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: str = None) -> KPIResponse:
     """Process sales data and calculate KPIs"""
     
     # Standardize column names
@@ -191,14 +191,18 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIRespons
             column_mapping[col] = 'ticket_value'
         elif 'commission' in col_lower and '%' in col_lower:
             column_mapping[col] = 'commission_percent'
-        elif 'spif' in col_lower or ('commission' in col_lower and 'value' in col_lower):
+        elif 'spif' in col_lower and 'commission' in col_lower and 'value' in col_lower:
             column_mapping[col] = 'spif_commission'
+        elif 'spif' in col_lower and 'description' in col_lower:
+            column_mapping[col] = 'spif_description'
         elif 'status' in col_lower:
             column_mapping[col] = 'status'
         elif 'visit' in col_lower and 'date' in col_lower:
             column_mapping[col] = 'visit_date'
         elif 'close' in col_lower and 'date' in col_lower:
             column_mapping[col] = 'close_date'
+        elif 'install' in col_lower and 'date' in col_lower:
+            column_mapping[col] = 'install_date'
         elif 'loss' in col_lower and 'reason' in col_lower:
             column_mapping[col] = 'loss_reason'
         elif 'comment' in col_lower:
@@ -207,13 +211,11 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIRespons
             column_mapping[col] = 'closed_on_first_visit'
         elif 'feeling' in col_lower:
             column_mapping[col] = 'feeling'
-        elif 'install' in col_lower and 'date' in col_lower:
-            column_mapping[col] = 'install_date'
     
     df = df.rename(columns=column_mapping)
     
     # Ensure required columns exist
-    required_cols = ['name', 'status', 'unit_type', 'ticket_value', 'visit_date', 'close_date']
+    required_cols = ['name', 'status', 'unit_type', 'ticket_value', 'visit_date', 'close_date', 'install_date', 'commission_percent', 'spif_commission']
     for col in required_cols:
         if col not in df.columns:
             df[col] = None
@@ -221,12 +223,25 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIRespons
     # Clean and normalize data
     df['status'] = df['status'].apply(normalize_status)
     df['ticket_value'] = df['ticket_value'].apply(lambda x: safe_float(x))
+    df['commission_percent'] = df['commission_percent'].apply(lambda x: safe_float(x))
+    df['spif_commission'] = df['spif_commission'].apply(lambda x: safe_float(x))
     df['visit_date'] = df['visit_date'].apply(safe_date)
     df['close_date'] = df['close_date'].apply(safe_date)
+    df['install_date'] = df['install_date'].apply(safe_date)
     
     # Apply date filter
     now = datetime.now(timezone.utc)
-    if date_filter == "week":
+    start_date = None
+    end_date = None
+    
+    # Check if filtering by pay period (based on install_date)
+    if pay_period and pay_period != "all":
+        for period_name, period_start, period_end in PAY_PERIODS:
+            if period_name == pay_period:
+                start_date = period_start
+                end_date = period_end
+                break
+    elif date_filter == "week":
         start_date = now - timedelta(days=7)
     elif date_filter == "2weeks":
         start_date = now - timedelta(days=14)
@@ -234,15 +249,26 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIRespons
         start_date = now - timedelta(days=30)
     elif date_filter == "year":
         start_date = now - timedelta(days=365)
-    else:
-        start_date = None
     
     if start_date:
-        # Filter by visit_date or close_date
-        df_filtered = df[
-            (df['visit_date'].notna() & (df['visit_date'] >= start_date.replace(tzinfo=None))) |
-            (df['close_date'].notna() & (df['close_date'] >= start_date.replace(tzinfo=None)))
-        ]
+        start_naive = start_date.replace(tzinfo=None) if hasattr(start_date, 'tzinfo') and start_date.tzinfo else start_date
+        end_naive = end_date.replace(tzinfo=None) if end_date and hasattr(end_date, 'tzinfo') and end_date.tzinfo else None
+        
+        if end_naive:
+            # Filter by pay period using install_date
+            df_filtered = df[
+                df['install_date'].notna() & 
+                (df['install_date'] >= start_naive) & 
+                (df['install_date'] <= end_naive)
+            ]
+        else:
+            # Filter by general date range
+            df_filtered = df[
+                (df['visit_date'].notna() & (df['visit_date'] >= start_naive)) |
+                (df['close_date'].notna() & (df['close_date'] >= start_naive)) |
+                (df['install_date'].notna() & (df['install_date'] >= start_naive))
+            ]
+        
         if len(df_filtered) == 0:
             df_filtered = df  # Fallback to all data if no matches
     else:
@@ -256,9 +282,30 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIRespons
     # Total Revenue (sum of ticket values for closed deals)
     total_revenue = closed_deals_df['ticket_value'].sum()
     
-    # Commission (5% of revenue as price margin)
-    commission_rate = 0.05
-    total_commission = total_revenue * commission_rate
+    # Commission calculations
+    commission_rate = 0.05  # Default 5%
+    
+    # Calculate commission from commission_percent if available
+    commission_values = []
+    for _, row in closed_deals_df.iterrows():
+        ticket = safe_float(row.get('ticket_value', 0))
+        comm_pct = safe_float(row.get('commission_percent', 0))
+        if comm_pct > 0:
+            commission_values.append(ticket * (comm_pct / 100))
+        else:
+            commission_values.append(ticket * commission_rate)
+    
+    total_commission = sum(commission_values)
+    
+    # SPIFF Commission (separate)
+    spiff_commission = closed_deals_df['spif_commission'].sum()
+    
+    # Total Commission with SPIFF
+    total_commission_with_spiff = total_commission + spiff_commission
+    
+    # Average Commission Percentage
+    valid_commission_pcts = closed_deals_df[closed_deals_df['commission_percent'] > 0]['commission_percent']
+    avg_commission_percent = valid_commission_pcts.mean() if len(valid_commission_pcts) > 0 else commission_rate * 100
     
     # Closed Deals count
     closed_deals = len(closed_deals_df)
@@ -309,19 +356,40 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIRespons
         'PENDING': len(pending_deals_df)
     }
     
-    # Monthly aggregation
+    # Monthly aggregation - sorted chronologically
     monthly_data = []
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    for i, month in enumerate(months):
-        month_df = closed_deals_df[
-            closed_deals_df['close_date'].notna() & 
-            (closed_deals_df['close_date'].apply(lambda x: x.month if x else 0) == i + 1)
-        ]
+    
+    # Get all months with data, sorted
+    month_year_data = {}
+    for _, row in closed_deals_df.iterrows():
+        date_field = row.get('install_date') or row.get('close_date')
+        if date_field:
+            month_key = (date_field.year, date_field.month)
+            if month_key not in month_year_data:
+                month_year_data[month_key] = {'revenue': 0, 'deals': 0, 'commission': 0}
+            month_year_data[month_key]['revenue'] += safe_float(row.get('ticket_value', 0))
+            month_year_data[month_key]['deals'] += 1
+            # Calculate commission for this row
+            ticket = safe_float(row.get('ticket_value', 0))
+            comm_pct = safe_float(row.get('commission_percent', 0))
+            if comm_pct > 0:
+                month_year_data[month_key]['commission'] += ticket * (comm_pct / 100)
+            else:
+                month_year_data[month_key]['commission'] += ticket * commission_rate
+    
+    # Sort by year and month
+    sorted_months = sorted(month_year_data.keys())
+    month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    
+    for year, month in sorted_months:
+        data = month_year_data[(year, month)]
         monthly_data.append({
-            'month': month,
-            'revenue': month_df['ticket_value'].sum(),
-            'deals': len(month_df),
-            'commission': month_df['ticket_value'].sum() * commission_rate
+            'month': f"{month_names[month-1]} {year}",
+            'month_short': month_names[month-1],
+            'year': year,
+            'revenue': round(data['revenue'], 2),
+            'deals': data['deals'],
+            'commission': round(data['commission'], 2)
         })
     
     # Weekly aggregation (last 8 weeks)
@@ -340,6 +408,22 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIRespons
             'deals': len(week_df)
         })
     
+    # Get available pay periods with data
+    pay_periods_data = []
+    for period_name, period_start, period_end in PAY_PERIODS:
+        period_df = df[
+            df['install_date'].notna() & 
+            (df['install_date'] >= period_start) & 
+            (df['install_date'] <= period_end) &
+            (df['status'] == 'SALE')
+        ]
+        if len(period_df) > 0 or True:  # Include all periods
+            pay_periods_data.append({
+                'name': period_name,
+                'deals': len(period_df),
+                'revenue': period_df['ticket_value'].sum()
+            })
+    
     # Convert records to list of dicts for response
     records = []
     for _, row in df_filtered.head(50).iterrows():
@@ -348,14 +432,20 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIRespons
             'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
             'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
             'ticket_value': safe_float(row.get('ticket_value', 0)),
+            'commission_percent': safe_float(row.get('commission_percent', 0)),
+            'spif_commission': safe_float(row.get('spif_commission', 0)),
             'status': str(row.get('status', '')),
             'visit_date': row.get('visit_date').strftime('%Y-%m-%d') if pd.notna(row.get('visit_date')) else '',
-            'close_date': row.get('close_date').strftime('%Y-%m-%d') if pd.notna(row.get('close_date')) else ''
+            'close_date': row.get('close_date').strftime('%Y-%m-%d') if pd.notna(row.get('close_date')) else '',
+            'install_date': row.get('install_date').strftime('%Y-%m-%d') if pd.notna(row.get('install_date')) else ''
         })
     
     return KPIResponse(
         total_revenue=round(total_revenue, 2),
         total_commission=round(total_commission, 2),
+        spiff_commission=round(spiff_commission, 2),
+        total_commission_with_spiff=round(total_commission_with_spiff, 2),
+        avg_commission_percent=round(avg_commission_percent, 2),
         closed_deals=closed_deals,
         closing_rate=round(closing_rate, 1),
         average_ticket=round(average_ticket, 2),
@@ -367,7 +457,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIRespons
         monthly_data=monthly_data,
         weekly_data=weekly_data,
         status_distribution=status_distribution,
-        records=records
+        records=records,
+        pay_periods=pay_periods_data,
+        selected_pay_period=pay_period
     )
 
 # Routes
