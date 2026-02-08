@@ -349,15 +349,15 @@ function App() {
                 </DialogContent>
               </Dialog>
 
-              {/* Refresh Button */}
+              {/* Refresh Button - More prominent "Actualizar" */}
               <Button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="bg-slate-900 text-white hover:bg-slate-800 shadow-sm rounded-lg px-4 py-2 text-sm font-medium transition-colors mt-5"
+                className="bg-blue-600 text-white hover:bg-blue-700 shadow-md rounded-lg px-6 py-2 text-sm font-semibold transition-colors mt-5"
                 data-testid="refresh-button"
               >
                 <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-                Refresh
+                {refreshing ? 'Actualizando...' : 'Actualizar Datos'}
               </Button>
             </div>
           </div>
