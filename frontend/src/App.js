@@ -553,10 +553,10 @@ function App() {
                   description="Win rate"
                 />
                 <SummaryCard
-                  title="Visits"
+                  title="Leads"
                   value={kpiData.total_visits}
                   icon={Users}
-                  description="Customer visits"
+                  description="Total leads"
                 />
                 <SummaryCard
                   title="Avg Ticket"
