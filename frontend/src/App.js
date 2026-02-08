@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import "@/App.css";
 import axios from "axios";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -43,6 +43,9 @@ import {
   Gift,
   Calculator,
   Calendar,
+  Award,
+  ShoppingCart,
+  BadgeDollarSign,
 } from "lucide-react";
 import {
   AreaChart,
@@ -65,10 +68,16 @@ const API = `${BACKEND_URL}/api`;
 // Default Excel URL - SharePoint link
 const DEFAULT_EXCEL_URL = "https://cloudsynergys-my.sharepoint.com/:x:/g/personal/antoniosanchez_cloudsynergys_onmicrosoft_com/IQD8bj0HqQI2R6bpHxKBdqTGATXx35YklsARZFcwgsfRvvs";
 
-// Chart colors from design guidelines
-const CHART_COLORS = ["#0F172A", "#3B82F6", "#94A3B8", "#CBD5E1", "#64748B"];
+// Chart colors
+const CHART_COLORS = ["#0F172A", "#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899"];
+const SPIFF_COLORS = {
+  'APCO X': '#3B82F6',
+  'Samsung': '#10B981',
+  'Mitsubishi': '#F59E0B',
+  'Other': '#94A3B8'
+};
 
-// Pay periods for commission (bi-weekly)
+// Pay periods (bi-weekly)
 const PAY_PERIODS = [
   "Dec 25, 2025 - Jan 07, 2026",
   "Jan 08, 2026 - Jan 21, 2026",
@@ -100,50 +109,84 @@ const PAY_PERIODS = [
   "Jan 07, 2027 - Jan 20, 2027",
 ];
 
-// KPI Card Component
-const KPICard = ({ title, value, icon: Icon, suffix = "", prefix = "", trend = null, highlight = false, subtext = null }) => (
+// Summary KPI Card with description
+const SummaryCard = ({ title, value, description, icon: Icon, prefix = "", suffix = "", highlight = false }) => (
   <Card 
-    className={`bg-white border border-slate-200 shadow-sm rounded-xl hover:shadow-md transition-all duration-200 ${highlight ? 'border-l-4 border-l-blue-600' : ''}`}
-    data-testid={`kpi-card-${title.toLowerCase().replace(/\s+/g, '-')}`}
+    className={`bg-white border border-slate-200 shadow-sm rounded-xl hover:shadow-md transition-all duration-200 ${highlight ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`}
+    data-testid={`kpi-${title.toLowerCase().replace(/\s+/g, '-')}`}
   >
     <CardContent className="p-5">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2 font-heading">
-            {title}
-          </p>
-          <p className="text-2xl lg:text-3xl font-mono font-medium tracking-tighter text-slate-900">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="p-1.5 bg-slate-100 rounded-md">
+              <Icon className="w-3.5 h-3.5 text-slate-600" strokeWidth={2} />
+            </div>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 font-heading">
+              {title}
+            </p>
+          </div>
+          <p className="text-2xl lg:text-3xl font-mono font-semibold tracking-tight text-slate-900 mt-2">
             {prefix}{typeof value === 'number' ? value.toLocaleString('en-US', { maximumFractionDigits: 2 }) : value}{suffix}
           </p>
-          {subtext && (
-            <p className="text-xs text-slate-500 mt-1">{subtext}</p>
-          )}
-          {trend !== null && (
-            <p className={`text-xs mt-2 ${trend >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-              {trend >= 0 ? '+' : ''}{trend}% vs last period
-            </p>
-          )}
-        </div>
-        <div className="p-2 bg-slate-100 rounded-lg">
-          <Icon className="w-4 h-4 text-slate-600" strokeWidth={1.5} />
+          <p className="text-xs text-slate-400 mt-2 leading-relaxed">{description}</p>
         </div>
       </div>
     </CardContent>
   </Card>
 );
 
+// Section Header
+const SectionHeader = ({ title, description, icon: Icon }) => (
+  <div className="flex items-center gap-3 mb-4">
+    <div className="p-2 bg-slate-900 rounded-lg">
+      <Icon className="w-5 h-5 text-white" strokeWidth={2} />
+    </div>
+    <div>
+      <h2 className="text-lg font-bold text-slate-900 font-heading">{title}</h2>
+      <p className="text-sm text-slate-500">{description}</p>
+    </div>
+  </div>
+);
+
+// SPIFF Brand Card
+const SpiffBrandCard = ({ brand, data, totalDeals, color }) => (
+  <div className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md transition-all">
+    <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center gap-2">
+        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
+        <span className="font-semibold text-slate-700">{brand}</span>
+      </div>
+      <span className="text-xs font-mono bg-slate-100 px-2 py-1 rounded-full text-slate-600">
+        {data.percent_of_sales}% of sales
+      </span>
+    </div>
+    <div className="grid grid-cols-2 gap-3">
+      <div>
+        <p className="text-xs text-slate-400 uppercase tracking-wider">Sales</p>
+        <p className="text-lg font-mono font-semibold text-slate-900">{data.count}</p>
+      </div>
+      <div>
+        <p className="text-xs text-slate-400 uppercase tracking-wider">Commission</p>
+        <p className="text-lg font-mono font-semibold text-emerald-600">${data.commission.toLocaleString()}</p>
+      </div>
+    </div>
+  </div>
+);
+
 // Chart Card Container
-const ChartCard = ({ title, children, icon: Icon }) => (
+const ChartCard = ({ title, description, children, icon: Icon }) => (
   <Card className="bg-white border border-slate-200 shadow-sm rounded-xl">
     <CardHeader className="pb-2 border-b border-slate-100">
-      <div className="flex items-center justify-between">
-        <CardTitle className="text-sm font-semibold text-slate-700 font-heading flex items-center gap-2">
-          {Icon && <Icon className="w-4 h-4 text-slate-500" strokeWidth={1.5} />}
-          {title}
-        </CardTitle>
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="w-4 h-4 text-slate-500" strokeWidth={1.5} />}
+        <div>
+          <CardTitle className="text-sm font-semibold text-slate-700 font-heading">{title}</CardTitle>
+          {description && <CardDescription className="text-xs text-slate-400">{description}</CardDescription>}
+        </div>
       </div>
     </CardHeader>
-    <CardContent className="p-6">
+    <CardContent className="p-5">
       {children}
     </CardContent>
   </Card>
@@ -170,31 +213,26 @@ function App() {
     setError(null);
 
     try {
-      // First, set the Excel URL
-      await axios.post(`${API}/config/excel`, {
-        excel_url: excelUrl
-      });
+      await axios.post(`${API}/config/excel`, { excel_url: excelUrl });
 
-      // Then fetch KPIs with pay period filter
       const params = { date_filter: dateFilter };
       if (payPeriod && payPeriod !== "all") {
         params.pay_period = payPeriod;
       }
       
       const response = await axios.get(`${API}/dashboard/kpis`, { params });
-
       setKpiData(response.data);
       
       if (showToast) {
-        toast.success("Data refreshed successfully", {
-          description: `${response.data.records?.length || 0} records loaded`
+        toast.success("Data Updated Successfully", {
+          description: `${response.data.closed_deals} closed deals loaded from Excel`
         });
       }
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
       setError(err.response?.data?.detail || "Failed to load dashboard data");
       if (showToast) {
-        toast.error("Failed to refresh data", {
+        toast.error("Update Failed", {
           description: err.response?.data?.detail || "Please try again"
         });
       }
@@ -215,25 +253,17 @@ function App() {
   const handleSaveSettings = () => {
     setExcelUrl(tempExcelUrl);
     setSettingsOpen(false);
-    toast.success("Excel URL updated", {
-      description: "Click Refresh to load data from new source"
-    });
+    toast.success("Excel URL Updated");
   };
 
-  // Reset date filter when pay period is selected
   const handlePayPeriodChange = (value) => {
     setPayPeriod(value);
-    if (value !== "all") {
-      setDateFilter("all");
-    }
+    if (value !== "all") setDateFilter("all");
   };
 
-  // Reset pay period when date filter is selected
   const handleDateFilterChange = (value) => {
     setDateFilter(value);
-    if (value !== "all") {
-      setPayPeriod("all");
-    }
+    if (value !== "all") setPayPeriod("all");
   };
 
   // Prepare chart data
@@ -246,14 +276,19 @@ function App() {
     : [];
 
   const statusData = kpiData?.status_distribution
-    ? Object.entries(kpiData.status_distribution).map(([name, value]) => ({
-        name,
-        value
-      }))
+    ? Object.entries(kpiData.status_distribution).map(([name, value]) => ({ name, value }))
     : [];
 
-  // Monthly data is now already sorted chronologically from backend
   const monthlyData = kpiData?.monthly_data || [];
+
+  // SPIFF breakdown data for chart
+  const spiffChartData = kpiData?.spiff_breakdown
+    ? Object.entries(kpiData.spiff_breakdown).map(([brand, data]) => ({
+        name: brand,
+        value: data.commission,
+        count: data.count
+      })).filter(item => item.value > 0)
+    : [];
 
   return (
     <div className="min-h-screen bg-[#F4F5F7]">
@@ -265,19 +300,19 @@ function App() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
               <h1 className="text-xl lg:text-2xl font-extrabold tracking-tight text-slate-900 font-heading" data-testid="dashboard-title">
-                Sales Dashboard
+                Sales Performance Dashboard
               </h1>
               <p className="text-sm text-slate-500 mt-1">
-                HVAC Sales Performance Analytics
+                HVAC Sales Analytics & Commission Tracking
               </p>
             </div>
             
             <div className="flex flex-wrap items-center gap-3">
               {/* Pay Period Filter */}
               <div className="flex flex-col gap-1">
-                <Label className="text-xs text-slate-500 font-medium">Pay Period (Install Date)</Label>
-                <Select value={payPeriod} onValueChange={handlePayPeriodChange} data-testid="pay-period-filter">
-                  <SelectTrigger className="w-[220px] bg-white border-slate-200 text-sm">
+                <Label className="text-xs text-slate-500 font-medium">Pay Period</Label>
+                <Select value={payPeriod} onValueChange={handlePayPeriodChange}>
+                  <SelectTrigger className="w-[200px] bg-white border-slate-200 text-sm">
                     <SelectValue placeholder="Select pay period" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
@@ -289,12 +324,12 @@ function App() {
                 </Select>
               </div>
 
-              {/* Date Filter */}
+              {/* Quick Filter */}
               <div className="flex flex-col gap-1">
                 <Label className="text-xs text-slate-500 font-medium">Quick Filter</Label>
-                <Select value={dateFilter} onValueChange={handleDateFilterChange} data-testid="date-filter">
-                  <SelectTrigger className="w-[140px] bg-white border-slate-200 text-sm">
-                    <SelectValue placeholder="Select period" />
+                <Select value={dateFilter} onValueChange={handleDateFilterChange}>
+                  <SelectTrigger className="w-[130px] bg-white border-slate-200 text-sm">
+                    <SelectValue placeholder="Period" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Time</SelectItem>
@@ -306,58 +341,40 @@ function App() {
                 </Select>
               </div>
 
-              {/* Settings Button */}
+              {/* Settings */}
               <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
                 <DialogTrigger asChild>
                   <Button variant="outline" size="icon" className="mt-5">
                     <Settings className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[600px]">
+                <DialogContent className="sm:max-w-[500px]">
                   <DialogHeader>
-                    <DialogTitle className="font-heading">Data Source Settings</DialogTitle>
+                    <DialogTitle>Data Source Settings</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
-                      <Label htmlFor="excel-url">Excel File URL</Label>
+                      <Label>Excel File URL</Label>
                       <Input
-                        id="excel-url"
                         value={tempExcelUrl}
                         onChange={(e) => setTempExcelUrl(e.target.value)}
-                        placeholder="Enter Excel file URL"
                         className="font-mono text-xs"
                       />
                     </div>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <h4 className="font-semibold text-blue-800 mb-2">How to connect OneDrive/SharePoint:</h4>
-                      <ol className="text-sm text-blue-700 space-y-2 list-decimal ml-4">
-                        <li>Open your Excel file in OneDrive/SharePoint</li>
-                        <li>Click <strong>"Share"</strong> button</li>
-                        <li>Select <strong>"Anyone with the link can view"</strong></li>
-                        <li>Click <strong>"Copy link"</strong></li>
-                        <li>Modify the link: replace <code className="bg-blue-100 px-1">?e=xxxxx</code> with <code className="bg-blue-100 px-1">?download=1</code></li>
-                        <li>Paste the modified URL here</li>
-                      </ol>
-                      <p className="text-xs text-blue-600 mt-3">
-                        Example: <code className="bg-blue-100 px-1 break-all">https://xxx-my.sharepoint.com/:x:/g/personal/xxx/xxx?download=1</code>
-                      </p>
-                    </div>
-                    <Button onClick={handleSaveSettings} className="w-full">
-                      Save Settings
-                    </Button>
+                    <Button onClick={handleSaveSettings} className="w-full">Save</Button>
                   </div>
                 </DialogContent>
               </Dialog>
 
-              {/* Refresh Button - More prominent "Actualizar" */}
+              {/* Update Button */}
               <Button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="bg-blue-600 text-white hover:bg-blue-700 shadow-md rounded-lg px-6 py-2 text-sm font-semibold transition-colors mt-5"
+                className="bg-blue-600 text-white hover:bg-blue-700 shadow-md rounded-lg px-6 py-2 text-sm font-semibold mt-5"
                 data-testid="refresh-button"
               >
                 <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-                {refreshing ? 'Actualizando...' : 'Actualizar Datos'}
+                {refreshing ? 'Updating...' : 'Update Data'}
               </Button>
             </div>
           </div>
@@ -367,323 +384,379 @@ function App() {
       {/* Main Content */}
       <main className="max-w-[1600px] mx-auto px-4 md:px-8 py-6">
         {loading ? (
-          <div className="flex items-center justify-center min-h-[400px]" data-testid="loading-state">
+          <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
               <RefreshCw className="w-8 h-8 animate-spin text-slate-400 mx-auto mb-4" />
               <p className="text-slate-500">Loading dashboard data...</p>
             </div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center" data-testid="error-state">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
             <p className="text-red-600 font-medium">{error}</p>
-            <Button onClick={handleRefresh} className="mt-4" variant="outline">
-              Try Again
-            </Button>
+            <Button onClick={handleRefresh} className="mt-4" variant="outline">Try Again</Button>
           </div>
         ) : kpiData ? (
-          <div className="space-y-6">
-            {/* Active Filter Indicator */}
-            {(payPeriod !== "all" || dateFilter !== "all") && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-blue-600" />
-                <span className="text-sm text-blue-700">
-                  Filtering by: <strong>{payPeriod !== "all" ? payPeriod : `Last ${dateFilter}`}</strong>
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => { setPayPeriod("all"); setDateFilter("all"); }}
-                  className="ml-auto text-blue-600 hover:text-blue-800"
-                >
-                  Clear Filter
-                </Button>
-              </div>
-            )}
-
-            {/* KPI Cards Grid - Row 1: Revenue & Commission */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4" data-testid="kpi-grid">
-              <KPICard
-                title="Total Revenue"
-                value={kpiData.total_revenue}
-                prefix="$"
-                icon={DollarSign}
-                highlight={true}
+          <div className="space-y-8">
+            
+            {/* ==================== SECTION 1: EXECUTIVE SUMMARY ==================== */}
+            <section>
+              <SectionHeader 
+                title="Executive Summary" 
+                description="Key performance indicators at a glance"
+                icon={BarChart3}
               />
-              <KPICard
-                title="Commission (5%)"
-                value={kpiData.total_commission}
-                prefix="$"
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+                <SummaryCard
+                  title="Total Revenue"
+                  value={kpiData.total_revenue}
+                  prefix="$"
+                  icon={DollarSign}
+                  description="Sum of all closed deal values"
+                  highlight={true}
+                />
+                <SummaryCard
+                  title="Total Commission"
+                  value={kpiData.total_commission}
+                  prefix="$"
+                  icon={BadgeDollarSign}
+                  description="Total earned from all commission rates"
+                />
+                <SummaryCard
+                  title="Closed Deals"
+                  value={kpiData.closed_deals}
+                  icon={Target}
+                  description="Number of successfully closed sales"
+                />
+                <SummaryCard
+                  title="Closing Rate"
+                  value={kpiData.closing_rate}
+                  suffix="%"
+                  icon={Percent}
+                  description="Deals closed ÷ Total opportunities"
+                />
+                <SummaryCard
+                  title="Total Visits"
+                  value={kpiData.total_visits}
+                  icon={Users}
+                  description="Customer visits made"
+                />
+                <SummaryCard
+                  title="Average Ticket"
+                  value={kpiData.average_ticket}
+                  prefix="$"
+                  icon={ShoppingCart}
+                  description="Revenue ÷ Closed deals"
+                />
+                <SummaryCard
+                  title="Avg Sales Cycle"
+                  value={kpiData.avg_sales_cycle_days}
+                  suffix=" days"
+                  icon={Clock}
+                  description="Average days from visit to close"
+                />
+              </div>
+            </section>
+
+            {/* ==================== SECTION 2: PRICE MARGIN (5%) ==================== */}
+            <section>
+              <SectionHeader 
+                title="Price Margin Analysis" 
+                description="Sales and commissions at the standard 5% rate"
                 icon={Calculator}
               />
-              <KPICard
-                title="SPIFF Commission"
-                value={kpiData.spiff_commission}
-                prefix="$"
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <ShoppingCart className="w-4 h-4 text-slate-500" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Sales at 5%</span>
+                    </div>
+                    <p className="text-3xl font-mono font-bold text-slate-900">{kpiData.price_margin_sales_count}</p>
+                    <p className="text-xs text-slate-400 mt-2">Number of deals closed with standard 5% commission rate</p>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <DollarSign className="w-4 h-4 text-slate-500" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Revenue at 5%</span>
+                    </div>
+                    <p className="text-3xl font-mono font-bold text-slate-900">${kpiData.price_margin_total.toLocaleString()}</p>
+                    <p className="text-xs text-slate-400 mt-2">Total revenue from sales with 5% commission</p>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <BadgeDollarSign className="w-4 h-4 text-emerald-600" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">Commission at 5%</span>
+                    </div>
+                    <p className="text-3xl font-mono font-bold text-emerald-700">${kpiData.price_margin_commission.toLocaleString()}</p>
+                    <p className="text-xs text-emerald-600 mt-2">Total commission earned at 5% rate</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            {/* ==================== SECTION 3: SPIFF COMMISSIONS ==================== */}
+            <section>
+              <SectionHeader 
+                title="SPIFF Commission Breakdown" 
+                description="Bonus commissions by brand partner"
                 icon={Gift}
               />
-              <KPICard
-                title="Total Commission"
-                value={kpiData.total_commission_with_spiff}
-                prefix="$"
-                icon={TrendingUp}
-                highlight={true}
-                subtext="Commission + SPIFF"
-              />
-              <KPICard
-                title="Avg Commission %"
-                value={kpiData.avg_commission_percent}
-                suffix="%"
-                icon={Percent}
-              />
-            </div>
+              
+              {/* SPIFF Total */}
+              <Card className="bg-gradient-to-r from-violet-600 to-purple-600 border-0 mb-4">
+                <CardContent className="p-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-violet-200 text-xs font-bold uppercase tracking-wider mb-1">Total SPIFF Commission</p>
+                      <p className="text-4xl font-mono font-bold text-white">${kpiData.spiff_total.toLocaleString()}</p>
+                      <p className="text-violet-200 text-xs mt-2">Combined bonus commissions from all brand partners</p>
+                    </div>
+                    <Gift className="w-12 h-12 text-violet-300 opacity-50" />
+                  </div>
+                </CardContent>
+              </Card>
 
-            {/* KPI Cards Grid - Row 2: Deals & Performance */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <KPICard
-                title="Closed Deals"
-                value={kpiData.closed_deals}
-                icon={Target}
-                highlight={true}
-              />
-              <KPICard
-                title="Closing Rate"
-                value={kpiData.closing_rate}
-                suffix="%"
-                icon={Percent}
-              />
-              <KPICard
-                title="Average Ticket"
-                value={kpiData.average_ticket}
-                prefix="$"
-                icon={DollarSign}
-              />
-              <KPICard
-                title="Total Visits"
-                value={kpiData.total_visits}
-                icon={Users}
-              />
-            </div>
-
-            {/* KPI Cards Grid - Row 3: Cycle & Margin */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <KPICard
-                title="Avg Sales Cycle"
-                value={kpiData.avg_sales_cycle_days}
-                suffix=" days"
-                icon={Clock}
-              />
-              <KPICard
-                title="Price Margin (5%)"
-                value={kpiData.price_margin}
-                prefix="$"
-                icon={Percent}
-              />
-            </div>
-
-            {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Unit Type Distribution */}
-              <ChartCard title="Unit Type Distribution (Count)" icon={PieIcon}>
-                {unitTypeData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={280}>
-                    <PieChart>
-                      <Pie
-                        data={unitTypeData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={90}
-                        fill="#8884d8"
-                        paddingAngle={2}
-                        dataKey="value"
-                        label={({ name, value }) => `${name}: ${value}`}
-                      >
-                        {unitTypeData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        formatter={(value, name, props) => [value, 'Count']}
-                        contentStyle={{ 
-                          backgroundColor: '#fff', 
-                          border: '1px solid #E2E8F0',
-                          borderRadius: '8px',
-                          fontFamily: 'JetBrains Mono'
-                        }}
-                      />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="h-[280px] flex items-center justify-center text-slate-400">
-                    No unit type data available
+              {/* SPIFF by Brand */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {Object.entries(kpiData.spiff_breakdown || {}).map(([brand, data]) => (
+                  <SpiffBrandCard 
+                    key={brand}
+                    brand={brand}
+                    data={data}
+                    totalDeals={kpiData.closed_deals}
+                    color={SPIFF_COLORS[brand] || '#94A3B8'}
+                  />
+                ))}
+                {Object.keys(kpiData.spiff_breakdown || {}).length === 0 && (
+                  <div className="col-span-4 text-center py-8 text-slate-400">
+                    No SPIFF commissions recorded for this period
                   </div>
                 )}
-              </ChartCard>
-
-              {/* Unit Type Revenue */}
-              <ChartCard title="Revenue by Unit Type" icon={BarChart3}>
-                {unitTypeData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={280}>
-                    <BarChart data={unitTypeData} layout="vertical">
-                      <XAxis type="number" tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
-                      <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11 }} />
-                      <Tooltip 
-                        formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']}
-                        contentStyle={{ 
-                          backgroundColor: '#fff', 
-                          border: '1px solid #E2E8F0',
-                          borderRadius: '8px',
-                          fontFamily: 'JetBrains Mono'
-                        }}
-                      />
-                      <Bar dataKey="revenue" fill="#3B82F6" radius={[0, 4, 4, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="h-[280px] flex items-center justify-center text-slate-400">
-                    No revenue data available
-                  </div>
-                )}
-              </ChartCard>
-            </div>
-
-            {/* Status Distribution & Monthly Trend */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Deal Status */}
-              <ChartCard title="Deal Status Distribution" icon={Target}>
-                {statusData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={240}>
-                    <BarChart data={statusData}>
-                      <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                      <YAxis />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: '#fff', 
-                          border: '1px solid #E2E8F0',
-                          borderRadius: '8px',
-                          fontFamily: 'JetBrains Mono'
-                        }}
-                      />
-                      <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                        {statusData.map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={
-                              entry.name === 'SALE' ? '#10B981' : 
-                              entry.name === 'LOST' ? '#EF4444' : 
-                              '#F59E0B'
-                            } 
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="h-[240px] flex items-center justify-center text-slate-400">
-                    No status data available
-                  </div>
-                )}
-              </ChartCard>
-
-              {/* Monthly Revenue Trend - Chronological Order */}
-              <ChartCard title="Monthly Revenue Trend (Chronological)" icon={TrendingUp}>
-                {monthlyData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={240}>
-                    <AreaChart data={monthlyData}>
-                      <defs>
-                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <XAxis dataKey="month_short" tick={{ fontSize: 11 }} />
-                      <YAxis tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
-                      <Tooltip 
-                        formatter={(value, name) => [`$${value.toLocaleString()}`, name === 'revenue' ? 'Revenue' : 'Commission']}
-                        labelFormatter={(label, payload) => payload?.[0]?.payload?.month || label}
-                        contentStyle={{ 
-                          backgroundColor: '#fff', 
-                          border: '1px solid #E2E8F0',
-                          borderRadius: '8px',
-                          fontFamily: 'JetBrains Mono'
-                        }}
-                      />
-                      <Area 
-                        type="monotone" 
-                        dataKey="revenue" 
-                        stroke="#3B82F6" 
-                        fillOpacity={1} 
-                        fill="url(#colorRevenue)" 
-                        strokeWidth={2}
-                        name="revenue"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="h-[240px] flex items-center justify-center text-slate-400">
-                    No monthly data available
-                  </div>
-                )}
-              </ChartCard>
-            </div>
-
-            {/* Recent Sales Table */}
-            <ChartCard title="Recent Sales Records">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-slate-50 border-b border-slate-200">
-                      <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3 px-3">Name</TableHead>
-                      <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3 px-3">City</TableHead>
-                      <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3 px-3">Unit Type</TableHead>
-                      <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3 px-3">Value</TableHead>
-                      <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3 px-3">Comm %</TableHead>
-                      <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3 px-3">SPIFF</TableHead>
-                      <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3 px-3">Install Date</TableHead>
-                      <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3 px-3">Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {kpiData.records?.slice(0, 15).map((record, index) => (
-                      <TableRow key={index} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="py-2 px-3 font-medium text-slate-700 text-sm">{record.name}</TableCell>
-                        <TableCell className="py-2 px-3 text-slate-600 text-sm">{record.city}</TableCell>
-                        <TableCell className="py-2 px-3 text-slate-600 text-sm">{record.unit_type}</TableCell>
-                        <TableCell className="py-2 px-3 font-mono text-slate-700 text-sm">
-                          {record.ticket_value > 0 ? `$${record.ticket_value.toLocaleString()}` : '-'}
-                        </TableCell>
-                        <TableCell className="py-2 px-3 font-mono text-slate-600 text-sm">
-                          {record.commission_percent > 0 ? `${record.commission_percent}%` : '-'}
-                        </TableCell>
-                        <TableCell className="py-2 px-3 font-mono text-slate-600 text-sm">
-                          {record.spif_commission > 0 ? `$${record.spif_commission.toLocaleString()}` : '-'}
-                        </TableCell>
-                        <TableCell className="py-2 px-3 text-slate-600 text-sm">{record.install_date || '-'}</TableCell>
-                        <TableCell className="py-2 px-3">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            record.status === 'SALE' ? 'bg-emerald-100 text-emerald-800' :
-                            record.status === 'LOST' ? 'bg-red-100 text-red-800' :
-                            'bg-amber-100 text-amber-800'
-                          }`}>
-                            {record.status}
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
               </div>
-            </ChartCard>
+
+              {/* SPIFF Distribution Chart */}
+              {spiffChartData.length > 0 && (
+                <div className="mt-4">
+                  <ChartCard title="SPIFF Distribution" description="Commission share by brand partner" icon={PieIcon}>
+                    <ResponsiveContainer width="100%" height={250}>
+                      <PieChart>
+                        <Pie
+                          data={spiffChartData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={90}
+                          paddingAngle={3}
+                          dataKey="value"
+                          label={({ name, value }) => `${name}: $${value.toLocaleString()}`}
+                        >
+                          {spiffChartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={SPIFF_COLORS[entry.name] || CHART_COLORS[index % CHART_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          formatter={(value) => [`$${value.toLocaleString()}`, 'Commission']}
+                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }}
+                        />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                </div>
+              )}
+            </section>
+
+            {/* ==================== SECTION 4: SALES ANALYSIS ==================== */}
+            <section>
+              <SectionHeader 
+                title="Sales Analysis" 
+                description="Breakdown by unit type and status"
+                icon={TrendingUp}
+              />
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Unit Type Distribution */}
+                <ChartCard title="Unit Type Distribution" description="Number of sales by equipment type" icon={PieIcon}>
+                  {unitTypeData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={280}>
+                      <PieChart>
+                        <Pie
+                          data={unitTypeData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={90}
+                          paddingAngle={2}
+                          dataKey="value"
+                          label={({ name, value }) => `${name}: ${value}`}
+                        >
+                          {unitTypeData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }} />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-[280px] flex items-center justify-center text-slate-400">No data</div>
+                  )}
+                </ChartCard>
+
+                {/* Revenue by Unit Type */}
+                <ChartCard title="Revenue by Unit Type" description="Total revenue generated per equipment type" icon={BarChart3}>
+                  {unitTypeData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={280}>
+                      <BarChart data={unitTypeData} layout="vertical">
+                        <XAxis type="number" tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                        <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11 }} />
+                        <Tooltip 
+                          formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']}
+                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }}
+                        />
+                        <Bar dataKey="revenue" fill="#3B82F6" radius={[0, 4, 4, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-[280px] flex items-center justify-center text-slate-400">No data</div>
+                  )}
+                </ChartCard>
+              </div>
+            </section>
+
+            {/* ==================== SECTION 5: PERFORMANCE TRENDS ==================== */}
+            <section>
+              <SectionHeader 
+                title="Performance Trends" 
+                description="Deal status and monthly revenue progression"
+                icon={Award}
+              />
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Deal Status */}
+                <ChartCard title="Deal Status" description="Distribution of all opportunities" icon={Target}>
+                  {statusData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={240}>
+                      <BarChart data={statusData}>
+                        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                        <YAxis />
+                        <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }} />
+                        <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                          {statusData.map((entry, index) => (
+                            <Cell 
+                              key={`cell-${index}`} 
+                              fill={entry.name === 'SALE' ? '#10B981' : entry.name === 'LOST' ? '#EF4444' : '#F59E0B'} 
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-[240px] flex items-center justify-center text-slate-400">No data</div>
+                  )}
+                </ChartCard>
+
+                {/* Monthly Revenue Trend */}
+                <ChartCard title="Monthly Revenue Trend" description="Revenue progression from oldest to newest month" icon={TrendingUp}>
+                  {monthlyData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={240}>
+                      <AreaChart data={monthlyData}>
+                        <defs>
+                          <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <XAxis dataKey="month_short" tick={{ fontSize: 11 }} />
+                        <YAxis tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                        <Tooltip 
+                          formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']}
+                          labelFormatter={(label, payload) => payload?.[0]?.payload?.month || label}
+                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px' }}
+                        />
+                        <Area type="monotone" dataKey="revenue" stroke="#3B82F6" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-[240px] flex items-center justify-center text-slate-400">No data</div>
+                  )}
+                </ChartCard>
+              </div>
+            </section>
+
+            {/* ==================== SECTION 6: DETAILED RECORDS ==================== */}
+            <section>
+              <SectionHeader 
+                title="Recent Sales Records" 
+                description="Detailed view of individual transactions"
+                icon={Calendar}
+              />
+              
+              <Card className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-slate-50">
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Name</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">City</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Unit Type</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Value</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Comm %</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">SPIFF</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Install</TableHead>
+                        <TableHead className="text-xs font-bold uppercase text-slate-500 py-3 px-4">Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {kpiData.records?.slice(0, 15).map((record, index) => (
+                        <TableRow key={index} className="border-b border-slate-100 hover:bg-slate-50/50">
+                          <TableCell className="py-2 px-4 font-medium text-slate-700 text-sm">{record.name}</TableCell>
+                          <TableCell className="py-2 px-4 text-slate-600 text-sm">{record.city}</TableCell>
+                          <TableCell className="py-2 px-4 text-slate-600 text-sm">{record.unit_type}</TableCell>
+                          <TableCell className="py-2 px-4 font-mono text-slate-700 text-sm">
+                            {record.ticket_value > 0 ? `$${record.ticket_value.toLocaleString()}` : '-'}
+                          </TableCell>
+                          <TableCell className="py-2 px-4 font-mono text-slate-600 text-sm">
+                            {record.commission_percent > 0 ? `${record.commission_percent}%` : '-'}
+                          </TableCell>
+                          <TableCell className="py-2 px-4 font-mono text-slate-600 text-sm">
+                            {record.spif_commission > 0 ? `$${record.spif_commission.toLocaleString()}` : '-'}
+                          </TableCell>
+                          <TableCell className="py-2 px-4 text-slate-600 text-sm">{record.install_date || '-'}</TableCell>
+                          <TableCell className="py-2 px-4">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                              record.status === 'SALE' ? 'bg-emerald-100 text-emerald-800' :
+                              record.status === 'LOST' ? 'bg-red-100 text-red-800' :
+                              'bg-amber-100 text-amber-800'
+                            }`}>
+                              {record.status}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </Card>
+            </section>
+
           </div>
         ) : null}
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-4">
+      <footer className="bg-white border-t border-slate-200 py-4 mt-8">
         <div className="max-w-[1600px] mx-auto px-4 md:px-8">
           <p className="text-xs text-slate-400 text-center">
-            Sales Dashboard - Connected to SharePoint Excel. Click <strong>"Actualizar Datos"</strong> to refresh with latest data.
+            Sales Performance Dashboard - Connected to SharePoint. Click <strong>"Update Data"</strong> to refresh.
           </p>
         </div>
       </footer>
