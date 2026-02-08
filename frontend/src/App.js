@@ -574,68 +574,6 @@ function App() {
               </div>
             </section>
 
-            {/* SECTION 2: FOLLOW-UPS */}
-            {kpiData.follow_ups && kpiData.follow_ups.length > 0 && (
-              <section>
-                <SectionHeader 
-                  title="Pending Follow-Ups" 
-                  description="Action required"
-                  icon={Phone}
-                />
-                
-                <Card className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="bg-gray-50">
-                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Priority</TableHead>
-                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Name</TableHead>
-                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 hidden sm:table-cell">City</TableHead>
-                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Date</TableHead>
-                          <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Days</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {kpiData.follow_ups.slice(0, 8).map((followUp, index) => (
-                          <TableRow 
-                            key={index} 
-                            className={`border-b border-gray-100 ${followUp.is_urgent ? 'bg-red-50' : ''}`}
-                          >
-                            <TableCell className="py-2 px-2 sm:px-4">
-                              {followUp.is_urgent ? (
-                                <span className="inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold" style={{ backgroundColor: '#FEE2E2', color: BRAND_COLORS.primary }}>
-                                  <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                                  <span className="hidden xs:inline">URGENT</span>
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-gray-100 text-gray-600">
-                                  <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                                </span>
-                              )}
-                            </TableCell>
-                            <TableCell className={`py-2 px-2 sm:px-4 text-xs sm:text-sm font-medium ${followUp.is_urgent ? 'text-red-700' : 'text-gray-700'}`}>
-                              <span className="line-clamp-1">{followUp.name}</span>
-                            </TableCell>
-                            <TableCell className="py-2 px-2 sm:px-4 text-xs sm:text-sm text-gray-600 hidden sm:table-cell">{followUp.city}</TableCell>
-                            <TableCell className={`py-2 px-2 sm:px-4 font-mono text-[10px] sm:text-xs ${followUp.is_urgent ? 'font-bold' : ''}`} style={{ color: followUp.is_urgent ? BRAND_COLORS.primary : '#4B5563' }}>
-                              {followUp.follow_up_date}
-                            </TableCell>
-                            <TableCell className={`py-2 px-2 sm:px-4 font-mono text-[10px] sm:text-xs ${followUp.is_urgent ? 'font-bold' : ''}`} style={{ color: followUp.is_urgent ? BRAND_COLORS.primary : '#4B5563' }}>
-                              {followUp.days_until !== null ? (
-                                followUp.days_until < 0 ? `${Math.abs(followUp.days_until)}d ago` :
-                                followUp.days_until === 0 ? 'Today' :
-                                `${followUp.days_until}d`
-                              ) : '-'}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </Card>
-              </section>
-            )}
-
             {/* SECTION 2: UNDER BOOK PRICE */}
             <section>
               <SectionHeader 
