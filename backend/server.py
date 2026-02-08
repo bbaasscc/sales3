@@ -321,39 +321,97 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     # Total Revenue (sum of ticket values for closed deals)
     total_revenue = closed_deals_df['ticket_value'].sum()
     
+    # Closed Deals count
+    closed_deals = len(closed_deals_df)
+    
     # Commission calculations
     commission_rate = 5.0  # Default 5%
     
     # Calculate commission based on ticket value
-    # If commission_percent is filled, use it; otherwise use default 5%
     commission_values = []
     commission_percents_used = []
     
+    # Price Margin (5% commission only)
+    price_margin_total = 0.0
+    price_margin_sales_count = 0
+    price_margin_commission = 0.0
+    
+    # SPIFF breakdown by brand
+    spiff_brands = {
+        'APCO X': {'count': 0, 'commission': 0.0, 'revenue': 0.0},
+        'Samsung': {'count': 0, 'commission': 0.0, 'revenue': 0.0},
+        'Mitsubishi': {'count': 0, 'commission': 0.0, 'revenue': 0.0},
+        'Other': {'count': 0, 'commission': 0.0, 'revenue': 0.0}
+    }
+    spiff_total = 0.0
+    
     for _, row in closed_deals_df.iterrows():
         ticket = safe_float(row.get('ticket_value', 0))
-        comm_pct = safe_float(row.get('commission_percent', 0))  # Already converted to percentage
+        comm_pct = safe_float(row.get('commission_percent', 0))
+        spif_value = safe_float(row.get('spif_commission', 0))
+        spif_desc = str(row.get('spif_description', '')).upper() if pd.notna(row.get('spif_description')) else ''
         
         if ticket > 0:
+            # Calculate commission
             if comm_pct > 0:
                 commission_values.append(ticket * (comm_pct / 100))
                 commission_percents_used.append(comm_pct)
+                
+                # Check if this is a 5% price margin sale (allow small variance)
+                if 4.5 <= comm_pct <= 5.5:
+                    price_margin_total += ticket
+                    price_margin_sales_count += 1
+                    price_margin_commission += ticket * (comm_pct / 100)
             else:
                 commission_values.append(ticket * (commission_rate / 100))
                 commission_percents_used.append(commission_rate)
+                # Default 5% is price margin
+                price_margin_total += ticket
+                price_margin_sales_count += 1
+                price_margin_commission += ticket * (commission_rate / 100)
+        
+        # SPIFF breakdown by brand
+        if spif_value > 0:
+            spiff_total += spif_value
+            brand_found = False
+            
+            # Detect brand from description
+            if 'APCO' in spif_desc or 'APX' in spif_desc:
+                spiff_brands['APCO X']['count'] += 1
+                spiff_brands['APCO X']['commission'] += spif_value
+                spiff_brands['APCO X']['revenue'] += ticket
+                brand_found = True
+            elif 'SAMSUNG' in spif_desc or 'SAM' in spif_desc:
+                spiff_brands['Samsung']['count'] += 1
+                spiff_brands['Samsung']['commission'] += spif_value
+                spiff_brands['Samsung']['revenue'] += ticket
+                brand_found = True
+            elif 'MITSUBISHI' in spif_desc or 'MITS' in spif_desc or 'MIT' in spif_desc:
+                spiff_brands['Mitsubishi']['count'] += 1
+                spiff_brands['Mitsubishi']['commission'] += spif_value
+                spiff_brands['Mitsubishi']['revenue'] += ticket
+                brand_found = True
+            
+            if not brand_found:
+                spiff_brands['Other']['count'] += 1
+                spiff_brands['Other']['commission'] += spif_value
+                spiff_brands['Other']['revenue'] += ticket
     
     total_commission = sum(commission_values)
     
-    # SPIFF Commission (separate)
-    spiff_commission = closed_deals_df['spif_commission'].sum()
+    # Calculate percentages for SPIFF brands
+    spiff_breakdown = {}
+    for brand, data in spiff_brands.items():
+        if data['count'] > 0 or data['commission'] > 0:
+            spiff_breakdown[brand] = {
+                'count': data['count'],
+                'commission': round(data['commission'], 2),
+                'revenue': round(data['revenue'], 2),
+                'percent_of_sales': round((data['count'] / closed_deals * 100), 1) if closed_deals > 0 else 0
+            }
     
-    # Total Commission with SPIFF
-    total_commission_with_spiff = total_commission + spiff_commission
-    
-    # Average Commission Percentage (from actually used percentages)
+    # Average Commission Percentage
     avg_commission_percent = sum(commission_percents_used) / len(commission_percents_used) if commission_percents_used else commission_rate
-    
-    # Closed Deals count
-    closed_deals = len(closed_deals_df)
     
     # Total deals (excluding unknown status)
     total_deals = len(df_filtered[df_filtered['status'].isin(['SALE', 'LOST', 'PENDING'])])
