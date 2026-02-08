@@ -429,12 +429,13 @@ function App() {
 
           {/* Mobile Filters - Collapsible */}
           <div className={`${filtersOpen ? 'block' : 'hidden'} md:hidden mt-3 pt-3 border-t border-white/20`}>
+            <p className="text-[9px] text-white/60 mb-2">* Pay Period filters commissions by installation date</p>
             <div className="grid grid-cols-2 gap-2">
               <div className="flex flex-col gap-1">
                 <Label className="text-[10px] text-white/70">Pay Period</Label>
                 <Select value={payPeriod} onValueChange={handlePayPeriodChange}>
                   <SelectTrigger className="w-full bg-white/10 border-white/20 text-white text-xs h-8">
-                    <SelectValue placeholder="Pay period" />
+                    <SelectValue placeholder="By install date" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
                     <SelectItem value="all">All Periods</SelectItem>
