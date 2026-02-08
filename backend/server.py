@@ -96,6 +96,9 @@ class SalesRecord(BaseModel):
 class KPIResponse(BaseModel):
     total_revenue: float
     total_commission: float
+    spiff_commission: float
+    total_commission_with_spiff: float
+    avg_commission_percent: float
     closed_deals: int
     closing_rate: float
     average_ticket: float
@@ -108,6 +111,8 @@ class KPIResponse(BaseModel):
     weekly_data: List[Dict[str, Any]]
     status_distribution: Dict[str, int]
     records: List[Dict[str, Any]]
+    pay_periods: List[Dict[str, Any]]
+    selected_pay_period: Optional[str] = None
 
 def parse_excel_data(excel_url: str) -> pd.DataFrame:
     """Download and parse Excel file from URL"""
