@@ -310,27 +310,80 @@ function App() {
       {/* Header - Mobile Responsive */}
       <header className="sticky top-0 z-10 shadow-md" style={{ backgroundColor: BRAND_COLORS.primary }}>
         <div className="max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8 py-3 sm:py-4">
-          {/* Mobile Header */}
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-white font-heading truncate" data-testid="dashboard-title">
-                Benjamin S. Cardarelli
-              </h1>
-              <p className="text-xs sm:text-sm text-white/80 truncate">
-                Sales Performance Dashboard
-              </p>
+          {/* Desktop Header Row */}
+          <div className="flex items-center justify-between gap-4">
+            {/* Logo + Title */}
+            <div className="flex items-center gap-3 min-w-0 flex-shrink-0">
+              <img 
+                src="https://www.fourseasonsheatingcooling.com/wp-content/uploads/2026/02/Four-Seasons-Logo_Current_2026_Four-Seasons_Logo_2026_Blue_Tagline-2048x531.png"
+                alt="Four Seasons Heating & Cooling"
+                className="h-8 sm:h-10 md:h-12 w-auto object-contain bg-white rounded px-2 py-1"
+                data-testid="company-logo"
+              />
+              <div className="hidden sm:block min-w-0">
+                <h1 className="text-sm md:text-lg lg:text-xl font-bold tracking-tight text-white font-heading truncate" data-testid="dashboard-title">
+                  Benjamin S. Cardarelli
+                </h1>
+                <p className="text-xs text-white/80 truncate">
+                  Sales Performance Dashboard
+                </p>
+              </div>
             </div>
-            
-            {/* Mobile: Compact buttons */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+
+            {/* Desktop Filters - Center */}
+            <div className="hidden md:flex items-center gap-3 flex-1 justify-center">
+              <div className="flex items-center gap-3">
+                <div className="flex flex-col gap-1">
+                  <Label className="text-[10px] text-white/70">Pay Period</Label>
+                  <Select value={payPeriod} onValueChange={handlePayPeriodChange}>
+                    <SelectTrigger className="w-[180px] bg-white/10 border-white/20 text-white text-xs h-9">
+                      <SelectValue placeholder="Pay period" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      <SelectItem value="all">All Periods</SelectItem>
+                      {PAY_PERIODS.map((period) => (
+                        <SelectItem key={period} value={period} className="text-xs">{period}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <Label className="text-[10px] text-white/70">Quick Filter</Label>
+                  <Select value={dateFilter} onValueChange={handleDateFilterChange}>
+                    <SelectTrigger className="w-[120px] bg-white/10 border-white/20 text-white text-xs h-9">
+                      <SelectValue placeholder="Filter" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Time</SelectItem>
+                      <SelectItem value="week">Week</SelectItem>
+                      <SelectItem value="2weeks">2 Weeks</SelectItem>
+                      <SelectItem value="month">Month</SelectItem>
+                      <SelectItem value="year">Year</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons - Right */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {/* Mobile Title */}
+              <div className="sm:hidden min-w-0 mr-2">
+                <h1 className="text-sm font-bold tracking-tight text-white font-heading truncate" data-testid="dashboard-title-mobile">
+                  B. Cardarelli
+                </h1>
+              </div>
+
               {/* Filters Toggle - Mobile only */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden text-white hover:bg-white/10 h-8 w-8 sm:h-9 sm:w-9"
+                className="md:hidden text-white hover:bg-white/10 h-8 w-8"
                 onClick={() => setFiltersOpen(!filtersOpen)}
+                data-testid="filters-toggle"
               >
-                <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Menu className="w-4 h-4" />
               </Button>
 
               {/* Settings */}
@@ -364,7 +417,7 @@ function App() {
               <Button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="shadow-md rounded-lg px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold"
+                className="shadow-md rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold"
                 style={{ backgroundColor: BRAND_COLORS.secondary }}
                 data-testid="refresh-button"
               >
@@ -374,28 +427,28 @@ function App() {
             </div>
           </div>
 
-          {/* Filters - Desktop always visible, Mobile collapsible */}
-          <div className={`${filtersOpen ? 'block' : 'hidden'} md:flex md:items-center md:gap-3 mt-3 md:mt-0 md:absolute md:right-8 md:top-4`}>
-            <div className="grid grid-cols-2 gap-2 md:flex md:gap-3">
+          {/* Mobile Filters - Collapsible */}
+          <div className={`${filtersOpen ? 'block' : 'hidden'} md:hidden mt-3 pt-3 border-t border-white/20`}>
+            <div className="grid grid-cols-2 gap-2">
               <div className="flex flex-col gap-1">
-                <Label className="text-[10px] sm:text-xs text-white/70">Pay Period</Label>
+                <Label className="text-[10px] text-white/70">Pay Period</Label>
                 <Select value={payPeriod} onValueChange={handlePayPeriodChange}>
-                  <SelectTrigger className="w-full md:w-[180px] bg-white/10 border-white/20 text-white text-xs sm:text-sm h-8 sm:h-9">
+                  <SelectTrigger className="w-full bg-white/10 border-white/20 text-white text-xs h-8">
                     <SelectValue placeholder="Pay period" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
                     <SelectItem value="all">All Periods</SelectItem>
                     {PAY_PERIODS.map((period) => (
-                      <SelectItem key={period} value={period} className="text-xs sm:text-sm">{period}</SelectItem>
+                      <SelectItem key={period} value={period} className="text-xs">{period}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="flex flex-col gap-1">
-                <Label className="text-[10px] sm:text-xs text-white/70">Quick Filter</Label>
+                <Label className="text-[10px] text-white/70">Quick Filter</Label>
                 <Select value={dateFilter} onValueChange={handleDateFilterChange}>
-                  <SelectTrigger className="w-full md:w-[120px] bg-white/10 border-white/20 text-white text-xs sm:text-sm h-8 sm:h-9">
+                  <SelectTrigger className="w-full bg-white/10 border-white/20 text-white text-xs h-8">
                     <SelectValue placeholder="Filter" />
                   </SelectTrigger>
                   <SelectContent>
