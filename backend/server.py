@@ -306,7 +306,8 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
     if start_date:
         start_naive = start_date.replace(tzinfo=None) if hasattr(start_date, 'tzinfo') and start_date.tzinfo else start_date
-        end_naive = end_date.replace(tzinfo=None) if end_date and hasattr(end_date, 'tzinfo') and end_date.tzinfo else None
+        # Fix: end_date is a naive datetime, don't check tzinfo
+        end_naive = end_date if end_date else None
         
         logger.info(f"Date range: {start_naive} to {end_naive}")
         
