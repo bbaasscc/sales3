@@ -76,48 +76,32 @@ class ExcelConfig(BaseModel):
 class ExcelConfigCreate(BaseModel):
     excel_url: str
 
-class SalesRecord(BaseModel):
-    name: str
-    address: Optional[str] = None
-    city: Optional[str] = None
-    unit_type: Optional[str] = None
-    ticket_value: Optional[float] = None
-    commission: Optional[float] = None
-    commission_percent: Optional[float] = None
-    status: Optional[str] = None
-    visit_date: Optional[str] = None
-    close_date: Optional[str] = None
-    loss_reason: Optional[str] = None
-    comments: Optional[str] = None
-    closed_on_first_visit: Optional[str] = None
-    feeling: Optional[str] = None
-    sales_cycle_days: Optional[int] = None
-
 class KPIResponse(BaseModel):
     # Main Summary KPIs
     total_revenue: float
-    total_commission: float
+    total_commission: float  # Sum of Commission Value column for SALE rows
     closed_deals: int
     closing_rate: float
     total_visits: int
     average_ticket: float
-    avg_sales_cycle_days: float
     
     # Price Margin (5% commission sales)
     price_margin_total: float
     price_margin_sales_count: int
     price_margin_commission: float
     
-    # SPIFF Section
+    # SPIFF Section - from dedicated columns
     spiff_total: float
-    spiff_breakdown: Dict[str, Any]  # {brand: {count, commission, percent_of_sales}}
+    spiff_breakdown: Dict[str, Any]  # {APCO X, Samsung, Mitsubishi, Other}
+    
+    # Follow-ups
+    follow_ups: List[Dict[str, Any]]  # List of pending follow-ups with dates
     
     # Other metrics
     avg_commission_percent: float
     unit_type_count: Dict[str, int]
     unit_type_revenue: Dict[str, float]
     monthly_data: List[Dict[str, Any]]
-    weekly_data: List[Dict[str, Any]]
     status_distribution: Dict[str, int]
     records: List[Dict[str, Any]]
     pay_periods: List[Dict[str, Any]]
@@ -130,7 +114,6 @@ def parse_excel_data(excel_url: str) -> pd.DataFrame:
         
         # Handle SharePoint URLs - convert to download format
         if 'sharepoint.com' in excel_url:
-            # Remove any query parameters and add download=1
             if '?' in excel_url:
                 base_url = excel_url.split('?')[0]
                 excel_url = f"{base_url}?download=1"
@@ -140,7 +123,7 @@ def parse_excel_data(excel_url: str) -> pd.DataFrame:
         # Use session to handle redirects properly
         session = requests.Session()
         session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         })
         
         response = session.get(excel_url, timeout=60, allow_redirects=True)
@@ -175,7 +158,11 @@ def safe_float(value, default=0.0) -> float:
     if pd.isna(value):
         return default
     try:
-        return float(value)
+        val = float(value)
+        # Filter out Excel date serials (40000-50000 range)
+        if 40000 <= val <= 50000:
+            return default
+        return val
     except (ValueError, TypeError):
         return default
 
@@ -186,8 +173,12 @@ def safe_date(value) -> Optional[datetime]:
     try:
         if isinstance(value, datetime):
             return value
+        if isinstance(value, (int, float)):
+            # Excel serial date conversion
+            if 40000 <= value <= 50000:
+                # Excel date serial: days since Dec 30, 1899
+                return datetime(1899, 12, 30) + timedelta(days=int(value))
         if isinstance(value, str):
-            # Try multiple date formats
             for fmt in ['%Y-%m-%d', '%m/%d/%Y', '%d/%m/%Y', '%b %d, %Y']:
                 try:
                     return datetime.strptime(value, fmt)
@@ -200,80 +191,83 @@ def safe_date(value) -> Optional[datetime]:
 def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: str = None) -> KPIResponse:
     """Process sales data and calculate KPIs"""
     
-    # Standardize column names
+    # Standardize column names - map to internal names
     column_mapping = {}
+    original_columns = df.columns.tolist()
+    
     for col in df.columns:
         col_lower = str(col).lower().strip()
-        if 'name' in col_lower and col_lower == 'name':
+        if col_lower == 'name':
             column_mapping[col] = 'name'
-        elif 'address' in col_lower:
+        elif col_lower == 'address':
             column_mapping[col] = 'address'
-        elif 'city' in col_lower:
+        elif col_lower == 'city':
             column_mapping[col] = 'city'
-        elif 'unit' in col_lower and 'type' in col_lower:
+        elif col_lower in ['unit', 'unit type']:
             column_mapping[col] = 'unit_type'
-        elif 'ticket' in col_lower and 'value' in col_lower:
+        elif col_lower == 'ticket value' or (col_lower == 'ticket' and 'value' in str(df.columns).lower()):
             column_mapping[col] = 'ticket_value'
-        elif 'commission' in col_lower and '%' in col_lower:
+        elif col_lower == 'commission %':
             column_mapping[col] = 'commission_percent'
-        elif col_lower == 'spif':
-            column_mapping[col] = 'spif_commission'
         elif col_lower == 'commission value':
-            column_mapping[col] = 'calc_commission'
-        elif 'spif' in col_lower and 'description' in col_lower:
-            column_mapping[col] = 'spif_description'
+            column_mapping[col] = 'commission_value'  # Actual commission paid
+        elif col_lower == 'spif':
+            column_mapping[col] = 'spif_total'
         elif col_lower == 'status':
             column_mapping[col] = 'status'
-        elif 'visit' in col_lower and 'date' in col_lower:
+        elif col_lower == 'visit date':
             column_mapping[col] = 'visit_date'
-        elif 'close' in col_lower and 'date' in col_lower:
+        elif col_lower == 'close date':
             column_mapping[col] = 'close_date'
-        elif 'install' in col_lower and 'date' in col_lower:
+        elif col_lower == 'install date':
             column_mapping[col] = 'install_date'
-        elif 'loss' in col_lower and 'reason' in col_lower:
-            column_mapping[col] = 'loss_reason'
-        elif 'comment' in col_lower:
-            column_mapping[col] = 'comments'
-        elif 'first' in col_lower and 'visit' in col_lower:
-            column_mapping[col] = 'closed_on_first_visit'
-        elif 'feeling' in col_lower:
-            column_mapping[col] = 'feeling'
+        elif col_lower in ['folow up on self gen', 'follow up on', 'folow up on', 'follow up']:
+            column_mapping[col] = 'follow_up_date'
+        elif 'apco' in col_lower or 'apx' in col_lower:
+            column_mapping[col] = 'apco_x'
+        elif 'samsung' in col_lower:
+            column_mapping[col] = 'samsung'
+        elif 'mitsubishi' in col_lower or 'mits' in col_lower:
+            column_mapping[col] = 'mitsubishi'
     
     df = df.rename(columns=column_mapping)
+    logger.info(f"Mapped columns: {list(df.columns)}")
     
     # Ensure required columns exist
-    required_cols = ['name', 'status', 'unit_type', 'ticket_value', 'visit_date', 'close_date', 'install_date', 'commission_percent', 'spif_commission']
-    for col in required_cols:
+    for col in ['name', 'status', 'unit_type', 'ticket_value', 'commission_value', 'commission_percent', 
+                'visit_date', 'close_date', 'install_date', 'follow_up_date', 'spif_total',
+                'apco_x', 'samsung', 'mitsubishi']:
         if col not in df.columns:
             df[col] = None
     
-    # Clean and normalize data
+    # Clean data
     df['status'] = df['status'].apply(normalize_status)
+    df['ticket_value'] = df['ticket_value'].apply(lambda x: safe_float(x))
+    df['commission_value'] = df['commission_value'].apply(lambda x: safe_float(x))
+    df['spif_total'] = df['spif_total'].apply(lambda x: safe_float(x))
+    df['apco_x'] = df['apco_x'].apply(lambda x: safe_float(x))
+    df['samsung'] = df['samsung'].apply(lambda x: safe_float(x))
+    df['mitsubishi'] = df['mitsubishi'].apply(lambda x: safe_float(x))
     
-    # Process ticket_value - filter out values that look like Excel date serials (40000-50000 range)
-    def clean_ticket_value(x):
+    # Commission percent handling
+    def clean_commission_percent(x):
         val = safe_float(x)
-        # Excel date serials for 2020-2030 are roughly 43000-47000
-        # Filter out these invalid values but keep real ticket values
-        if 40000 <= val <= 50000:
-            return 0.0  # Likely an Excel date serial, not a real value
+        if val > 0 and val < 1:  # Already decimal like 0.05
+            return val * 100
         return val
+    df['commission_percent'] = df['commission_percent'].apply(clean_commission_percent)
     
-    df['ticket_value'] = df['ticket_value'].apply(clean_ticket_value)
-    
-    # Commission percent - stored as decimal (0.08 = 8%)
-    df['commission_percent'] = df['commission_percent'].apply(lambda x: safe_float(x) * 100 if safe_float(x) < 1 else safe_float(x))
-    df['spif_commission'] = df['spif_commission'].apply(lambda x: safe_float(x))
+    # Date handling
     df['visit_date'] = df['visit_date'].apply(safe_date)
     df['close_date'] = df['close_date'].apply(safe_date)
     df['install_date'] = df['install_date'].apply(safe_date)
+    df['follow_up_date'] = df['follow_up_date'].apply(safe_date)
     
     # Apply date filter
     now = datetime.now(timezone.utc)
     start_date = None
     end_date = None
     
-    # Check if filtering by pay period (based on install_date)
     if pay_period and pay_period != "all":
         for period_name, period_start, period_end in PAY_PERIODS:
             if period_name == pay_period:
@@ -294,14 +288,12 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         end_naive = end_date.replace(tzinfo=None) if end_date and hasattr(end_date, 'tzinfo') and end_date.tzinfo else None
         
         if end_naive:
-            # Filter by pay period using install_date
             df_filtered = df[
                 df['install_date'].notna() & 
                 (df['install_date'] >= start_naive) & 
                 (df['install_date'] <= end_naive)
             ]
         else:
-            # Filter by general date range
             df_filtered = df[
                 (df['visit_date'].notna() & (df['visit_date'] >= start_naive)) |
                 (df['close_date'].notna() & (df['close_date'] >= start_naive)) |
@@ -309,137 +301,127 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             ]
         
         if len(df_filtered) == 0:
-            df_filtered = df  # Fallback to all data if no matches
+            df_filtered = df
     else:
         df_filtered = df
     
-    # Calculate KPIs
+    # === CALCULATE KPIs ===
     closed_deals_df = df_filtered[df_filtered['status'] == 'SALE']
     lost_deals_df = df_filtered[df_filtered['status'] == 'LOST']
     pending_deals_df = df_filtered[df_filtered['status'] == 'PENDING']
     
-    # Total Revenue (sum of ticket values for closed deals)
+    # === MAIN METRICS ===
+    # Total Revenue = Sum of Ticket Value for SALE rows
     total_revenue = closed_deals_df['ticket_value'].sum()
+    
+    # Total Commission = Sum of Commission Value column for SALE rows (actual commissions paid)
+    total_commission = closed_deals_df['commission_value'].sum()
     
     # Closed Deals count
     closed_deals = len(closed_deals_df)
     
-    # Commission calculations
-    commission_rate = 5.0  # Default 5%
-    
-    # Calculate commission based on ticket value
-    commission_values = []
-    commission_percents_used = []
-    
-    # Price Margin (5% commission only)
-    price_margin_total = 0.0
-    price_margin_sales_count = 0
-    price_margin_commission = 0.0
-    
-    # SPIFF breakdown by brand
-    spiff_brands = {
-        'APCO X': {'count': 0, 'commission': 0.0, 'revenue': 0.0},
-        'Samsung': {'count': 0, 'commission': 0.0, 'revenue': 0.0},
-        'Mitsubishi': {'count': 0, 'commission': 0.0, 'revenue': 0.0},
-        'Other': {'count': 0, 'commission': 0.0, 'revenue': 0.0}
-    }
-    spiff_total = 0.0
-    
-    for _, row in closed_deals_df.iterrows():
-        ticket = safe_float(row.get('ticket_value', 0))
-        comm_pct = safe_float(row.get('commission_percent', 0))
-        spif_value = safe_float(row.get('spif_commission', 0))
-        spif_desc = str(row.get('spif_description', '')).upper() if pd.notna(row.get('spif_description')) else ''
-        
-        if ticket > 0:
-            # Calculate commission
-            if comm_pct > 0:
-                commission_values.append(ticket * (comm_pct / 100))
-                commission_percents_used.append(comm_pct)
-                
-                # Check if this is a 5% price margin sale (allow small variance)
-                if 4.5 <= comm_pct <= 5.5:
-                    price_margin_total += ticket
-                    price_margin_sales_count += 1
-                    price_margin_commission += ticket * (comm_pct / 100)
-            else:
-                commission_values.append(ticket * (commission_rate / 100))
-                commission_percents_used.append(commission_rate)
-                # Default 5% is price margin
-                price_margin_total += ticket
-                price_margin_sales_count += 1
-                price_margin_commission += ticket * (commission_rate / 100)
-        
-        # SPIFF breakdown by brand
-        if spif_value > 0:
-            spiff_total += spif_value
-            brand_found = False
-            
-            # Detect brand from description
-            if 'APCO' in spif_desc or 'APX' in spif_desc:
-                spiff_brands['APCO X']['count'] += 1
-                spiff_brands['APCO X']['commission'] += spif_value
-                spiff_brands['APCO X']['revenue'] += ticket
-                brand_found = True
-            elif 'SAMSUNG' in spif_desc or 'SAM' in spif_desc:
-                spiff_brands['Samsung']['count'] += 1
-                spiff_brands['Samsung']['commission'] += spif_value
-                spiff_brands['Samsung']['revenue'] += ticket
-                brand_found = True
-            elif 'MITSUBISHI' in spif_desc or 'MITS' in spif_desc or 'MIT' in spif_desc:
-                spiff_brands['Mitsubishi']['count'] += 1
-                spiff_brands['Mitsubishi']['commission'] += spif_value
-                spiff_brands['Mitsubishi']['revenue'] += ticket
-                brand_found = True
-            
-            if not brand_found:
-                spiff_brands['Other']['count'] += 1
-                spiff_brands['Other']['commission'] += spif_value
-                spiff_brands['Other']['revenue'] += ticket
-    
-    total_commission = sum(commission_values)
-    
-    # Calculate percentages for SPIFF brands
-    spiff_breakdown = {}
-    for brand, data in spiff_brands.items():
-        if data['count'] > 0 or data['commission'] > 0:
-            spiff_breakdown[brand] = {
-                'count': data['count'],
-                'commission': round(data['commission'], 2),
-                'revenue': round(data['revenue'], 2),
-                'percent_of_sales': round((data['count'] / closed_deals * 100), 1) if closed_deals > 0 else 0
-            }
-    
-    # Average Commission Percentage
-    avg_commission_percent = sum(commission_percents_used) / len(commission_percents_used) if commission_percents_used else commission_rate
-    
-    # Total deals (excluding unknown status)
+    # Total deals for closing rate
     total_deals = len(df_filtered[df_filtered['status'].isin(['SALE', 'LOST', 'PENDING'])])
-    
-    # Closing Rate
     closing_rate = (closed_deals / total_deals * 100) if total_deals > 0 else 0
     
     # Average Ticket
     average_ticket = total_revenue / closed_deals if closed_deals > 0 else 0
     
-    # Total Visits (count of records with visit_date or all records)
+    # Total Visits
     total_visits = len(df_filtered[df_filtered['visit_date'].notna()])
     if total_visits == 0:
         total_visits = len(df_filtered)
     
-    # Average Sales Cycle Days
-    sales_cycles = []
-    for _, row in closed_deals_df.iterrows():
-        if row['visit_date'] and row['close_date']:
-            cycle = (row['close_date'] - row['visit_date']).days
-            if cycle >= 0:
-                sales_cycles.append(cycle)
-    avg_sales_cycle = sum(sales_cycles) / len(sales_cycles) if sales_cycles else 0
+    # Average Commission Percent
+    valid_commission_pcts = closed_deals_df[closed_deals_df['commission_percent'] > 0]['commission_percent']
+    avg_commission_percent = valid_commission_pcts.mean() if len(valid_commission_pcts) > 0 else 5.0
     
-    # Price Margin (commission with 5%)
-    price_margin = total_commission
+    # === PRICE MARGIN (5% commission only) ===
+    price_margin_df = closed_deals_df[
+        (closed_deals_df['commission_percent'] >= 4.5) & 
+        (closed_deals_df['commission_percent'] <= 5.5)
+    ]
+    price_margin_total = price_margin_df['ticket_value'].sum()
+    price_margin_sales_count = len(price_margin_df)
+    price_margin_commission = price_margin_df['commission_value'].sum()
     
-    # Unit Type breakdown
+    # === SPIFF BREAKDOWN from dedicated columns ===
+    spiff_breakdown = {}
+    
+    # APCO X
+    apco_total = closed_deals_df['apco_x'].sum()
+    apco_count = len(closed_deals_df[closed_deals_df['apco_x'] > 0])
+    if apco_total > 0 or apco_count > 0:
+        spiff_breakdown['APCO X'] = {
+            'count': apco_count,
+            'commission': round(apco_total, 2),
+            'percent_of_sales': round((apco_count / closed_deals * 100), 1) if closed_deals > 0 else 0
+        }
+    
+    # Samsung
+    samsung_total = closed_deals_df['samsung'].sum()
+    samsung_count = len(closed_deals_df[closed_deals_df['samsung'] > 0])
+    if samsung_total > 0 or samsung_count > 0:
+        spiff_breakdown['Samsung'] = {
+            'count': samsung_count,
+            'commission': round(samsung_total, 2),
+            'percent_of_sales': round((samsung_count / closed_deals * 100), 1) if closed_deals > 0 else 0
+        }
+    
+    # Mitsubishi
+    mitsubishi_total = closed_deals_df['mitsubishi'].sum()
+    mitsubishi_count = len(closed_deals_df[closed_deals_df['mitsubishi'] > 0])
+    if mitsubishi_total > 0 or mitsubishi_count > 0:
+        spiff_breakdown['Mitsubishi'] = {
+            'count': mitsubishi_count,
+            'commission': round(mitsubishi_total, 2),
+            'percent_of_sales': round((mitsubishi_count / closed_deals * 100), 1) if closed_deals > 0 else 0
+        }
+    
+    # Other SPIFF from SPIF column (not in APCO/Samsung/Mitsubishi)
+    other_spiff = closed_deals_df['spif_total'].sum() - apco_total - samsung_total - mitsubishi_total
+    if other_spiff < 0:
+        other_spiff = closed_deals_df['spif_total'].sum()  # If columns don't exist, use total
+    other_count = len(closed_deals_df[closed_deals_df['spif_total'] > 0]) - apco_count - samsung_count - mitsubishi_count
+    if other_count < 0:
+        other_count = len(closed_deals_df[closed_deals_df['spif_total'] > 0])
+    
+    if other_spiff > 0 or other_count > 0:
+        spiff_breakdown['Other'] = {
+            'count': max(0, other_count),
+            'commission': round(max(0, other_spiff), 2),
+            'percent_of_sales': round((max(0, other_count) / closed_deals * 100), 1) if closed_deals > 0 else 0
+        }
+    
+    spiff_total = apco_total + samsung_total + mitsubishi_total + max(0, other_spiff)
+    
+    # === FOLLOW-UPS (pending follow-ups with dates) ===
+    follow_ups = []
+    today = datetime.now().replace(tzinfo=None)
+    
+    # Get records with follow-up dates that are not SALE or have pending status
+    follow_up_df = df_filtered[
+        df_filtered['follow_up_date'].notna() & 
+        (df_filtered['status'] != 'SALE')
+    ].copy()
+    
+    for _, row in follow_up_df.iterrows():
+        follow_date = row.get('follow_up_date')
+        if follow_date:
+            days_until = (follow_date - today).days if follow_date else None
+            follow_ups.append({
+                'name': str(row.get('name', '')),
+                'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
+                'status': str(row.get('status', '')),
+                'follow_up_date': follow_date.strftime('%Y-%m-%d') if follow_date else '',
+                'days_until': days_until,
+                'is_urgent': days_until is not None and days_until <= 7  # Urgent if within 7 days
+            })
+    
+    # Sort by date (closest first)
+    follow_ups.sort(key=lambda x: x.get('follow_up_date', '9999-99-99'))
+    
+    # === UNIT TYPE BREAKDOWN ===
     unit_type_count = {}
     unit_type_revenue = {}
     
@@ -452,18 +434,17 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         unit_type_count[unit] = unit_type_count.get(unit, 0) + 1
         unit_type_revenue[unit] = unit_type_revenue.get(unit, 0) + safe_float(row.get('ticket_value', 0))
     
-    # Status distribution
+    # === STATUS DISTRIBUTION ===
     status_distribution = {
         'SALE': len(closed_deals_df),
         'LOST': len(lost_deals_df),
         'PENDING': len(pending_deals_df)
     }
     
-    # Monthly aggregation - sorted chronologically
+    # === MONTHLY DATA (chronological) ===
     monthly_data = []
-    
-    # Get all months with data, sorted
     month_year_data = {}
+    
     for _, row in closed_deals_df.iterrows():
         date_field = row.get('install_date') or row.get('close_date')
         if date_field and pd.notna(date_field):
@@ -473,17 +454,10 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
                     month_year_data[month_key] = {'revenue': 0, 'deals': 0, 'commission': 0}
                 month_year_data[month_key]['revenue'] += safe_float(row.get('ticket_value', 0))
                 month_year_data[month_key]['deals'] += 1
-                # Calculate commission for this row
-                ticket = safe_float(row.get('ticket_value', 0))
-                comm_pct = safe_float(row.get('commission_percent', 0))  # Already in percentage
-                if comm_pct > 0:
-                    month_year_data[month_key]['commission'] += ticket * (comm_pct / 100)
-                else:
-                    month_year_data[month_key]['commission'] += ticket * (commission_rate / 100)
+                month_year_data[month_key]['commission'] += safe_float(row.get('commission_value', 0))
             except (ValueError, AttributeError):
                 continue
     
-    # Sort by year and month
     sorted_months = sorted(month_year_data.keys())
     month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     
@@ -499,23 +473,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'commission': round(data['commission'], 2)
         })
     
-    # Weekly aggregation (last 8 weeks)
-    weekly_data = []
-    for week in range(7, -1, -1):
-        week_start = now - timedelta(days=7 * (week + 1))
-        week_end = now - timedelta(days=7 * week)
-        week_df = closed_deals_df[
-            closed_deals_df['close_date'].notna() &
-            (closed_deals_df['close_date'] >= week_start.replace(tzinfo=None)) &
-            (closed_deals_df['close_date'] < week_end.replace(tzinfo=None))
-        ]
-        weekly_data.append({
-            'week': f"W{8-week}",
-            'revenue': week_df['ticket_value'].sum(),
-            'deals': len(week_df)
-        })
-    
-    # Get available pay periods with data
+    # === PAY PERIODS DATA ===
     pay_periods_data = []
     for period_name, period_start, period_end in PAY_PERIODS:
         period_df = df[
@@ -524,14 +482,13 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             (df['install_date'] <= period_end) &
             (df['status'] == 'SALE')
         ]
-        if len(period_df) > 0 or True:  # Include all periods
-            pay_periods_data.append({
-                'name': period_name,
-                'deals': len(period_df),
-                'revenue': period_df['ticket_value'].sum()
-            })
+        pay_periods_data.append({
+            'name': period_name,
+            'deals': len(period_df),
+            'revenue': period_df['ticket_value'].sum()
+        })
     
-    # Convert records to list of dicts for response
+    # === RECORDS for table ===
     records = []
     for _, row in df_filtered.head(50).iterrows():
         records.append({
@@ -540,7 +497,8 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
             'ticket_value': safe_float(row.get('ticket_value', 0)),
             'commission_percent': safe_float(row.get('commission_percent', 0)),
-            'spif_commission': safe_float(row.get('spif_commission', 0)),
+            'commission_value': safe_float(row.get('commission_value', 0)),
+            'spif_total': safe_float(row.get('spif_total', 0)),
             'status': str(row.get('status', '')),
             'visit_date': row.get('visit_date').strftime('%Y-%m-%d') if pd.notna(row.get('visit_date')) else '',
             'close_date': row.get('close_date').strftime('%Y-%m-%d') if pd.notna(row.get('close_date')) else '',
@@ -555,9 +513,8 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         closing_rate=round(closing_rate, 1),
         total_visits=total_visits,
         average_ticket=round(average_ticket, 2),
-        avg_sales_cycle_days=round(avg_sales_cycle, 1),
         
-        # Price Margin (5% commission)
+        # Price Margin (5%)
         price_margin_total=round(price_margin_total, 2),
         price_margin_sales_count=price_margin_sales_count,
         price_margin_commission=round(price_margin_commission, 2),
@@ -566,12 +523,14 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         spiff_total=round(spiff_total, 2),
         spiff_breakdown=spiff_breakdown,
         
+        # Follow-ups
+        follow_ups=follow_ups,
+        
         # Other
         avg_commission_percent=round(avg_commission_percent, 2),
         unit_type_count=unit_type_count,
         unit_type_revenue=unit_type_revenue,
         monthly_data=monthly_data,
-        weekly_data=weekly_data,
         status_distribution=status_distribution,
         records=records,
         pay_periods=pay_periods_data,
@@ -590,7 +549,6 @@ async def set_excel_config(config: ExcelConfigCreate):
     doc = config_obj.model_dump()
     doc['last_updated'] = doc['last_updated'].isoformat()
     
-    # Upsert - only keep one config
     await db.excel_config.delete_many({})
     await db.excel_config.insert_one(doc)
     
@@ -607,25 +565,6 @@ async def get_excel_config():
 @api_router.get("/dashboard/kpis")
 async def get_dashboard_kpis(excel_url: Optional[str] = None, date_filter: str = "all", pay_period: Optional[str] = None):
     """Get KPIs from Excel data"""
-    # Get URL from parameter or database
-    if not excel_url:
-        config = await db.excel_config.find_one({}, {"_id": 0})
-        if config:
-            excel_url = config.get('excel_url')
-    
-    if not excel_url:
-        raise HTTPException(status_code=400, detail="No Excel URL configured. Please set an Excel URL first.")
-    
-    # Parse Excel and calculate KPIs
-    df = parse_excel_data(excel_url)
-    kpis = process_sales_data(df, date_filter, pay_period)
-    
-    return kpis
-
-@api_router.post("/dashboard/refresh")
-async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = "all", pay_period: Optional[str] = None):
-    """Refresh dashboard data from Excel"""
-    # Get URL from parameter or database
     if not excel_url:
         config = await db.excel_config.find_one({}, {"_id": 0})
         if config:
@@ -634,11 +573,25 @@ async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = 
     if not excel_url:
         raise HTTPException(status_code=400, detail="No Excel URL configured.")
     
-    # Parse Excel and calculate KPIs
     df = parse_excel_data(excel_url)
     kpis = process_sales_data(df, date_filter, pay_period)
     
-    # Store refresh timestamp
+    return kpis
+
+@api_router.post("/dashboard/refresh")
+async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = "all", pay_period: Optional[str] = None):
+    """Refresh dashboard data from Excel"""
+    if not excel_url:
+        config = await db.excel_config.find_one({}, {"_id": 0})
+        if config:
+            excel_url = config.get('excel_url')
+    
+    if not excel_url:
+        raise HTTPException(status_code=400, detail="No Excel URL configured.")
+    
+    df = parse_excel_data(excel_url)
+    kpis = process_sales_data(df, date_filter, pay_period)
+    
     await db.refresh_history.insert_one({
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "records_count": len(kpis.records)
