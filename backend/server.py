@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -6,10 +6,12 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from typing import List, Optional, Dict, Any
 import uuid
-from datetime import datetime, timezone
-
+from datetime import datetime, timezone, timedelta
+import pandas as pd
+import requests
+from io import BytesIO
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -19,54 +21,387 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
+# Create the main app
 app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
+# Models
+class ExcelConfig(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    excel_url: str
+    last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
+class ExcelConfigCreate(BaseModel):
+    excel_url: str
 
-# Add your routes to the router instead of directly to app
+class SalesRecord(BaseModel):
+    name: str
+    address: Optional[str] = None
+    city: Optional[str] = None
+    unit_type: Optional[str] = None
+    ticket_value: Optional[float] = None
+    commission: Optional[float] = None
+    commission_percent: Optional[float] = None
+    status: Optional[str] = None
+    visit_date: Optional[str] = None
+    close_date: Optional[str] = None
+    loss_reason: Optional[str] = None
+    comments: Optional[str] = None
+    closed_on_first_visit: Optional[str] = None
+    feeling: Optional[str] = None
+    sales_cycle_days: Optional[int] = None
+
+class KPIResponse(BaseModel):
+    total_revenue: float
+    total_commission: float
+    closed_deals: int
+    closing_rate: float
+    average_ticket: float
+    total_visits: int
+    avg_sales_cycle_days: float
+    price_margin: float
+    unit_type_count: Dict[str, int]
+    unit_type_revenue: Dict[str, float]
+    monthly_data: List[Dict[str, Any]]
+    weekly_data: List[Dict[str, Any]]
+    status_distribution: Dict[str, int]
+    records: List[Dict[str, Any]]
+
+def parse_excel_data(excel_url: str) -> pd.DataFrame:
+    """Download and parse Excel file from URL"""
+    try:
+        logger.info(f"Downloading Excel from: {excel_url}")
+        response = requests.get(excel_url, timeout=30)
+        response.raise_for_status()
+        
+        excel_data = BytesIO(response.content)
+        df = pd.read_excel(excel_data, engine='openpyxl')
+        
+        logger.info(f"Excel columns: {df.columns.tolist()}")
+        logger.info(f"Excel shape: {df.shape}")
+        
+        return df
+    except Exception as e:
+        logger.error(f"Error parsing Excel: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error parsing Excel file: {str(e)}")
+
+def normalize_status(status: str) -> str:
+    """Normalize status values"""
+    if pd.isna(status):
+        return "UNKNOWN"
+    status = str(status).strip().upper()
+    if status in ["SALE", "SALES"]:
+        return "SALE"
+    if status in ["LOST", "LOSS"]:
+        return "LOST"
+    if status in ["PENDING"]:
+        return "PENDING"
+    return status
+
+def safe_float(value, default=0.0) -> float:
+    """Safely convert value to float"""
+    if pd.isna(value):
+        return default
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
+
+def safe_date(value) -> Optional[datetime]:
+    """Safely convert value to datetime"""
+    if pd.isna(value):
+        return None
+    try:
+        if isinstance(value, datetime):
+            return value
+        if isinstance(value, str):
+            # Try multiple date formats
+            for fmt in ['%Y-%m-%d', '%m/%d/%Y', '%d/%m/%Y', '%b %d, %Y']:
+                try:
+                    return datetime.strptime(value, fmt)
+                except ValueError:
+                    continue
+        return pd.to_datetime(value)
+    except:
+        return None
+
+def process_sales_data(df: pd.DataFrame, date_filter: str = "all") -> KPIResponse:
+    """Process sales data and calculate KPIs"""
+    
+    # Standardize column names
+    column_mapping = {}
+    for col in df.columns:
+        col_lower = str(col).lower().strip()
+        if 'name' in col_lower:
+            column_mapping[col] = 'name'
+        elif 'address' in col_lower:
+            column_mapping[col] = 'address'
+        elif 'city' in col_lower:
+            column_mapping[col] = 'city'
+        elif 'unit' in col_lower and 'type' in col_lower:
+            column_mapping[col] = 'unit_type'
+        elif 'ticket' in col_lower and 'value' in col_lower:
+            column_mapping[col] = 'ticket_value'
+        elif 'commission' in col_lower and '%' in col_lower:
+            column_mapping[col] = 'commission_percent'
+        elif 'spif' in col_lower or ('commission' in col_lower and 'value' in col_lower):
+            column_mapping[col] = 'spif_commission'
+        elif 'status' in col_lower:
+            column_mapping[col] = 'status'
+        elif 'visit' in col_lower and 'date' in col_lower:
+            column_mapping[col] = 'visit_date'
+        elif 'close' in col_lower and 'date' in col_lower:
+            column_mapping[col] = 'close_date'
+        elif 'loss' in col_lower and 'reason' in col_lower:
+            column_mapping[col] = 'loss_reason'
+        elif 'comment' in col_lower:
+            column_mapping[col] = 'comments'
+        elif 'first' in col_lower and 'visit' in col_lower:
+            column_mapping[col] = 'closed_on_first_visit'
+        elif 'feeling' in col_lower:
+            column_mapping[col] = 'feeling'
+        elif 'install' in col_lower and 'date' in col_lower:
+            column_mapping[col] = 'install_date'
+    
+    df = df.rename(columns=column_mapping)
+    
+    # Ensure required columns exist
+    required_cols = ['name', 'status', 'unit_type', 'ticket_value', 'visit_date', 'close_date']
+    for col in required_cols:
+        if col not in df.columns:
+            df[col] = None
+    
+    # Clean and normalize data
+    df['status'] = df['status'].apply(normalize_status)
+    df['ticket_value'] = df['ticket_value'].apply(lambda x: safe_float(x))
+    df['visit_date'] = df['visit_date'].apply(safe_date)
+    df['close_date'] = df['close_date'].apply(safe_date)
+    
+    # Apply date filter
+    now = datetime.now(timezone.utc)
+    if date_filter == "week":
+        start_date = now - timedelta(days=7)
+    elif date_filter == "2weeks":
+        start_date = now - timedelta(days=14)
+    elif date_filter == "month":
+        start_date = now - timedelta(days=30)
+    elif date_filter == "year":
+        start_date = now - timedelta(days=365)
+    else:
+        start_date = None
+    
+    if start_date:
+        # Filter by visit_date or close_date
+        df_filtered = df[
+            (df['visit_date'].notna() & (df['visit_date'] >= start_date.replace(tzinfo=None))) |
+            (df['close_date'].notna() & (df['close_date'] >= start_date.replace(tzinfo=None)))
+        ]
+        if len(df_filtered) == 0:
+            df_filtered = df  # Fallback to all data if no matches
+    else:
+        df_filtered = df
+    
+    # Calculate KPIs
+    closed_deals_df = df_filtered[df_filtered['status'] == 'SALE']
+    lost_deals_df = df_filtered[df_filtered['status'] == 'LOST']
+    pending_deals_df = df_filtered[df_filtered['status'] == 'PENDING']
+    
+    # Total Revenue (sum of ticket values for closed deals)
+    total_revenue = closed_deals_df['ticket_value'].sum()
+    
+    # Commission (5% of revenue as price margin)
+    commission_rate = 0.05
+    total_commission = total_revenue * commission_rate
+    
+    # Closed Deals count
+    closed_deals = len(closed_deals_df)
+    
+    # Total deals (excluding unknown status)
+    total_deals = len(df_filtered[df_filtered['status'].isin(['SALE', 'LOST', 'PENDING'])])
+    
+    # Closing Rate
+    closing_rate = (closed_deals / total_deals * 100) if total_deals > 0 else 0
+    
+    # Average Ticket
+    average_ticket = total_revenue / closed_deals if closed_deals > 0 else 0
+    
+    # Total Visits (count of records with visit_date or all records)
+    total_visits = len(df_filtered[df_filtered['visit_date'].notna()])
+    if total_visits == 0:
+        total_visits = len(df_filtered)
+    
+    # Average Sales Cycle Days
+    sales_cycles = []
+    for _, row in closed_deals_df.iterrows():
+        if row['visit_date'] and row['close_date']:
+            cycle = (row['close_date'] - row['visit_date']).days
+            if cycle >= 0:
+                sales_cycles.append(cycle)
+    avg_sales_cycle = sum(sales_cycles) / len(sales_cycles) if sales_cycles else 0
+    
+    # Price Margin (commission with 5%)
+    price_margin = total_commission
+    
+    # Unit Type breakdown
+    unit_type_count = {}
+    unit_type_revenue = {}
+    
+    for _, row in closed_deals_df.iterrows():
+        unit = row.get('unit_type', 'Unknown')
+        if pd.isna(unit) or not unit:
+            unit = 'Unknown'
+        unit = str(unit).strip()
+        
+        unit_type_count[unit] = unit_type_count.get(unit, 0) + 1
+        unit_type_revenue[unit] = unit_type_revenue.get(unit, 0) + safe_float(row.get('ticket_value', 0))
+    
+    # Status distribution
+    status_distribution = {
+        'SALE': len(closed_deals_df),
+        'LOST': len(lost_deals_df),
+        'PENDING': len(pending_deals_df)
+    }
+    
+    # Monthly aggregation
+    monthly_data = []
+    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    for i, month in enumerate(months):
+        month_df = closed_deals_df[
+            closed_deals_df['close_date'].notna() & 
+            (closed_deals_df['close_date'].apply(lambda x: x.month if x else 0) == i + 1)
+        ]
+        monthly_data.append({
+            'month': month,
+            'revenue': month_df['ticket_value'].sum(),
+            'deals': len(month_df),
+            'commission': month_df['ticket_value'].sum() * commission_rate
+        })
+    
+    # Weekly aggregation (last 8 weeks)
+    weekly_data = []
+    for week in range(7, -1, -1):
+        week_start = now - timedelta(days=7 * (week + 1))
+        week_end = now - timedelta(days=7 * week)
+        week_df = closed_deals_df[
+            closed_deals_df['close_date'].notna() &
+            (closed_deals_df['close_date'] >= week_start.replace(tzinfo=None)) &
+            (closed_deals_df['close_date'] < week_end.replace(tzinfo=None))
+        ]
+        weekly_data.append({
+            'week': f"W{8-week}",
+            'revenue': week_df['ticket_value'].sum(),
+            'deals': len(week_df)
+        })
+    
+    # Convert records to list of dicts for response
+    records = []
+    for _, row in df_filtered.head(50).iterrows():
+        records.append({
+            'name': str(row.get('name', '')),
+            'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
+            'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
+            'ticket_value': safe_float(row.get('ticket_value', 0)),
+            'status': str(row.get('status', '')),
+            'visit_date': row.get('visit_date').strftime('%Y-%m-%d') if pd.notna(row.get('visit_date')) else '',
+            'close_date': row.get('close_date').strftime('%Y-%m-%d') if pd.notna(row.get('close_date')) else ''
+        })
+    
+    return KPIResponse(
+        total_revenue=round(total_revenue, 2),
+        total_commission=round(total_commission, 2),
+        closed_deals=closed_deals,
+        closing_rate=round(closing_rate, 1),
+        average_ticket=round(average_ticket, 2),
+        total_visits=total_visits,
+        avg_sales_cycle_days=round(avg_sales_cycle, 1),
+        price_margin=round(price_margin, 2),
+        unit_type_count=unit_type_count,
+        unit_type_revenue=unit_type_revenue,
+        monthly_data=monthly_data,
+        weekly_data=weekly_data,
+        status_distribution=status_distribution,
+        records=records
+    )
+
+# Routes
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Sales Dashboard API"}
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
+@api_router.post("/config/excel")
+async def set_excel_config(config: ExcelConfigCreate):
+    """Set the Excel file URL configuration"""
+    config_obj = ExcelConfig(excel_url=config.excel_url)
+    doc = config_obj.model_dump()
+    doc['last_updated'] = doc['last_updated'].isoformat()
     
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
+    # Upsert - only keep one config
+    await db.excel_config.delete_many({})
+    await db.excel_config.insert_one(doc)
     
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
+    return {"message": "Excel configuration saved", "id": config_obj.id}
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
-    return status_checks
+@api_router.get("/config/excel")
+async def get_excel_config():
+    """Get the current Excel file URL configuration"""
+    config = await db.excel_config.find_one({}, {"_id": 0})
+    if not config:
+        return {"excel_url": None}
+    return config
 
-# Include the router in the main app
+@api_router.get("/dashboard/kpis")
+async def get_dashboard_kpis(excel_url: Optional[str] = None, date_filter: str = "all"):
+    """Get KPIs from Excel data"""
+    # Get URL from parameter or database
+    if not excel_url:
+        config = await db.excel_config.find_one({}, {"_id": 0})
+        if config:
+            excel_url = config.get('excel_url')
+    
+    if not excel_url:
+        raise HTTPException(status_code=400, detail="No Excel URL configured. Please set an Excel URL first.")
+    
+    # Parse Excel and calculate KPIs
+    df = parse_excel_data(excel_url)
+    kpis = process_sales_data(df, date_filter)
+    
+    return kpis
+
+@api_router.post("/dashboard/refresh")
+async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = "all"):
+    """Refresh dashboard data from Excel"""
+    # Get URL from parameter or database
+    if not excel_url:
+        config = await db.excel_config.find_one({}, {"_id": 0})
+        if config:
+            excel_url = config.get('excel_url')
+    
+    if not excel_url:
+        raise HTTPException(status_code=400, detail="No Excel URL configured.")
+    
+    # Parse Excel and calculate KPIs
+    df = parse_excel_data(excel_url)
+    kpis = process_sales_data(df, date_filter)
+    
+    # Store refresh timestamp
+    await db.refresh_history.insert_one({
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "records_count": len(kpis.records)
+    })
+    
+    return {"message": "Data refreshed successfully", "kpis": kpis}
+
+# Include the router
 app.include_router(api_router)
 
 app.add_middleware(
@@ -76,13 +411,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
