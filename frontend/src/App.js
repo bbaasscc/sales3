@@ -260,8 +260,10 @@ function App() {
       await axios.post(`${API}/config/excel`, { excel_url: excelUrl });
 
       const params = { date_filter: dateFilter };
-      if (payPeriod && payPeriod !== "all") {
-        params.pay_period = payPeriod;
+      // Use currentPeriod for the API call (handles refresh case)
+      const periodToUse = resetToCurrentPeriod ? currentPeriod : payPeriod;
+      if (periodToUse && periodToUse !== "all") {
+        params.pay_period = periodToUse;
       }
       
       const response = await axios.get(`${API}/dashboard/kpis`, { params });
@@ -269,7 +271,7 @@ function App() {
       
       if (showToast) {
         toast.success("Data Updated", {
-          description: `${response.data.closed_deals} deals loaded`
+          description: `${response.data.closed_deals} deals for current period`
         });
       }
     } catch (err) {
@@ -289,7 +291,8 @@ function App() {
   }, [fetchDashboardData]);
 
   const handleRefresh = () => {
-    fetchDashboardData(true);
+    // On manual refresh, reset to current pay period
+    fetchDashboardData(true, true);
   };
 
   const handleSaveSettings = () => {
