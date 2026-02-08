@@ -489,7 +489,7 @@ async def get_excel_config():
     return config
 
 @api_router.get("/dashboard/kpis")
-async def get_dashboard_kpis(excel_url: Optional[str] = None, date_filter: str = "all"):
+async def get_dashboard_kpis(excel_url: Optional[str] = None, date_filter: str = "all", pay_period: Optional[str] = None):
     """Get KPIs from Excel data"""
     # Get URL from parameter or database
     if not excel_url:
@@ -502,12 +502,12 @@ async def get_dashboard_kpis(excel_url: Optional[str] = None, date_filter: str =
     
     # Parse Excel and calculate KPIs
     df = parse_excel_data(excel_url)
-    kpis = process_sales_data(df, date_filter)
+    kpis = process_sales_data(df, date_filter, pay_period)
     
     return kpis
 
 @api_router.post("/dashboard/refresh")
-async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = "all"):
+async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = "all", pay_period: Optional[str] = None):
     """Refresh dashboard data from Excel"""
     # Get URL from parameter or database
     if not excel_url:
@@ -520,7 +520,7 @@ async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = 
     
     # Parse Excel and calculate KPIs
     df = parse_excel_data(excel_url)
-    kpis = process_sales_data(df, date_filter)
+    kpis = process_sales_data(df, date_filter, pay_period)
     
     # Store refresh timestamp
     await db.refresh_history.insert_one({
@@ -529,6 +529,13 @@ async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = 
     })
     
     return {"message": "Data refreshed successfully", "kpis": kpis}
+
+@api_router.get("/pay-periods")
+async def get_pay_periods():
+    """Get list of all pay periods"""
+    periods = [{"name": name, "start": start.isoformat(), "end": end.isoformat()} 
+               for name, start, end in PAY_PERIODS]
+    return {"pay_periods": periods}
 
 # Include the router
 app.include_router(api_router)
