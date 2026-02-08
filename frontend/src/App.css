@@ -1,34 +1,116 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Sales Dashboard Styles */
+
+.font-heading {
+    font-family: 'Manrope', sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.font-mono {
+    font-family: 'JetBrains Mono', monospace;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
 }
 
-.App-link {
-    color: #61dafb;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
 }
 
-@keyframes App-logo-spin {
+::-webkit-scrollbar-track {
+    background: #F4F5F7;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+}
+
+/* Animation for refresh button */
+@keyframes spin-once {
     from {
         transform: rotate(0deg);
     }
     to {
         transform: rotate(360deg);
+    }
+}
+
+.animate-spin-once {
+    animation: spin-once 0.5s ease-out;
+}
+
+/* Smooth transitions for cards */
+.transition-all {
+    transition: all 0.2s ease-out;
+}
+
+/* Table styles */
+.table-fixed-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Chart container styles */
+.recharts-wrapper {
+    font-family: 'DM Sans', sans-serif;
+}
+
+.recharts-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+}
+
+/* Loading state animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Card hover effects */
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Badge styles */
+.badge-success {
+    background-color: #ECFDF5;
+    color: #065F46;
+}
+
+.badge-error {
+    background-color: #FEF2F2;
+    color: #991B1B;
+}
+
+.badge-warning {
+    background-color: #FFFBEB;
+    color: #92400E;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .text-3xl {
+        font-size: 1.5rem;
+    }
+    
+    .text-4xl {
+        font-size: 2rem;
     }
 }
