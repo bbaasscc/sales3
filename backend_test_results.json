@@ -1,0 +1,2834 @@
+{
+  "summary": {
+    "tests_run": 9,
+    "tests_passed": 9,
+    "success_rate": 1.0,
+    "timestamp": "2026-02-08T15:47:01.424411"
+  },
+  "detailed_results": [
+    {
+      "test_name": "Root Endpoint",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "message": "Sales Dashboard API"
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:46:59.666562"
+    },
+    {
+      "test_name": "Set Excel Config",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "message": "Excel configuration saved",
+        "id": "4c67fff7-7b52-4b5b-add2-bea51746b086"
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:46:59.705234"
+    },
+    {
+      "test_name": "Get Excel Config",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "id": "4c67fff7-7b52-4b5b-add2-bea51746b086",
+        "excel_url": "https://customer-assets.emergentagent.com/job_sales-dashboard-321/artifacts/xdsih8ll_Stats_FSHAC_v22%20%284%29.xlsx",
+        "last_updated": "2026-02-08T15:46:59.700970+00:00"
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:46:59.737449"
+    },
+    {
+      "test_name": "Dashboard KPIs (All Time)",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "total_revenue": 197316.0,
+        "total_commission": 9865.8,
+        "closed_deals": 20,
+        "closing_rate": 41.7,
+        "average_ticket": 9865.8,
+        "total_visits": 48,
+        "avg_sales_cycle_days": 116.7,
+        "price_margin": 9865.8,
+        "unit_type_count": {
+          "Furnace": 8,
+          "Furnace + AC": 5,
+          "Furnace + HP": 3,
+          "FURNACE": 3,
+          "Unknown": 1
+        },
+        "unit_type_revenue": {
+          "Furnace": 55820.0,
+          "Furnace + AC": 66846.0,
+          "Furnace + HP": 49150.0,
+          "FURNACE": 21045.0,
+          "Unknown": 4455.0
+        },
+        "monthly_data": [
+          {
+            "month": "Jan",
+            "revenue": 132315.0,
+            "deals": 14,
+            "commission": 6615.75
+          },
+          {
+            "month": "Feb",
+            "revenue": 41045.0,
+            "deals": 3,
+            "commission": 2052.25
+          },
+          {
+            "month": "Mar",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Apr",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "May",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jun",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jul",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Aug",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Sep",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Oct",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Nov",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Dec",
+            "revenue": 17826.0,
+            "deals": 2,
+            "commission": 891.3000000000001
+          }
+        ],
+        "weekly_data": [
+          {
+            "week": "W1",
+            "revenue": 6945.0,
+            "deals": 1
+          },
+          {
+            "week": "W2",
+            "revenue": 10881.0,
+            "deals": 1
+          },
+          {
+            "week": "W3",
+            "revenue": 30550.0,
+            "deals": 3
+          },
+          {
+            "week": "W4",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W5",
+            "revenue": 55980.0,
+            "deals": 6
+          },
+          {
+            "week": "W6",
+            "revenue": 24170.0,
+            "deals": 3
+          },
+          {
+            "week": "W7",
+            "revenue": 41850.0,
+            "deals": 4
+          },
+          {
+            "week": "W8",
+            "revenue": 20810.0,
+            "deals": 1
+          }
+        ],
+        "status_distribution": {
+          "SALE": 20,
+          "LOST": 10,
+          "PENDING": 18
+        },
+        "records": [
+          {
+            "name": "SNEHLATA PATEL",
+            "city": "Addison",
+            "unit_type": "Furnace",
+            "ticket_value": 6945.0,
+            "status": "SALE",
+            "visit_date": "2025-12-20",
+            "close_date": "2025-12-20"
+          },
+          {
+            "name": "JAKE GRAFSTEIN",
+            "city": "DEERFIELD",
+            "unit_type": "Furnace",
+            "ticket_value": 4250.0,
+            "status": "LOST",
+            "visit_date": "2025-12-22",
+            "close_date": ""
+          },
+          {
+            "name": "SANDEEP BUTAPATI",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 11790.0,
+            "status": "LOST",
+            "visit_date": "2025-12-23",
+            "close_date": ""
+          },
+          {
+            "name": "ELENA NIKOLOVA",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 12750.0,
+            "status": "LOST",
+            "visit_date": "2025-12-23",
+            "close_date": ""
+          },
+          {
+            "name": "MATT FUQUA",
+            "city": "HINDSDALE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 10881.0,
+            "status": "SALE",
+            "visit_date": "2025-12-27",
+            "close_date": "2025-12-27"
+          },
+          {
+            "name": "RICHARD BREHM",
+            "city": "Lake Forest",
+            "unit_type": "Furnace",
+            "ticket_value": 4250.0,
+            "status": "LOST",
+            "visit_date": "2025-12-20",
+            "close_date": ""
+          },
+          {
+            "name": "NICK JENNINGS",
+            "city": "FRANKLIN PARK",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 10665.0,
+            "status": "SALE",
+            "visit_date": "2025-12-31",
+            "close_date": "2026-01-02"
+          },
+          {
+            "name": " DIVA EDWARDS",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6005.0,
+            "status": "SALE",
+            "visit_date": "2026-01-01",
+            "close_date": "2026-01-02"
+          },
+          {
+            "name": "JOSHUA CHESMORE",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 13880.0,
+            "status": "SALE",
+            "visit_date": "2026-01-02",
+            "close_date": "2026-01-02"
+          },
+          {
+            "name": "Tom Kenner",
+            "city": "Palatine",
+            "unit_type": "Furnace",
+            "ticket_value": 12019.0,
+            "status": "LOST",
+            "visit_date": "2026-01-05",
+            "close_date": ""
+          },
+          {
+            "name": "Rebecca Moore",
+            "city": "Wonder Lake",
+            "unit_type": "Furnace",
+            "ticket_value": 4900.0,
+            "status": "LOST",
+            "visit_date": "2026-01-05",
+            "close_date": ""
+          },
+          {
+            "name": "RYAN OBERMEYER",
+            "city": "LINDENHURST",
+            "unit_type": "Furnace",
+            "ticket_value": 6595.0,
+            "status": "SALE",
+            "visit_date": "2026-01-07",
+            "close_date": "2026-01-14"
+          },
+          {
+            "name": "CARLOS GARCIA",
+            "city": "MOUNT PROSPECT",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 11860.0,
+            "status": "LOST",
+            "visit_date": "2026-01-09",
+            "close_date": ""
+          },
+          {
+            "name": "KATHRYN DAGRES",
+            "city": "NORTH AURORA",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 14755.0,
+            "status": "SALE",
+            "visit_date": "2026-01-12",
+            "close_date": "2026-01-12"
+          },
+          {
+            "name": "JACKSON KRECIOCH",
+            "city": "SKOKIE",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 13585.0,
+            "status": "SALE",
+            "visit_date": "2026-01-13",
+            "close_date": "2026-01-13"
+          },
+          {
+            "name": "PAUL JONES",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 9740.0,
+            "status": "SALE",
+            "visit_date": "2026-01-15",
+            "close_date": "2026-01-18"
+          },
+          {
+            "name": "WILL JANFLAND",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 6185.0,
+            "status": "SALE",
+            "visit_date": "2026-01-15",
+            "close_date": "2026-01-15"
+          },
+          {
+            "name": "ISHRAT MERCHANT",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 5120.0,
+            "status": "SALE",
+            "visit_date": "2020-01-16",
+            "close_date": "2026-01-16"
+          },
+          {
+            "name": "TRISTRAM BONE",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2020-01-16",
+            "close_date": ""
+          },
+          {
+            "name": "JASMINE MCEWEN",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-16",
+            "close_date": ""
+          },
+          {
+            "name": "CHRISTIAN GARCIA",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6995.0,
+            "status": "SALE",
+            "visit_date": "2026-01-19",
+            "close_date": "2026-01-19"
+          },
+          {
+            "name": "KYLE MERCHANT",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-20",
+            "close_date": ""
+          },
+          {
+            "name": "JASON LENHAHAN",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": ""
+          },
+          {
+            "name": "JASMINE ADKINS",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": ""
+          },
+          {
+            "name": "RAMON CARRANZA",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": ""
+          },
+          {
+            "name": "SARA GAYNOR",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-20",
+            "close_date": ""
+          },
+          {
+            "name": "AMER QURAISHI",
+            "city": "WOOD DALE",
+            "unit_type": "Furnace",
+            "ticket_value": 5785.0,
+            "status": "LOST",
+            "visit_date": "2026-01-23",
+            "close_date": "2026-01-23"
+          },
+          {
+            "name": "TED KELOEZIEJ",
+            "city": "BROOKFIELD",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "status": "SALE",
+            "visit_date": "2026-01-23",
+            "close_date": "2026-01-23"
+          },
+          {
+            "name": "ARMANDO GARDUNO",
+            "city": "DOWNERS GROVE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-23",
+            "close_date": ""
+          },
+          {
+            "name": "MELANIE SHOW",
+            "city": "SAINT CHARLES",
+            "unit_type": "Furnace",
+            "ticket_value": 11045.0,
+            "status": "SALE",
+            "visit_date": "2026-01-24",
+            "close_date": "2026-01-25"
+          },
+          {
+            "name": "ERIC SORENASON",
+            "city": "EVANSTONE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-26",
+            "close_date": ""
+          },
+          {
+            "name": "ORTENSIA ZERMENO",
+            "city": "CHICAGO",
+            "unit_type": "BOILER",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-26",
+            "close_date": ""
+          },
+          {
+            "name": "TJ RICKERT",
+            "city": "CHICAGO",
+            "unit_type": "",
+            "ticket_value": 4455.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-02-01"
+          },
+          {
+            "name": "WILL MCDERMITH",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15640.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-01-30"
+          },
+          {
+            "name": "STEPHANIE MORALES",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 5975.0,
+            "status": "SALE",
+            "visit_date": "2026-01-28",
+            "close_date": "2026-01-28"
+          },
+          {
+            "name": "GWEN KENDRICK",
+            "city": "BELLWOOD",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15780.0,
+            "status": "SALE",
+            "visit_date": "2026-01-29",
+            "close_date": "2026-02-01"
+          },
+          {
+            "name": "ERIK RAESTS",
+            "city": "GRAYSLAKE",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": ""
+          },
+          {
+            "name": "JENNY RICCIARDI",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": ""
+          },
+          {
+            "name": "NATSUMI TSUZUKI",
+            "city": "ELK GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": ""
+          },
+          {
+            "name": "JOSH DENIZ",
+            "city": "NAPERVILLE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": ""
+          },
+          {
+            "name": "RACHEL ROSALES",
+            "city": "CHCIAGO",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 20810.0,
+            "status": "SALE",
+            "visit_date": "2026-02-02",
+            "close_date": "2026-02-02"
+          },
+          {
+            "name": "LAURIE SHAPIRO",
+            "city": "ELMWOOD PARK",
+            "unit_type": "HEAT PUMP",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "ISAAC CASTRO",
+            "city": "AURORA",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "JENNIFER MORSE",
+            "city": "LIVERTYVILLE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "MIKE AB",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "EDITH RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-07",
+            "close_date": ""
+          },
+          {
+            "name": "ALEX KUCHER",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "status": "SALE",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          },
+          {
+            "name": "ROBERTO RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "FUrnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          },
+          {
+            "name": "nan",
+            "city": "",
+            "unit_type": "",
+            "ticket_value": 0.0,
+            "status": "UNKNOWN",
+            "visit_date": "",
+            "close_date": ""
+          },
+          {
+            "name": "nan",
+            "city": "",
+            "unit_type": "",
+            "ticket_value": 0.0,
+            "status": "UNKNOWN",
+            "visit_date": "",
+            "close_date": ""
+          }
+        ]
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:47:00.343974"
+    },
+    {
+      "test_name": "Dashboard KPIs (week)",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "total_revenue": 26940.0,
+        "total_commission": 1347.0,
+        "closed_deals": 2,
+        "closing_rate": 25.0,
+        "average_ticket": 13470.0,
+        "total_visits": 8,
+        "avg_sales_cycle_days": 0.0,
+        "price_margin": 1347.0,
+        "unit_type_count": {
+          "Furnace + HP": 1,
+          "Furnace": 1
+        },
+        "unit_type_revenue": {
+          "Furnace + HP": 20810.0,
+          "Furnace": 6130.0
+        },
+        "monthly_data": [
+          {
+            "month": "Jan",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Feb",
+            "revenue": 20810.0,
+            "deals": 1,
+            "commission": 1040.5
+          },
+          {
+            "month": "Mar",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Apr",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "May",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jun",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jul",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Aug",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Sep",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Oct",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Nov",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Dec",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          }
+        ],
+        "weekly_data": [
+          {
+            "week": "W1",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W2",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W3",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W4",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W5",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W6",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W7",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W8",
+            "revenue": 20810.0,
+            "deals": 1
+          }
+        ],
+        "status_distribution": {
+          "SALE": 2,
+          "LOST": 0,
+          "PENDING": 6
+        },
+        "records": [
+          {
+            "name": "RACHEL ROSALES",
+            "city": "CHCIAGO",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 20810.0,
+            "status": "SALE",
+            "visit_date": "2026-02-02",
+            "close_date": "2026-02-02"
+          },
+          {
+            "name": "LAURIE SHAPIRO",
+            "city": "ELMWOOD PARK",
+            "unit_type": "HEAT PUMP",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "ISAAC CASTRO",
+            "city": "AURORA",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "JENNIFER MORSE",
+            "city": "LIVERTYVILLE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "MIKE AB",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "EDITH RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-07",
+            "close_date": ""
+          },
+          {
+            "name": "ALEX KUCHER",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "status": "SALE",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          },
+          {
+            "name": "ROBERTO RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "FUrnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          }
+        ]
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:47:00.569711"
+    },
+    {
+      "test_name": "Dashboard KPIs (2weeks)",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "total_revenue": 68790.0,
+        "total_commission": 3439.5,
+        "closed_deals": 6,
+        "closing_rate": 33.3,
+        "average_ticket": 11465.0,
+        "total_visits": 18,
+        "avg_sales_cycle_days": 2.2,
+        "price_margin": 3439.5,
+        "unit_type_count": {
+          "Unknown": 1,
+          "Furnace + AC": 2,
+          "Furnace": 2,
+          "Furnace + HP": 1
+        },
+        "unit_type_revenue": {
+          "Unknown": 4455.0,
+          "Furnace + AC": 31420.0,
+          "Furnace": 12105.0,
+          "Furnace + HP": 20810.0
+        },
+        "monthly_data": [
+          {
+            "month": "Jan",
+            "revenue": 21615.0,
+            "deals": 2,
+            "commission": 1080.75
+          },
+          {
+            "month": "Feb",
+            "revenue": 41045.0,
+            "deals": 3,
+            "commission": 2052.25
+          },
+          {
+            "month": "Mar",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Apr",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "May",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jun",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jul",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Aug",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Sep",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Oct",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Nov",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Dec",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          }
+        ],
+        "weekly_data": [
+          {
+            "week": "W1",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W2",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W3",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W4",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W5",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W6",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W7",
+            "revenue": 41850.0,
+            "deals": 4
+          },
+          {
+            "week": "W8",
+            "revenue": 20810.0,
+            "deals": 1
+          }
+        ],
+        "status_distribution": {
+          "SALE": 6,
+          "LOST": 1,
+          "PENDING": 11
+        },
+        "records": [
+          {
+            "name": "ERIC SORENASON",
+            "city": "EVANSTONE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-26",
+            "close_date": ""
+          },
+          {
+            "name": "ORTENSIA ZERMENO",
+            "city": "CHICAGO",
+            "unit_type": "BOILER",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-26",
+            "close_date": ""
+          },
+          {
+            "name": "TJ RICKERT",
+            "city": "CHICAGO",
+            "unit_type": "",
+            "ticket_value": 4455.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-02-01"
+          },
+          {
+            "name": "WILL MCDERMITH",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15640.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-01-30"
+          },
+          {
+            "name": "STEPHANIE MORALES",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 5975.0,
+            "status": "SALE",
+            "visit_date": "2026-01-28",
+            "close_date": "2026-01-28"
+          },
+          {
+            "name": "GWEN KENDRICK",
+            "city": "BELLWOOD",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15780.0,
+            "status": "SALE",
+            "visit_date": "2026-01-29",
+            "close_date": "2026-02-01"
+          },
+          {
+            "name": "ERIK RAESTS",
+            "city": "GRAYSLAKE",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": ""
+          },
+          {
+            "name": "JENNY RICCIARDI",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": ""
+          },
+          {
+            "name": "NATSUMI TSUZUKI",
+            "city": "ELK GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": ""
+          },
+          {
+            "name": "JOSH DENIZ",
+            "city": "NAPERVILLE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": ""
+          },
+          {
+            "name": "RACHEL ROSALES",
+            "city": "CHCIAGO",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 20810.0,
+            "status": "SALE",
+            "visit_date": "2026-02-02",
+            "close_date": "2026-02-02"
+          },
+          {
+            "name": "LAURIE SHAPIRO",
+            "city": "ELMWOOD PARK",
+            "unit_type": "HEAT PUMP",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "ISAAC CASTRO",
+            "city": "AURORA",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "JENNIFER MORSE",
+            "city": "LIVERTYVILLE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "MIKE AB",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "EDITH RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-07",
+            "close_date": ""
+          },
+          {
+            "name": "ALEX KUCHER",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "status": "SALE",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          },
+          {
+            "name": "ROBERTO RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "FUrnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          }
+        ]
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:47:00.771885"
+    },
+    {
+      "test_name": "Dashboard KPIs (month)",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "total_revenue": 148940.0,
+        "total_commission": 7447.0,
+        "closed_deals": 15,
+        "closing_rate": 42.9,
+        "average_ticket": 9929.33,
+        "total_visits": 35,
+        "avg_sales_cycle_days": 158.1,
+        "price_margin": 7447.0,
+        "unit_type_count": {
+          "Furnace": 6,
+          "Furnace + HP": 3,
+          "FURNACE": 3,
+          "Unknown": 1,
+          "Furnace + AC": 2
+        },
+        "unit_type_revenue": {
+          "Furnace": 42870.0,
+          "Furnace + HP": 49150.0,
+          "FURNACE": 21045.0,
+          "Unknown": 4455.0,
+          "Furnace + AC": 31420.0
+        },
+        "monthly_data": [
+          {
+            "month": "Jan",
+            "revenue": 101765.0,
+            "deals": 11,
+            "commission": 5088.25
+          },
+          {
+            "month": "Feb",
+            "revenue": 41045.0,
+            "deals": 3,
+            "commission": 2052.25
+          },
+          {
+            "month": "Mar",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Apr",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "May",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jun",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jul",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Aug",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Sep",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Oct",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Nov",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Dec",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          }
+        ],
+        "weekly_data": [
+          {
+            "week": "W1",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W2",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W3",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W4",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W5",
+            "revenue": 55980.0,
+            "deals": 6
+          },
+          {
+            "week": "W6",
+            "revenue": 24170.0,
+            "deals": 3
+          },
+          {
+            "week": "W7",
+            "revenue": 41850.0,
+            "deals": 4
+          },
+          {
+            "week": "W8",
+            "revenue": 20810.0,
+            "deals": 1
+          }
+        ],
+        "status_distribution": {
+          "SALE": 15,
+          "LOST": 3,
+          "PENDING": 17
+        },
+        "records": [
+          {
+            "name": "RYAN OBERMEYER",
+            "city": "LINDENHURST",
+            "unit_type": "Furnace",
+            "ticket_value": 6595.0,
+            "status": "SALE",
+            "visit_date": "2026-01-07",
+            "close_date": "2026-01-14"
+          },
+          {
+            "name": "KATHRYN DAGRES",
+            "city": "NORTH AURORA",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 14755.0,
+            "status": "SALE",
+            "visit_date": "2026-01-12",
+            "close_date": "2026-01-12"
+          },
+          {
+            "name": "JACKSON KRECIOCH",
+            "city": "SKOKIE",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 13585.0,
+            "status": "SALE",
+            "visit_date": "2026-01-13",
+            "close_date": "2026-01-13"
+          },
+          {
+            "name": "PAUL JONES",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 9740.0,
+            "status": "SALE",
+            "visit_date": "2026-01-15",
+            "close_date": "2026-01-18"
+          },
+          {
+            "name": "WILL JANFLAND",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 6185.0,
+            "status": "SALE",
+            "visit_date": "2026-01-15",
+            "close_date": "2026-01-15"
+          },
+          {
+            "name": "ISHRAT MERCHANT",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 5120.0,
+            "status": "SALE",
+            "visit_date": "2020-01-16",
+            "close_date": "2026-01-16"
+          },
+          {
+            "name": "JASMINE MCEWEN",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-16",
+            "close_date": ""
+          },
+          {
+            "name": "CHRISTIAN GARCIA",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6995.0,
+            "status": "SALE",
+            "visit_date": "2026-01-19",
+            "close_date": "2026-01-19"
+          },
+          {
+            "name": "KYLE MERCHANT",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-20",
+            "close_date": ""
+          },
+          {
+            "name": "JASON LENHAHAN",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": ""
+          },
+          {
+            "name": "JASMINE ADKINS",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": ""
+          },
+          {
+            "name": "RAMON CARRANZA",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": ""
+          },
+          {
+            "name": "SARA GAYNOR",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-20",
+            "close_date": ""
+          },
+          {
+            "name": "AMER QURAISHI",
+            "city": "WOOD DALE",
+            "unit_type": "Furnace",
+            "ticket_value": 5785.0,
+            "status": "LOST",
+            "visit_date": "2026-01-23",
+            "close_date": "2026-01-23"
+          },
+          {
+            "name": "TED KELOEZIEJ",
+            "city": "BROOKFIELD",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "status": "SALE",
+            "visit_date": "2026-01-23",
+            "close_date": "2026-01-23"
+          },
+          {
+            "name": "ARMANDO GARDUNO",
+            "city": "DOWNERS GROVE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-23",
+            "close_date": ""
+          },
+          {
+            "name": "MELANIE SHOW",
+            "city": "SAINT CHARLES",
+            "unit_type": "Furnace",
+            "ticket_value": 11045.0,
+            "status": "SALE",
+            "visit_date": "2026-01-24",
+            "close_date": "2026-01-25"
+          },
+          {
+            "name": "ERIC SORENASON",
+            "city": "EVANSTONE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-26",
+            "close_date": ""
+          },
+          {
+            "name": "ORTENSIA ZERMENO",
+            "city": "CHICAGO",
+            "unit_type": "BOILER",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-26",
+            "close_date": ""
+          },
+          {
+            "name": "TJ RICKERT",
+            "city": "CHICAGO",
+            "unit_type": "",
+            "ticket_value": 4455.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-02-01"
+          },
+          {
+            "name": "WILL MCDERMITH",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15640.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-01-30"
+          },
+          {
+            "name": "STEPHANIE MORALES",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 5975.0,
+            "status": "SALE",
+            "visit_date": "2026-01-28",
+            "close_date": "2026-01-28"
+          },
+          {
+            "name": "GWEN KENDRICK",
+            "city": "BELLWOOD",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15780.0,
+            "status": "SALE",
+            "visit_date": "2026-01-29",
+            "close_date": "2026-02-01"
+          },
+          {
+            "name": "ERIK RAESTS",
+            "city": "GRAYSLAKE",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": ""
+          },
+          {
+            "name": "JENNY RICCIARDI",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": ""
+          },
+          {
+            "name": "NATSUMI TSUZUKI",
+            "city": "ELK GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": ""
+          },
+          {
+            "name": "JOSH DENIZ",
+            "city": "NAPERVILLE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": ""
+          },
+          {
+            "name": "RACHEL ROSALES",
+            "city": "CHCIAGO",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 20810.0,
+            "status": "SALE",
+            "visit_date": "2026-02-02",
+            "close_date": "2026-02-02"
+          },
+          {
+            "name": "LAURIE SHAPIRO",
+            "city": "ELMWOOD PARK",
+            "unit_type": "HEAT PUMP",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "ISAAC CASTRO",
+            "city": "AURORA",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "JENNIFER MORSE",
+            "city": "LIVERTYVILLE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "MIKE AB",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "EDITH RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-07",
+            "close_date": ""
+          },
+          {
+            "name": "ALEX KUCHER",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "status": "SALE",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          },
+          {
+            "name": "ROBERTO RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "FUrnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          }
+        ]
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:47:00.988467"
+    },
+    {
+      "test_name": "Dashboard KPIs (year)",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "total_revenue": 197316.0,
+        "total_commission": 9865.8,
+        "closed_deals": 20,
+        "closing_rate": 42.6,
+        "average_ticket": 9865.8,
+        "total_visits": 47,
+        "avg_sales_cycle_days": 116.7,
+        "price_margin": 9865.8,
+        "unit_type_count": {
+          "Furnace": 8,
+          "Furnace + AC": 5,
+          "Furnace + HP": 3,
+          "FURNACE": 3,
+          "Unknown": 1
+        },
+        "unit_type_revenue": {
+          "Furnace": 55820.0,
+          "Furnace + AC": 66846.0,
+          "Furnace + HP": 49150.0,
+          "FURNACE": 21045.0,
+          "Unknown": 4455.0
+        },
+        "monthly_data": [
+          {
+            "month": "Jan",
+            "revenue": 132315.0,
+            "deals": 14,
+            "commission": 6615.75
+          },
+          {
+            "month": "Feb",
+            "revenue": 41045.0,
+            "deals": 3,
+            "commission": 2052.25
+          },
+          {
+            "month": "Mar",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Apr",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "May",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jun",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Jul",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Aug",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Sep",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Oct",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Nov",
+            "revenue": 0.0,
+            "deals": 0,
+            "commission": 0.0
+          },
+          {
+            "month": "Dec",
+            "revenue": 17826.0,
+            "deals": 2,
+            "commission": 891.3000000000001
+          }
+        ],
+        "weekly_data": [
+          {
+            "week": "W1",
+            "revenue": 6945.0,
+            "deals": 1
+          },
+          {
+            "week": "W2",
+            "revenue": 10881.0,
+            "deals": 1
+          },
+          {
+            "week": "W3",
+            "revenue": 30550.0,
+            "deals": 3
+          },
+          {
+            "week": "W4",
+            "revenue": 0.0,
+            "deals": 0
+          },
+          {
+            "week": "W5",
+            "revenue": 55980.0,
+            "deals": 6
+          },
+          {
+            "week": "W6",
+            "revenue": 24170.0,
+            "deals": 3
+          },
+          {
+            "week": "W7",
+            "revenue": 41850.0,
+            "deals": 4
+          },
+          {
+            "week": "W8",
+            "revenue": 20810.0,
+            "deals": 1
+          }
+        ],
+        "status_distribution": {
+          "SALE": 20,
+          "LOST": 10,
+          "PENDING": 17
+        },
+        "records": [
+          {
+            "name": "SNEHLATA PATEL",
+            "city": "Addison",
+            "unit_type": "Furnace",
+            "ticket_value": 6945.0,
+            "status": "SALE",
+            "visit_date": "2025-12-20",
+            "close_date": "2025-12-20"
+          },
+          {
+            "name": "JAKE GRAFSTEIN",
+            "city": "DEERFIELD",
+            "unit_type": "Furnace",
+            "ticket_value": 4250.0,
+            "status": "LOST",
+            "visit_date": "2025-12-22",
+            "close_date": ""
+          },
+          {
+            "name": "SANDEEP BUTAPATI",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 11790.0,
+            "status": "LOST",
+            "visit_date": "2025-12-23",
+            "close_date": ""
+          },
+          {
+            "name": "ELENA NIKOLOVA",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 12750.0,
+            "status": "LOST",
+            "visit_date": "2025-12-23",
+            "close_date": ""
+          },
+          {
+            "name": "MATT FUQUA",
+            "city": "HINDSDALE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 10881.0,
+            "status": "SALE",
+            "visit_date": "2025-12-27",
+            "close_date": "2025-12-27"
+          },
+          {
+            "name": "RICHARD BREHM",
+            "city": "Lake Forest",
+            "unit_type": "Furnace",
+            "ticket_value": 4250.0,
+            "status": "LOST",
+            "visit_date": "2025-12-20",
+            "close_date": ""
+          },
+          {
+            "name": "NICK JENNINGS",
+            "city": "FRANKLIN PARK",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 10665.0,
+            "status": "SALE",
+            "visit_date": "2025-12-31",
+            "close_date": "2026-01-02"
+          },
+          {
+            "name": " DIVA EDWARDS",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6005.0,
+            "status": "SALE",
+            "visit_date": "2026-01-01",
+            "close_date": "2026-01-02"
+          },
+          {
+            "name": "JOSHUA CHESMORE",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 13880.0,
+            "status": "SALE",
+            "visit_date": "2026-01-02",
+            "close_date": "2026-01-02"
+          },
+          {
+            "name": "Tom Kenner",
+            "city": "Palatine",
+            "unit_type": "Furnace",
+            "ticket_value": 12019.0,
+            "status": "LOST",
+            "visit_date": "2026-01-05",
+            "close_date": ""
+          },
+          {
+            "name": "Rebecca Moore",
+            "city": "Wonder Lake",
+            "unit_type": "Furnace",
+            "ticket_value": 4900.0,
+            "status": "LOST",
+            "visit_date": "2026-01-05",
+            "close_date": ""
+          },
+          {
+            "name": "RYAN OBERMEYER",
+            "city": "LINDENHURST",
+            "unit_type": "Furnace",
+            "ticket_value": 6595.0,
+            "status": "SALE",
+            "visit_date": "2026-01-07",
+            "close_date": "2026-01-14"
+          },
+          {
+            "name": "CARLOS GARCIA",
+            "city": "MOUNT PROSPECT",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 11860.0,
+            "status": "LOST",
+            "visit_date": "2026-01-09",
+            "close_date": ""
+          },
+          {
+            "name": "KATHRYN DAGRES",
+            "city": "NORTH AURORA",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 14755.0,
+            "status": "SALE",
+            "visit_date": "2026-01-12",
+            "close_date": "2026-01-12"
+          },
+          {
+            "name": "JACKSON KRECIOCH",
+            "city": "SKOKIE",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 13585.0,
+            "status": "SALE",
+            "visit_date": "2026-01-13",
+            "close_date": "2026-01-13"
+          },
+          {
+            "name": "PAUL JONES",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 9740.0,
+            "status": "SALE",
+            "visit_date": "2026-01-15",
+            "close_date": "2026-01-18"
+          },
+          {
+            "name": "WILL JANFLAND",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 6185.0,
+            "status": "SALE",
+            "visit_date": "2026-01-15",
+            "close_date": "2026-01-15"
+          },
+          {
+            "name": "ISHRAT MERCHANT",
+            "city": "CHICAGO",
+            "unit_type": "FURNACE",
+            "ticket_value": 5120.0,
+            "status": "SALE",
+            "visit_date": "2020-01-16",
+            "close_date": "2026-01-16"
+          },
+          {
+            "name": "JASMINE MCEWEN",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-16",
+            "close_date": ""
+          },
+          {
+            "name": "CHRISTIAN GARCIA",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6995.0,
+            "status": "SALE",
+            "visit_date": "2026-01-19",
+            "close_date": "2026-01-19"
+          },
+          {
+            "name": "KYLE MERCHANT",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-20",
+            "close_date": ""
+          },
+          {
+            "name": "JASON LENHAHAN",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": ""
+          },
+          {
+            "name": "JASMINE ADKINS",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": ""
+          },
+          {
+            "name": "RAMON CARRANZA",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-19",
+            "close_date": ""
+          },
+          {
+            "name": "SARA GAYNOR",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-20",
+            "close_date": ""
+          },
+          {
+            "name": "AMER QURAISHI",
+            "city": "WOOD DALE",
+            "unit_type": "Furnace",
+            "ticket_value": 5785.0,
+            "status": "LOST",
+            "visit_date": "2026-01-23",
+            "close_date": "2026-01-23"
+          },
+          {
+            "name": "TED KELOEZIEJ",
+            "city": "BROOKFIELD",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "status": "SALE",
+            "visit_date": "2026-01-23",
+            "close_date": "2026-01-23"
+          },
+          {
+            "name": "ARMANDO GARDUNO",
+            "city": "DOWNERS GROVE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-23",
+            "close_date": ""
+          },
+          {
+            "name": "MELANIE SHOW",
+            "city": "SAINT CHARLES",
+            "unit_type": "Furnace",
+            "ticket_value": 11045.0,
+            "status": "SALE",
+            "visit_date": "2026-01-24",
+            "close_date": "2026-01-25"
+          },
+          {
+            "name": "ERIC SORENASON",
+            "city": "EVANSTONE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "LOST",
+            "visit_date": "2026-01-26",
+            "close_date": ""
+          },
+          {
+            "name": "ORTENSIA ZERMENO",
+            "city": "CHICAGO",
+            "unit_type": "BOILER",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-26",
+            "close_date": ""
+          },
+          {
+            "name": "TJ RICKERT",
+            "city": "CHICAGO",
+            "unit_type": "",
+            "ticket_value": 4455.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-02-01"
+          },
+          {
+            "name": "WILL MCDERMITH",
+            "city": "LAKE ZURICH",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15640.0,
+            "status": "SALE",
+            "visit_date": "2026-01-27",
+            "close_date": "2026-01-30"
+          },
+          {
+            "name": "STEPHANIE MORALES",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 5975.0,
+            "status": "SALE",
+            "visit_date": "2026-01-28",
+            "close_date": "2026-01-28"
+          },
+          {
+            "name": "GWEN KENDRICK",
+            "city": "BELLWOOD",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 15780.0,
+            "status": "SALE",
+            "visit_date": "2026-01-29",
+            "close_date": "2026-02-01"
+          },
+          {
+            "name": "ERIK RAESTS",
+            "city": "GRAYSLAKE",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": ""
+          },
+          {
+            "name": "JENNY RICCIARDI",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-30",
+            "close_date": ""
+          },
+          {
+            "name": "NATSUMI TSUZUKI",
+            "city": "ELK GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": ""
+          },
+          {
+            "name": "JOSH DENIZ",
+            "city": "NAPERVILLE",
+            "unit_type": "Furnace",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-01-31",
+            "close_date": ""
+          },
+          {
+            "name": "RACHEL ROSALES",
+            "city": "CHCIAGO",
+            "unit_type": "Furnace + HP",
+            "ticket_value": 20810.0,
+            "status": "SALE",
+            "visit_date": "2026-02-02",
+            "close_date": "2026-02-02"
+          },
+          {
+            "name": "LAURIE SHAPIRO",
+            "city": "ELMWOOD PARK",
+            "unit_type": "HEAT PUMP",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "ISAAC CASTRO",
+            "city": "AURORA",
+            "unit_type": "AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-02",
+            "close_date": ""
+          },
+          {
+            "name": "JENNIFER MORSE",
+            "city": "LIVERTYVILLE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "MIKE AB",
+            "city": "BUFFALO GROVE",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-05",
+            "close_date": ""
+          },
+          {
+            "name": "EDITH RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "Furnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-07",
+            "close_date": ""
+          },
+          {
+            "name": "ALEX KUCHER",
+            "city": "CHICAGO",
+            "unit_type": "Furnace",
+            "ticket_value": 6130.0,
+            "status": "SALE",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          },
+          {
+            "name": "ROBERTO RODRIGUEZ",
+            "city": "CHICAGO",
+            "unit_type": "FUrnace + AC",
+            "ticket_value": 0.0,
+            "status": "PENDING",
+            "visit_date": "2026-02-06",
+            "close_date": ""
+          }
+        ]
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:47:01.204029"
+    },
+    {
+      "test_name": "Dashboard Refresh",
+      "success": true,
+      "status_code": 200,
+      "response_data": {
+        "message": "Data refreshed successfully",
+        "kpis": {
+          "total_revenue": 197316.0,
+          "total_commission": 9865.8,
+          "closed_deals": 20,
+          "closing_rate": 41.7,
+          "average_ticket": 9865.8,
+          "total_visits": 48,
+          "avg_sales_cycle_days": 116.7,
+          "price_margin": 9865.8,
+          "unit_type_count": {
+            "Furnace": 8,
+            "Furnace + AC": 5,
+            "Furnace + HP": 3,
+            "FURNACE": 3,
+            "Unknown": 1
+          },
+          "unit_type_revenue": {
+            "Furnace": 55820.0,
+            "Furnace + AC": 66846.0,
+            "Furnace + HP": 49150.0,
+            "FURNACE": 21045.0,
+            "Unknown": 4455.0
+          },
+          "monthly_data": [
+            {
+              "month": "Jan",
+              "revenue": 132315.0,
+              "deals": 14,
+              "commission": 6615.75
+            },
+            {
+              "month": "Feb",
+              "revenue": 41045.0,
+              "deals": 3,
+              "commission": 2052.25
+            },
+            {
+              "month": "Mar",
+              "revenue": 0.0,
+              "deals": 0,
+              "commission": 0.0
+            },
+            {
+              "month": "Apr",
+              "revenue": 0.0,
+              "deals": 0,
+              "commission": 0.0
+            },
+            {
+              "month": "May",
+              "revenue": 0.0,
+              "deals": 0,
+              "commission": 0.0
+            },
+            {
+              "month": "Jun",
+              "revenue": 0.0,
+              "deals": 0,
+              "commission": 0.0
+            },
+            {
+              "month": "Jul",
+              "revenue": 0.0,
+              "deals": 0,
+              "commission": 0.0
+            },
+            {
+              "month": "Aug",
+              "revenue": 0.0,
+              "deals": 0,
+              "commission": 0.0
+            },
+            {
+              "month": "Sep",
+              "revenue": 0.0,
+              "deals": 0,
+              "commission": 0.0
+            },
+            {
+              "month": "Oct",
+              "revenue": 0.0,
+              "deals": 0,
+              "commission": 0.0
+            },
+            {
+              "month": "Nov",
+              "revenue": 0.0,
+              "deals": 0,
+              "commission": 0.0
+            },
+            {
+              "month": "Dec",
+              "revenue": 17826.0,
+              "deals": 2,
+              "commission": 891.3000000000001
+            }
+          ],
+          "weekly_data": [
+            {
+              "week": "W1",
+              "revenue": 6945.0,
+              "deals": 1
+            },
+            {
+              "week": "W2",
+              "revenue": 10881.0,
+              "deals": 1
+            },
+            {
+              "week": "W3",
+              "revenue": 30550.0,
+              "deals": 3
+            },
+            {
+              "week": "W4",
+              "revenue": 0.0,
+              "deals": 0
+            },
+            {
+              "week": "W5",
+              "revenue": 55980.0,
+              "deals": 6
+            },
+            {
+              "week": "W6",
+              "revenue": 24170.0,
+              "deals": 3
+            },
+            {
+              "week": "W7",
+              "revenue": 41850.0,
+              "deals": 4
+            },
+            {
+              "week": "W8",
+              "revenue": 20810.0,
+              "deals": 1
+            }
+          ],
+          "status_distribution": {
+            "SALE": 20,
+            "LOST": 10,
+            "PENDING": 18
+          },
+          "records": [
+            {
+              "name": "SNEHLATA PATEL",
+              "city": "Addison",
+              "unit_type": "Furnace",
+              "ticket_value": 6945.0,
+              "status": "SALE",
+              "visit_date": "2025-12-20",
+              "close_date": "2025-12-20"
+            },
+            {
+              "name": "JAKE GRAFSTEIN",
+              "city": "DEERFIELD",
+              "unit_type": "Furnace",
+              "ticket_value": 4250.0,
+              "status": "LOST",
+              "visit_date": "2025-12-22",
+              "close_date": ""
+            },
+            {
+              "name": "SANDEEP BUTAPATI",
+              "city": "LAKE ZURICH",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 11790.0,
+              "status": "LOST",
+              "visit_date": "2025-12-23",
+              "close_date": ""
+            },
+            {
+              "name": "ELENA NIKOLOVA",
+              "city": "LAKE ZURICH",
+              "unit_type": "Furnace + HP",
+              "ticket_value": 12750.0,
+              "status": "LOST",
+              "visit_date": "2025-12-23",
+              "close_date": ""
+            },
+            {
+              "name": "MATT FUQUA",
+              "city": "HINDSDALE",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 10881.0,
+              "status": "SALE",
+              "visit_date": "2025-12-27",
+              "close_date": "2025-12-27"
+            },
+            {
+              "name": "RICHARD BREHM",
+              "city": "Lake Forest",
+              "unit_type": "Furnace",
+              "ticket_value": 4250.0,
+              "status": "LOST",
+              "visit_date": "2025-12-20",
+              "close_date": ""
+            },
+            {
+              "name": "NICK JENNINGS",
+              "city": "FRANKLIN PARK",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 10665.0,
+              "status": "SALE",
+              "visit_date": "2025-12-31",
+              "close_date": "2026-01-02"
+            },
+            {
+              "name": " DIVA EDWARDS",
+              "city": "CHICAGO",
+              "unit_type": "Furnace",
+              "ticket_value": 6005.0,
+              "status": "SALE",
+              "visit_date": "2026-01-01",
+              "close_date": "2026-01-02"
+            },
+            {
+              "name": "JOSHUA CHESMORE",
+              "city": "CHICAGO",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 13880.0,
+              "status": "SALE",
+              "visit_date": "2026-01-02",
+              "close_date": "2026-01-02"
+            },
+            {
+              "name": "Tom Kenner",
+              "city": "Palatine",
+              "unit_type": "Furnace",
+              "ticket_value": 12019.0,
+              "status": "LOST",
+              "visit_date": "2026-01-05",
+              "close_date": ""
+            },
+            {
+              "name": "Rebecca Moore",
+              "city": "Wonder Lake",
+              "unit_type": "Furnace",
+              "ticket_value": 4900.0,
+              "status": "LOST",
+              "visit_date": "2026-01-05",
+              "close_date": ""
+            },
+            {
+              "name": "RYAN OBERMEYER",
+              "city": "LINDENHURST",
+              "unit_type": "Furnace",
+              "ticket_value": 6595.0,
+              "status": "SALE",
+              "visit_date": "2026-01-07",
+              "close_date": "2026-01-14"
+            },
+            {
+              "name": "CARLOS GARCIA",
+              "city": "MOUNT PROSPECT",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 11860.0,
+              "status": "LOST",
+              "visit_date": "2026-01-09",
+              "close_date": ""
+            },
+            {
+              "name": "KATHRYN DAGRES",
+              "city": "NORTH AURORA",
+              "unit_type": "Furnace + HP",
+              "ticket_value": 14755.0,
+              "status": "SALE",
+              "visit_date": "2026-01-12",
+              "close_date": "2026-01-12"
+            },
+            {
+              "name": "JACKSON KRECIOCH",
+              "city": "SKOKIE",
+              "unit_type": "Furnace + HP",
+              "ticket_value": 13585.0,
+              "status": "SALE",
+              "visit_date": "2026-01-13",
+              "close_date": "2026-01-13"
+            },
+            {
+              "name": "PAUL JONES",
+              "city": "CHICAGO",
+              "unit_type": "FURNACE",
+              "ticket_value": 9740.0,
+              "status": "SALE",
+              "visit_date": "2026-01-15",
+              "close_date": "2026-01-18"
+            },
+            {
+              "name": "WILL JANFLAND",
+              "city": "CHICAGO",
+              "unit_type": "FURNACE",
+              "ticket_value": 6185.0,
+              "status": "SALE",
+              "visit_date": "2026-01-15",
+              "close_date": "2026-01-15"
+            },
+            {
+              "name": "ISHRAT MERCHANT",
+              "city": "CHICAGO",
+              "unit_type": "FURNACE",
+              "ticket_value": 5120.0,
+              "status": "SALE",
+              "visit_date": "2020-01-16",
+              "close_date": "2026-01-16"
+            },
+            {
+              "name": "TRISTRAM BONE",
+              "city": "CHICAGO",
+              "unit_type": "FURNACE",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2020-01-16",
+              "close_date": ""
+            },
+            {
+              "name": "JASMINE MCEWEN",
+              "city": "CHICAGO",
+              "unit_type": "Furnace",
+              "ticket_value": 0.0,
+              "status": "LOST",
+              "visit_date": "2026-01-16",
+              "close_date": ""
+            },
+            {
+              "name": "CHRISTIAN GARCIA",
+              "city": "CHICAGO",
+              "unit_type": "Furnace",
+              "ticket_value": 6995.0,
+              "status": "SALE",
+              "visit_date": "2026-01-19",
+              "close_date": "2026-01-19"
+            },
+            {
+              "name": "KYLE MERCHANT",
+              "city": "CHICAGO",
+              "unit_type": "Furnace",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-20",
+              "close_date": ""
+            },
+            {
+              "name": "JASON LENHAHAN",
+              "city": "CHICAGO",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-19",
+              "close_date": ""
+            },
+            {
+              "name": "JASMINE ADKINS",
+              "city": "CHICAGO",
+              "unit_type": "Furnace",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-19",
+              "close_date": ""
+            },
+            {
+              "name": "RAMON CARRANZA",
+              "city": "CHICAGO",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-19",
+              "close_date": ""
+            },
+            {
+              "name": "SARA GAYNOR",
+              "city": "BUFFALO GROVE",
+              "unit_type": "Furnace + HP",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-20",
+              "close_date": ""
+            },
+            {
+              "name": "AMER QURAISHI",
+              "city": "WOOD DALE",
+              "unit_type": "Furnace",
+              "ticket_value": 5785.0,
+              "status": "LOST",
+              "visit_date": "2026-01-23",
+              "close_date": "2026-01-23"
+            },
+            {
+              "name": "TED KELOEZIEJ",
+              "city": "BROOKFIELD",
+              "unit_type": "Furnace",
+              "ticket_value": 6130.0,
+              "status": "SALE",
+              "visit_date": "2026-01-23",
+              "close_date": "2026-01-23"
+            },
+            {
+              "name": "ARMANDO GARDUNO",
+              "city": "DOWNERS GROVE",
+              "unit_type": "Furnace",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-23",
+              "close_date": ""
+            },
+            {
+              "name": "MELANIE SHOW",
+              "city": "SAINT CHARLES",
+              "unit_type": "Furnace",
+              "ticket_value": 11045.0,
+              "status": "SALE",
+              "visit_date": "2026-01-24",
+              "close_date": "2026-01-25"
+            },
+            {
+              "name": "ERIC SORENASON",
+              "city": "EVANSTONE",
+              "unit_type": "Furnace",
+              "ticket_value": 0.0,
+              "status": "LOST",
+              "visit_date": "2026-01-26",
+              "close_date": ""
+            },
+            {
+              "name": "ORTENSIA ZERMENO",
+              "city": "CHICAGO",
+              "unit_type": "BOILER",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-26",
+              "close_date": ""
+            },
+            {
+              "name": "TJ RICKERT",
+              "city": "CHICAGO",
+              "unit_type": "",
+              "ticket_value": 4455.0,
+              "status": "SALE",
+              "visit_date": "2026-01-27",
+              "close_date": "2026-02-01"
+            },
+            {
+              "name": "WILL MCDERMITH",
+              "city": "LAKE ZURICH",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 15640.0,
+              "status": "SALE",
+              "visit_date": "2026-01-27",
+              "close_date": "2026-01-30"
+            },
+            {
+              "name": "STEPHANIE MORALES",
+              "city": "CHICAGO",
+              "unit_type": "Furnace",
+              "ticket_value": 5975.0,
+              "status": "SALE",
+              "visit_date": "2026-01-28",
+              "close_date": "2026-01-28"
+            },
+            {
+              "name": "GWEN KENDRICK",
+              "city": "BELLWOOD",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 15780.0,
+              "status": "SALE",
+              "visit_date": "2026-01-29",
+              "close_date": "2026-02-01"
+            },
+            {
+              "name": "ERIK RAESTS",
+              "city": "GRAYSLAKE",
+              "unit_type": "AC",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-30",
+              "close_date": ""
+            },
+            {
+              "name": "JENNY RICCIARDI",
+              "city": "CHICAGO",
+              "unit_type": "Furnace",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-30",
+              "close_date": ""
+            },
+            {
+              "name": "NATSUMI TSUZUKI",
+              "city": "ELK GROVE",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-31",
+              "close_date": ""
+            },
+            {
+              "name": "JOSH DENIZ",
+              "city": "NAPERVILLE",
+              "unit_type": "Furnace",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-01-31",
+              "close_date": ""
+            },
+            {
+              "name": "RACHEL ROSALES",
+              "city": "CHCIAGO",
+              "unit_type": "Furnace + HP",
+              "ticket_value": 20810.0,
+              "status": "SALE",
+              "visit_date": "2026-02-02",
+              "close_date": "2026-02-02"
+            },
+            {
+              "name": "LAURIE SHAPIRO",
+              "city": "ELMWOOD PARK",
+              "unit_type": "HEAT PUMP",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-02-02",
+              "close_date": ""
+            },
+            {
+              "name": "ISAAC CASTRO",
+              "city": "AURORA",
+              "unit_type": "AC",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-02-02",
+              "close_date": ""
+            },
+            {
+              "name": "JENNIFER MORSE",
+              "city": "LIVERTYVILLE",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-02-05",
+              "close_date": ""
+            },
+            {
+              "name": "MIKE AB",
+              "city": "BUFFALO GROVE",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-02-05",
+              "close_date": ""
+            },
+            {
+              "name": "EDITH RODRIGUEZ",
+              "city": "CHICAGO",
+              "unit_type": "Furnace + AC",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-02-07",
+              "close_date": ""
+            },
+            {
+              "name": "ALEX KUCHER",
+              "city": "CHICAGO",
+              "unit_type": "Furnace",
+              "ticket_value": 6130.0,
+              "status": "SALE",
+              "visit_date": "2026-02-06",
+              "close_date": ""
+            },
+            {
+              "name": "ROBERTO RODRIGUEZ",
+              "city": "CHICAGO",
+              "unit_type": "FUrnace + AC",
+              "ticket_value": 0.0,
+              "status": "PENDING",
+              "visit_date": "2026-02-06",
+              "close_date": ""
+            },
+            {
+              "name": "nan",
+              "city": "",
+              "unit_type": "",
+              "ticket_value": 0.0,
+              "status": "UNKNOWN",
+              "visit_date": "",
+              "close_date": ""
+            },
+            {
+              "name": "nan",
+              "city": "",
+              "unit_type": "",
+              "ticket_value": 0.0,
+              "status": "UNKNOWN",
+              "visit_date": "",
+              "close_date": ""
+            }
+          ]
+        }
+      },
+      "error_msg": null,
+      "timestamp": "2026-02-08T15:47:01.423588"
+    }
+  ]
+}
