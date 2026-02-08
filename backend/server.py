@@ -222,8 +222,20 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
     # Clean and normalize data
     df['status'] = df['status'].apply(normalize_status)
-    df['ticket_value'] = df['ticket_value'].apply(lambda x: safe_float(x))
-    df['commission_percent'] = df['commission_percent'].apply(lambda x: safe_float(x))
+    
+    # Process ticket_value - filter out values that look like Excel date serials (40000-50000 range)
+    def clean_ticket_value(x):
+        val = safe_float(x)
+        # Excel date serials for 2020-2030 are roughly 43000-47000
+        # Filter out these invalid values but keep real ticket values
+        if 40000 <= val <= 50000:
+            return 0.0  # Likely an Excel date serial, not a real value
+        return val
+    
+    df['ticket_value'] = df['ticket_value'].apply(clean_ticket_value)
+    
+    # Commission percent - stored as decimal (0.08 = 8%)
+    df['commission_percent'] = df['commission_percent'].apply(lambda x: safe_float(x) * 100 if safe_float(x) < 1 else safe_float(x))
     df['spif_commission'] = df['spif_commission'].apply(lambda x: safe_float(x))
     df['visit_date'] = df['visit_date'].apply(safe_date)
     df['close_date'] = df['close_date'].apply(safe_date)
