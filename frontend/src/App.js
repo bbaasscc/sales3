@@ -1058,6 +1058,133 @@ function App() {
         </div>
       )}
 
+      {/* Sale Detail Modal */}
+      {selectedSale && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedSale(null)}>
+          <div 
+            className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-green-600 text-white px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-xl">
+              <div>
+                <h3 className="text-lg font-bold">{selectedSale.name}</h3>
+                <p className="text-sm text-white/80">Sale Details</p>
+              </div>
+              <button 
+                onClick={() => setSelectedSale(null)}
+                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                data-testid="close-sale-modal"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="px-4 sm:px-6 py-4 space-y-4">
+              {/* Sale Amount */}
+              <div className="bg-green-50 rounded-lg p-4 text-center">
+                <p className="text-xs text-green-600 uppercase tracking-wider mb-1">Sale Value</p>
+                <p className="text-3xl font-bold text-green-700">${selectedSale.ticket_value.toLocaleString()}</p>
+              </div>
+
+              {/* Commission */}
+              <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Commission Rate</span>
+                  <span className="text-sm font-mono font-medium text-gray-900">{selectedSale.commission_percent}%</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Commission Amount</span>
+                  <span className="text-sm font-mono font-bold" style={{ color: BRAND_COLORS.primary }}>
+                    ${selectedSale.commission_value.toLocaleString()}
+                  </span>
+                </div>
+                {selectedSale.spif_total > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500">SPIFF Bonus</span>
+                    <span className="text-sm font-mono font-medium text-amber-600">
+                      +${selectedSale.spif_total.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Location */}
+              {selectedSale.city && (
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Location</p>
+                    <p className="text-sm text-gray-900">{selectedSale.address ? `${selectedSale.address}, ` : ''}{selectedSale.city}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Equipment */}
+              {selectedSale.unit_type && (
+                <div className="flex items-start gap-3">
+                  <Settings className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Equipment Installed</p>
+                    <p className="text-sm text-gray-900">{selectedSale.unit_type}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Important Dates */}
+              <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+                <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Key Dates</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Visit Date</span>
+                  <span className="text-sm font-mono text-gray-900">{selectedSale.visit_date || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Close Date</span>
+                  <span className="text-sm font-mono text-gray-900">{selectedSale.close_date || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Install Date</span>
+                  <span className="text-sm font-mono font-semibold text-green-700">{selectedSale.install_date || 'N/A'}</span>
+                </div>
+              </div>
+
+              {/* Email */}
+              {selectedSale.email && (
+                <div className="flex items-start gap-3">
+                  <Mail className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Email</p>
+                    <a href={`mailto:${selectedSale.email}`} className="text-sm text-blue-600 hover:underline">{selectedSale.email}</a>
+                  </div>
+                </div>
+              )}
+
+              {/* Comments */}
+              {selectedSale.comments && (
+                <div className="flex items-start gap-3">
+                  <FileText className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Comments</p>
+                    <p className="text-sm text-gray-700">{selectedSale.comments}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3">
+              <Button 
+                onClick={() => setSelectedSale(null)}
+                className="w-full bg-green-600 hover:bg-green-700"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer - Mobile Responsive */}
       <footer className="py-3 sm:py-4 mt-6 sm:mt-8" style={{ backgroundColor: BRAND_COLORS.secondary }}>
         <div className="max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8">
