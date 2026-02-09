@@ -246,7 +246,8 @@ function App() {
   const [tempExcelUrl, setTempExcelUrl] = useState(DEFAULT_EXCEL_URL);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null); // For client detail modal
+  const [selectedClient, setSelectedClient] = useState(null); // For follow-up client detail modal
+  const [selectedSale, setSelectedSale] = useState(null); // For sales detail modal
 
   const fetchDashboardData = useCallback(async (showToast = false, resetToCurrentPeriod = false) => {
     if (showToast) {
