@@ -1090,21 +1090,24 @@ function App() {
 
               {/* Commission */}
               <div className="bg-gray-50 rounded-lg p-3 space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">Commission Rate</span>
-                  <span className="text-sm font-mono font-medium text-gray-900">{selectedSale.commission_percent}%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">Commission Amount</span>
-                  <span className="text-sm font-mono font-bold" style={{ color: BRAND_COLORS.primary }}>
+                <div className="flex justify-between items-center border-b border-gray-200 pb-2 mb-2">
+                  <span className="text-xs text-gray-600 font-semibold">Total Commission</span>
+                  <span className="text-lg font-mono font-bold" style={{ color: BRAND_COLORS.primary }}>
                     ${selectedSale.commission_value.toLocaleString()}
+                  </span>
+                </div>
+                <p className="text-[10px] text-gray-400 uppercase tracking-wider">Breakdown</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Base ({selectedSale.commission_percent}% of sale)</span>
+                  <span className="text-sm font-mono text-gray-700">
+                    ${(selectedSale.commission_value - (selectedSale.spif_total || 0)).toLocaleString()}
                   </span>
                 </div>
                 {selectedSale.spif_total > 0 && (
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500">SPIFF Bonus</span>
-                    <span className="text-sm font-mono font-medium text-amber-600">
-                      +${selectedSale.spif_total.toLocaleString()}
+                    <span className="text-xs text-gray-500">SPIFF (included)</span>
+                    <span className="text-sm font-mono text-amber-600">
+                      ${selectedSale.spif_total.toLocaleString()}
                     </span>
                   </div>
                 )}
