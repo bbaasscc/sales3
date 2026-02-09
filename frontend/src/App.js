@@ -790,8 +790,8 @@ function App() {
             {/* SECTION 7: RECORDS TABLE */}
             <section>
               <SectionHeader 
-                title="Recent Sales" 
-                description="Transaction details"
+                title="Sales This Period" 
+                description="Click on a sale for details"
                 icon={Calendar}
               />
               
@@ -804,37 +804,44 @@ function App() {
                         <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 hidden sm:table-cell">City</TableHead>
                         <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Unit</TableHead>
                         <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Value</TableHead>
-                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 hidden md:table-cell">Comm</TableHead>
-                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Status</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 hidden md:table-cell">Commission</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Install Date</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {kpiData.records?.slice(0, 10).map((record, index) => (
-                        <TableRow key={index} className="border-b border-gray-100 hover:bg-gray-50/50">
-                          <TableCell className="py-2 px-2 sm:px-4 font-medium text-gray-700 text-xs sm:text-sm">
-                            <span className="line-clamp-1">{record.name}</span>
-                          </TableCell>
-                          <TableCell className="py-2 px-2 sm:px-4 text-gray-600 text-xs sm:text-sm hidden sm:table-cell">{record.city}</TableCell>
-                          <TableCell className="py-2 px-2 sm:px-4 text-gray-600 text-[10px] sm:text-xs">
-                            <span className="line-clamp-1">{record.unit_type}</span>
-                          </TableCell>
-                          <TableCell className="py-2 px-2 sm:px-4 font-mono text-gray-700 text-xs sm:text-sm">
-                            {record.ticket_value > 0 ? `$${(record.ticket_value/1000).toFixed(1)}k` : '-'}
-                          </TableCell>
-                          <TableCell className="py-2 px-2 sm:px-4 font-mono text-xs sm:text-sm hidden md:table-cell" style={{ color: BRAND_COLORS.primary }}>
-                            {record.commission_value > 0 ? `$${record.commission_value.toLocaleString()}` : '-'}
-                          </TableCell>
-                          <TableCell className="py-2 px-2 sm:px-4">
-                            <span className={`inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium ${
-                              record.status === 'SALE' ? 'bg-green-100 text-green-800' :
-                              record.status === 'LOST' ? 'bg-red-100 text-red-800' :
-                              'bg-amber-100 text-amber-800'
-                            }`}>
-                              {record.status}
-                            </span>
+                      {kpiData.records?.length > 0 ? (
+                        kpiData.records.map((record, index) => (
+                          <TableRow 
+                            key={index} 
+                            className="border-b border-gray-100 hover:bg-green-50 cursor-pointer transition-colors"
+                            onClick={() => setSelectedSale(record)}
+                            data-testid={`sale-row-${index}`}
+                          >
+                            <TableCell className="py-2 px-2 sm:px-4 font-medium text-gray-700 text-xs sm:text-sm">
+                              <span className="line-clamp-1 underline decoration-dotted">{record.name}</span>
+                            </TableCell>
+                            <TableCell className="py-2 px-2 sm:px-4 text-gray-600 text-xs sm:text-sm hidden sm:table-cell">{record.city}</TableCell>
+                            <TableCell className="py-2 px-2 sm:px-4 text-gray-600 text-[10px] sm:text-xs">
+                              <span className="line-clamp-1">{record.unit_type}</span>
+                            </TableCell>
+                            <TableCell className="py-2 px-2 sm:px-4 font-mono text-gray-700 text-xs sm:text-sm font-semibold">
+                              ${record.ticket_value.toLocaleString()}
+                            </TableCell>
+                            <TableCell className="py-2 px-2 sm:px-4 font-mono text-xs sm:text-sm hidden md:table-cell" style={{ color: BRAND_COLORS.primary }}>
+                              ${record.commission_value.toLocaleString()}
+                            </TableCell>
+                            <TableCell className="py-2 px-2 sm:px-4 font-mono text-xs text-gray-600">
+                              {record.install_date}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={6} className="py-8 text-center text-gray-500">
+                            No sales in this period
                           </TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
                 </div>
