@@ -358,8 +358,21 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     # Average Ticket
     average_ticket = total_revenue / closed_deals if closed_deals > 0 else 0
     
-    # Total Visits
-    total_visits = len(df_filtered[df_filtered['visit_date'].notna()])
+    # Total Leads = visits with visit_date within the selected period
+    # If pay_period is selected, count visits within that period
+    # Otherwise count all visits
+    if start_date and end_naive:
+        # Count visits within the pay period date range
+        leads_df = df[
+            df['visit_date'].notna() & 
+            (df['visit_date'] >= start_naive) & 
+            (df['visit_date'] <= end_naive)
+        ]
+        total_visits = len(leads_df)
+    else:
+        # No period filter - count all visits
+        total_visits = len(df[df['visit_date'].notna()])
+    
     if total_visits == 0:
         total_visits = len(df_filtered)
     
