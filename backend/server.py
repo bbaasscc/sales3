@@ -343,7 +343,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
     # === LEADS & CLOSING RATE (based on visit_date) ===
     # Leads = visits within the period
-    # Closed Deals for Closing Rate = from those visits, how many became SALE
+    # Closed Deals = from those leads, how many became SALE
     if start_date and end_naive:
         # Get leads (visits) within the pay period date range
         leads_df = df[
@@ -364,21 +364,24 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         total_visits = len(df_filtered)
         leads_converted = len(closed_deals_df)
     
-    # Closing Rate = Leads converted to SALE / Total Leads
-    closing_rate = (leads_converted / total_visits * 100) if total_visits > 0 else 0
+    # Closed Deals = leads converted to SALE (consistent with Leads and Closing Rate)
+    closed_deals = leads_converted
     
-    # === MAIN METRICS (based on install_date for commission payment) ===
-    # Total Revenue = Sum of Ticket Value for SALE rows (installed in period)
+    # Closing Rate = Closed Deals / Total Leads
+    closing_rate = (closed_deals / total_visits * 100) if total_visits > 0 else 0
+    
+    # === COMMISSION METRICS (based on install_date for commission payment) ===
+    # These are the actual installs in the period for which commission is paid
+    installs_in_period = len(closed_deals_df)
+    
+    # Total Revenue = Sum of Ticket Value for installs in period
     total_revenue = closed_deals_df['ticket_value'].sum()
     
-    # Total Commission = Sum of Commission Value column for SALE rows (actual commissions paid)
+    # Total Commission = Sum of Commission Value column for installs in period
     total_commission = closed_deals_df['commission_value'].sum()
     
-    # Closed Deals count (for display - installations in period)
-    closed_deals = len(closed_deals_df)
-    
-    # Average Ticket
-    average_ticket = total_revenue / closed_deals if closed_deals > 0 else 0
+    # Average Ticket = Revenue / Closed Deals (leads converted)
+    average_ticket = total_revenue / installs_in_period if installs_in_period > 0 else 0
     
     # Average Commission Percent
     valid_commission_pcts = closed_deals_df[closed_deals_df['commission_percent'] > 0]['commission_percent']
