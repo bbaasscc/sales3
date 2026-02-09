@@ -351,10 +351,6 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     # Closed Deals count
     closed_deals = len(closed_deals_df)
     
-    # Total deals for closing rate
-    total_deals = len(df_filtered[df_filtered['status'].isin(['SALE', 'LOST', 'PENDING'])])
-    closing_rate = (closed_deals / total_deals * 100) if total_deals > 0 else 0
-    
     # Average Ticket
     average_ticket = total_revenue / closed_deals if closed_deals > 0 else 0
     
@@ -375,6 +371,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
     if total_visits == 0:
         total_visits = len(df_filtered)
+    
+    # Closing Rate = Closed Deals / Leads (visits)
+    closing_rate = (closed_deals / total_visits * 100) if total_visits > 0 else 0
     
     # Average Commission Percent
     valid_commission_pcts = closed_deals_df[closed_deals_df['commission_percent'] > 0]['commission_percent']
