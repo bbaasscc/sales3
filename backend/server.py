@@ -456,14 +456,25 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         spiff_total += duct_total
     
     # === FOLLOW-UPS (pending follow-ups with dates) ===
+    # Follow-ups are based on visit_date (not install_date) since they haven't been sold yet
     follow_ups = []
     today = datetime.now().replace(tzinfo=None)
     
-    # Get records with follow-up dates that are not SALE or have pending status
-    follow_up_df = df_filtered[
-        df_filtered['follow_up_date'].notna() & 
-        (df_filtered['status'] != 'SALE')
-    ].copy()
+    # Get ALL records with follow-up dates that are not SALE (pending leads)
+    # Filter by visit_date if period is selected
+    if start_date and end_naive:
+        follow_up_df = df[
+            df['follow_up_date'].notna() & 
+            (df['status'] != 'SALE') &
+            df['visit_date'].notna() &
+            (df['visit_date'] >= start_naive) & 
+            (df['visit_date'] <= end_naive)
+        ].copy()
+    else:
+        follow_up_df = df[
+            df['follow_up_date'].notna() & 
+            (df['status'] != 'SALE')
+        ].copy()
     
     for _, row in follow_up_df.iterrows():
         follow_date = row.get('follow_up_date')
