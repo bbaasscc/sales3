@@ -558,12 +558,14 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'revenue': period_df['ticket_value'].sum()
         })
     
-    # === RECORDS for table ===
+    # === RECORDS for table (SALES only from installs in period) ===
     records = []
-    for _, row in df_filtered.head(50).iterrows():
+    sales_df = closed_deals_df.head(50)  # Only SALE status from filtered period
+    for _, row in sales_df.iterrows():
         records.append({
             'name': str(row.get('name', '')),
             'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
+            'address': str(row.get('address', '')) if pd.notna(row.get('address')) else '',
             'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
             'ticket_value': safe_float(row.get('ticket_value', 0)),
             'commission_percent': safe_float(row.get('commission_percent', 0)),
@@ -572,7 +574,10 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'status': str(row.get('status', '')),
             'visit_date': row.get('visit_date').strftime('%Y-%m-%d') if pd.notna(row.get('visit_date')) else '',
             'close_date': row.get('close_date').strftime('%Y-%m-%d') if pd.notna(row.get('close_date')) else '',
-            'install_date': row.get('install_date').strftime('%Y-%m-%d') if pd.notna(row.get('install_date')) else ''
+            'install_date': row.get('install_date').strftime('%Y-%m-%d') if pd.notna(row.get('install_date')) else '',
+            'email': str(row.get('Email', '')) if 'Email' in row and pd.notna(row.get('Email')) else '',
+            'feeling': str(row.get('Feeling', '')) if 'Feeling' in row and pd.notna(row.get('Feeling')) else '',
+            'comments': str(row.get('Comments', '')) if 'Comments' in row and pd.notna(row.get('Comments')) else '',
         })
     
     return KPIResponse(
