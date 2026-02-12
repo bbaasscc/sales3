@@ -77,13 +77,19 @@ class ExcelConfigCreate(BaseModel):
     excel_url: str
 
 class KPIResponse(BaseModel):
-    # Main Summary KPIs
+    # Main Summary KPIs (based on close_date - when sales are closed)
     total_revenue: float
     total_commission: float  # Sum of Commission Value column for SALE rows
     closed_deals: int
     closing_rate: float
     total_visits: int
     average_ticket: float
+    
+    # Commission Payment (based on install_date - when commission is actually paid)
+    commission_payment_count: int
+    commission_payment_revenue: float
+    commission_payment_amount: float
+    commission_payment_spiff: float
     
     # Price Margin (5% commission sales)
     price_margin_total: float
