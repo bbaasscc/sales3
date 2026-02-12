@@ -575,7 +575,39 @@ function App() {
               </div>
             </section>
 
-            {/* SECTION 2: UNDER BOOK PRICE */}
+            {/* SECTION: COMMISSION PAYMENT (based on install_date) */}
+            <section>
+              <SectionHeader 
+                title="Commission Payment" 
+                description="Payable commissions by installation date"
+                icon={BadgeDollarSign}
+              />
+              
+              <Card className="border-2" style={{ borderColor: '#22C55E', background: 'linear-gradient(135deg, #F0FDF4, #DCFCE7)' }}>
+                <CardContent className="p-4 sm:p-5">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                    <div className="text-center">
+                      <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-green-600 mb-1">Installations</p>
+                      <p className="text-2xl sm:text-3xl font-mono font-bold text-green-800">{kpiData.commission_payment_count || 0}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-green-600 mb-1">Revenue</p>
+                      <p className="text-2xl sm:text-3xl font-mono font-bold text-green-800">${(kpiData.commission_payment_revenue || 0).toLocaleString()}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-green-600 mb-1">Commission</p>
+                      <p className="text-2xl sm:text-3xl font-mono font-bold text-green-800">${(kpiData.commission_payment_amount || 0).toLocaleString()}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-green-600 mb-1">SPIFF Included</p>
+                      <p className="text-2xl sm:text-3xl font-mono font-bold text-amber-600">${(kpiData.commission_payment_spiff || 0).toLocaleString()}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* SECTION: UNDER BOOK PRICE */}
             <section>
               <SectionHeader 
                 title="Under Book Price" 
