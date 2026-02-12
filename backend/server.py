@@ -393,20 +393,27 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     # These are the actual installs in the period for which commission is paid
     installs_in_period = len(closed_deals_df)
     
-    # Total Revenue = Sum of Ticket Value for installs in period
+    # === MAIN METRICS (based on close_date - sales closed in period) ===
+    # Total Revenue = Sum of Ticket Value for sales closed in period
     total_revenue = closed_deals_df['ticket_value'].sum()
     
-    # Total Commission = Sum of Commission Value column for installs in period
+    # Total Commission = Sum of Commission Value for sales closed in period
     total_commission = closed_deals_df['commission_value'].sum()
     
-    # Average Ticket = Revenue / Closed Deals (leads converted)
-    average_ticket = total_revenue / installs_in_period if installs_in_period > 0 else 0
+    # Average Ticket = Revenue / Closed Deals
+    average_ticket = total_revenue / closed_deals if closed_deals > 0 else 0
     
     # Average Commission Percent
     valid_commission_pcts = closed_deals_df[closed_deals_df['commission_percent'] > 0]['commission_percent']
     avg_commission_percent = valid_commission_pcts.mean() if len(valid_commission_pcts) > 0 else 5.0
     
-    # === PRICE MARGIN (5% commission only) ===
+    # === COMMISSION PAYMENT (based on install_date - when commission is actually paid) ===
+    commission_payment_count = len(installed_deals_df)
+    commission_payment_revenue = installed_deals_df['ticket_value'].sum()
+    commission_payment_amount = installed_deals_df['commission_value'].sum()
+    commission_payment_spiff = installed_deals_df['spif_total'].sum() if 'spif_total' in installed_deals_df.columns else 0
+    
+    # === PRICE MARGIN (5% commission only) - based on close_date ===
     price_margin_df = closed_deals_df[
         (closed_deals_df['commission_percent'] >= 4.5) & 
         (closed_deals_df['commission_percent'] <= 5.5)
