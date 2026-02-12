@@ -603,9 +603,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'revenue': period_df['ticket_value'].sum()
         })
     
-    # === RECORDS for table (SALES only from installs in period) ===
+    # === RECORDS for table (SALES installed in period - for Commission Payment section) ===
     records = []
-    sales_df = closed_deals_df.head(50)  # Only SALE status from filtered period
+    sales_df = installed_deals_df.head(50)  # Only SALE status with install_date in period
     for _, row in sales_df.iterrows():
         records.append({
             'name': str(row.get('name', '')),
