@@ -461,8 +461,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     today = datetime.now().replace(tzinfo=None)
     
     # Get ALL records with follow-up dates that are not SALE (pending leads)
-    # Filter by visit_date if period is selected
+    # Filter by visit_date if pay period is selected (has both start and end date)
     if start_date and end_naive:
+        # Pay period selected - filter by visit_date within period
         follow_up_df = df[
             df['follow_up_date'].notna() & 
             (df['status'] != 'SALE') &
@@ -471,6 +472,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             (df['visit_date'] <= end_naive)
         ].copy()
     else:
+        # No pay period or only quick filter - show all pending follow-ups
         follow_up_df = df[
             df['follow_up_date'].notna() & 
             (df['status'] != 'SALE')
@@ -478,15 +480,15 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
     for _, row in follow_up_df.iterrows():
         follow_date = row.get('follow_up_date')
-        if follow_date:
-            days_until = (follow_date - today).days if follow_date else None
+        if pd.notna(follow_date):
+            days_until = (follow_date - today).days
             visit_date = row.get('visit_date')
             follow_ups.append({
                 'name': str(row.get('name', '')),
                 'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
                 'address': str(row.get('address', '')) if pd.notna(row.get('address')) else '',
                 'status': str(row.get('status', '')),
-                'follow_up_date': follow_date.strftime('%Y-%m-%d') if follow_date else '',
+                'follow_up_date': follow_date.strftime('%Y-%m-%d') if pd.notna(follow_date) else '',
                 'days_until': days_until,
                 'is_urgent': days_until is not None and days_until <= 7,
                 # Additional details for modal
