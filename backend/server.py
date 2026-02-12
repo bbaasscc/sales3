@@ -319,35 +319,46 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         
         logger.info(f"Date range: {start_naive} to {end_naive}")
         
-        # Log install dates for debugging
-        install_dates = df[df['install_date'].notna()]['install_date'].tolist()
-        logger.info(f"Install dates in data: {install_dates[:5]}...")
-        
         if end_naive:
-            # Pay period filter - ONLY by install date
-            df_filtered = df[
+            # Pay period filter - TWO separate filters:
+            # 1. df_filtered_close: Sales closed in the period (for main metrics)
+            df_filtered_close = df[
+                df['close_date'].notna() & 
+                (df['close_date'] >= start_naive) & 
+                (df['close_date'] <= end_naive)
+            ]
+            
+            # 2. df_filtered_install: Installations in the period (for commission payment)
+            df_filtered_install = df[
                 df['install_date'].notna() & 
                 (df['install_date'] >= start_naive) & 
                 (df['install_date'] <= end_naive)
             ]
-            logger.info(f"Pay period filter result: {len(df_filtered)} records")
+            
+            logger.info(f"Close date filter: {len(df_filtered_close)} records")
+            logger.info(f"Install date filter: {len(df_filtered_install)} records")
         else:
-            df_filtered = df[
-                (df['visit_date'].notna() & (df['visit_date'] >= start_naive)) |
-                (df['close_date'].notna() & (df['close_date'] >= start_naive)) |
-                (df['install_date'].notna() & (df['install_date'] >= start_naive))
+            # Quick filter (week, month, etc.) - use close_date
+            df_filtered_close = df[
+                df['close_date'].notna() & (df['close_date'] >= start_naive)
             ]
-        
-        # DO NOT fallback to all data - keep the filtered result even if empty
-        # if len(df_filtered) == 0:
-        #     df_filtered = df
+            df_filtered_install = df[
+                df['install_date'].notna() & (df['install_date'] >= start_naive)
+            ]
     else:
-        df_filtered = df
+        df_filtered_close = df
+        df_filtered_install = df
     
-    # === CALCULATE KPIs ===
-    closed_deals_df = df_filtered[df_filtered['status'] == 'SALE']
-    lost_deals_df = df_filtered[df_filtered['status'] == 'LOST']
-    pending_deals_df = df_filtered[df_filtered['status'] == 'PENDING']
+    # For backward compatibility
+    df_filtered = df_filtered_close
+    
+    # === MAIN METRICS (based on close_date) ===
+    closed_deals_df = df_filtered_close[df_filtered_close['status'] == 'SALE']
+    lost_deals_df = df_filtered_close[df_filtered_close['status'] == 'LOST']
+    pending_deals_df = df_filtered_close[df_filtered_close['status'] == 'PENDING']
+    
+    # === COMMISSION PAYMENT METRICS (based on install_date) ===
+    installed_deals_df = df_filtered_install[df_filtered_install['status'] == 'SALE']
     
     # === LEADS & CLOSING RATE (based on visit_date) ===
     # Leads = visits within the period
