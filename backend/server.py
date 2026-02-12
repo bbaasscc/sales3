@@ -163,6 +163,10 @@ def normalize_status(status: str) -> str:
 
 def safe_float(value, default=0.0) -> float:
     """Safely convert value to float"""
+    # Handle Series (duplicate columns) - take first value
+    if isinstance(value, pd.Series):
+        value = value.iloc[0] if len(value) > 0 else default
+    
     if pd.isna(value):
         return default
     try:
