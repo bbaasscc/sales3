@@ -1227,29 +1227,28 @@ function App() {
                 </div>
               )}
 
-              {/* === OUTREACH HISTORY === */}
+              {/* === PIPELINE STATUS === */}
               {(() => {
-                const clientEmails = EMAIL_TEMPLATES.filter(t => isActionSent(selectedClient.name, 'email', t.id));
-                const clientSms = SMS_TEMPLATES.filter(t => isActionSent(selectedClient.name, 'sms', t.id));
-                const hasHistory = clientEmails.length > 0 || clientSms.length > 0;
-                return hasHistory ? (
+                const progress = getPipelineProgress(selectedClient.name);
+                return progress.done > 0 ? (
                   <div className="bg-blue-50 rounded-lg p-3">
-                    <p className="text-xs text-blue-700 uppercase tracking-wider font-bold mb-2">Outreach Sent</p>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs text-blue-700 uppercase tracking-wider font-bold">Closing Flow</p>
+                      <span className="text-xs font-mono font-bold text-blue-600">{progress.done}/{progress.total}</span>
+                    </div>
+                    <div className="flex gap-1 mb-2">
+                      {ALL_PIPELINE_ACTIONS.map(a => (
+                        <div key={a.id} className={`flex-1 h-1.5 rounded-full ${isStepDone(selectedClient.name, a.id) ? 'bg-green-500' : 'bg-gray-200'}`} />
+                      ))}
+                    </div>
                     <div className="space-y-1">
-                      {clientEmails.map(t => (
-                        <div key={`e-${t.id}`} className="flex items-center gap-2">
+                      {PIPELINE_STEPS.map(step => step.actions.filter(a => isStepDone(selectedClient.name, a.id)).map(a => (
+                        <div key={a.id} className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-green-600" />
-                          <Mail className="w-3 h-3 text-blue-500" />
-                          <span className="text-xs text-gray-700">{t.name}</span>
+                          {a.type === 'email' ? <Mail className="w-3 h-3 text-blue-500" /> : <MessageSquare className="w-3 h-3 text-green-500" />}
+                          <span className="text-xs text-gray-700">Day {PIPELINE_STEPS.find(s => s.actions.includes(a))?.day} — {a.name}</span>
                         </div>
-                      ))}
-                      {clientSms.map(t => (
-                        <div key={`s-${t.id}`} className="flex items-center gap-2">
-                          <Check className="w-3.5 h-3.5 text-green-600" />
-                          <MessageSquare className="w-3 h-3 text-green-500" />
-                          <span className="text-xs text-gray-700">{t.name}</span>
-                        </div>
-                      ))}
+                      )))}
                     </div>
                   </div>
                 ) : null;
