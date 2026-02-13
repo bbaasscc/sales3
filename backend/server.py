@@ -282,8 +282,8 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     def clean_commission_percent(x):
         val = safe_float(x)
         if val > 0 and val < 1:  # Already decimal like 0.05
-            return val * 100
-        return val
+            return round(val * 100, 2)
+        return round(val, 2)
     df['commission_percent'] = df['commission_percent'].apply(clean_commission_percent)
     
     # Date handling

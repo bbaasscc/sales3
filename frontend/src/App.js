@@ -166,7 +166,7 @@ const SummaryCard = ({ title, value, description, icon: Icon, prefix = "", suffi
             </p>
           </div>
           <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-mono font-semibold tracking-tight text-gray-900 mt-1 sm:mt-2">
-            {prefix}{typeof value === 'number' ? value.toLocaleString('en-US', { maximumFractionDigits: 2 }) : value}{suffix}
+            {prefix}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: prefix === '$' ? 2 : 0, maximumFractionDigits: 2 }) : value}{suffix}
           </p>
           <p className="text-[10px] sm:text-xs text-gray-400 mt-1 sm:mt-2 leading-relaxed line-clamp-2">{description}</p>
         </div>
@@ -207,7 +207,7 @@ const SpiffBrandCard = ({ brand, data, color }) => (
       </div>
       <div>
         <p className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">Commission</p>
-        <p className="text-base sm:text-lg font-mono font-semibold" style={{ color: BRAND_COLORS.primary }}>${data.commission.toLocaleString()}</p>
+        <p className="text-base sm:text-lg font-mono font-semibold" style={{ color: BRAND_COLORS.primary }}>${data.commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
       </div>
     </div>
   </div>
