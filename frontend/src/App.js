@@ -1023,84 +1023,74 @@ function App() {
         ) : null}
       </main>
 
-      {/* Action Template Selector Modal */}
+      {/* Pipeline Modal */}
       {actionMenu && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setActionMenu(null)}>
           <div 
-            className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[80vh] overflow-y-auto"
+            className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`sticky top-0 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl ${actionMenu.type === 'email' ? 'bg-blue-600' : 'bg-green-600'} text-white`}>
-              <div className="flex items-center gap-2">
-                {actionMenu.type === 'email' ? <Mail className="w-5 h-5" /> : <MessageSquare className="w-5 h-5" />}
-                <div>
-                  <h3 className="text-base font-bold">{actionMenu.type === 'email' ? 'Send Email' : 'Copy SMS'}</h3>
-                  <p className="text-xs text-white/80">{actionMenu.client.name}</p>
-                </div>
+            <div className="sticky top-0 bg-gradient-to-r from-red-600 to-orange-500 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
+              <div>
+                <h3 className="text-base font-bold">Closing Flow</h3>
+                <p className="text-xs text-white/80">{actionMenu.client.name} — {getPipelineProgress(actionMenu.client.name).done}/{ALL_PIPELINE_ACTIONS.length} steps</p>
               </div>
-              <button onClick={() => setActionMenu(null)} className="p-1.5 hover:bg-white/20 rounded-full">
-                <X className="w-5 h-5" />
-              </button>
+              <button onClick={() => setActionMenu(null)} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
             </div>
             
-            <div className="p-3 sm:p-4 space-y-2">
-              {(actionMenu.type === 'email' ? EMAIL_TEMPLATES : SMS_TEMPLATES).map((template) => {
-                const sent = isActionSent(actionMenu.client.name, actionMenu.type, template.id);
-                const name = getFirstName(actionMenu.client.name);
-                const preview = actionMenu.type === 'email' 
-                  ? template.body.replace(/\[NAME\]/g, name).substring(0, 80) + '...'
-                  : template.text.replace(/\[NAME\]/g, name).substring(0, 80) + '...';
+            <div className="p-3 sm:p-4">
+              {PIPELINE_STEPS.map((step, si) => {
+                const allDone = step.actions.every(a => isStepDone(actionMenu.client.name, a.id));
+                const someDone = step.actions.some(a => isStepDone(actionMenu.client.name, a.id));
                 return (
-                  <div
-                    key={template.id}
-                    className={`rounded-xl border-2 transition-all ${
-                      sent ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-white'
-                    }`}
-                    data-testid={`template-${actionMenu.type}-${template.id}`}
-                  >
-                    <div className="flex items-stretch">
-                      {/* Checkbox toggle - left side */}
-                      <button
-                        onClick={() => toggleAction(actionMenu.client, actionMenu.type, template.id)}
-                        className={`flex items-center justify-center w-12 sm:w-14 flex-shrink-0 rounded-l-xl transition-colors ${
-                          sent ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-100 hover:bg-gray-200'
-                        }`}
-                        data-testid={`toggle-${actionMenu.type}-${template.id}`}
-                      >
-                        {sent 
-                          ? <Check className="w-5 h-5 text-white" strokeWidth={3} />
-                          : <div className="w-5 h-5 rounded-md border-2 border-gray-300" />
-                        }
-                      </button>
-                      
-                      {/* Template info + send button - right side */}
-                      <div className="flex-1 p-3 sm:p-4 flex items-center gap-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-0.5">
-                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                              actionMenu.type === 'email' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
-                            }`}>#{template.id}</span>
-                            <span className="text-sm font-semibold text-gray-800">{template.name}</span>
-                          </div>
-                          <p className="text-[11px] sm:text-xs text-gray-500 line-clamp-1 leading-relaxed">{preview}</p>
-                        </div>
-                        
-                        {/* Send/Copy button */}
-                        <button
-                          onClick={() => actionMenu.type === 'email' ? handleSendEmail(actionMenu.client, template) : handleCopySMS(actionMenu.client, template)}
-                          className={`p-2 rounded-lg flex-shrink-0 transition-colors ${
-                            actionMenu.type === 'email' 
-                              ? 'hover:bg-blue-100 text-blue-600' 
-                              : 'hover:bg-green-100 text-green-600'
-                          }`}
-                          title={actionMenu.type === 'email' ? 'Open in Outlook' : 'Copy to clipboard'}
-                        >
-                          {actionMenu.type === 'email' 
-                            ? <Send className="w-4 h-4" />
-                            : <Copy className="w-4 h-4" />
-                          }
-                        </button>
+                  <div key={si} className="relative">
+                    {si < PIPELINE_STEPS.length - 1 && (
+                      <div className={`absolute left-[15px] top-10 w-0.5 h-[calc(100%-16px)] ${allDone ? 'bg-green-400' : 'bg-gray-200'}`} />
+                    )}
+                    <div className="flex items-start gap-3 mb-1">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
+                        allDone ? 'bg-green-500 text-white' : someDone ? 'bg-amber-400 text-white' : 'bg-gray-200 text-gray-500'
+                      }`}>{step.day}</div>
+                      <div className="pt-1">
+                        <p className="text-sm font-bold text-gray-800">{step.label}</p>
+                        <p className="text-[10px] text-gray-400">{step.subtitle}</p>
                       </div>
+                    </div>
+                    <div className="ml-11 mb-4 space-y-1.5">
+                      {step.actions.map(action => {
+                        const done = isStepDone(actionMenu.client.name, action.id);
+                        const name = getFirstName(actionMenu.client.name);
+                        const preview = action.type === 'email'
+                          ? action.body.replace(/\[NAME\]/g, name).substring(0, 60) + '...'
+                          : action.text.replace(/\[NAME\]/g, name).substring(0, 60) + '...';
+                        return (
+                          <div key={action.id} className={`flex items-stretch rounded-lg border transition-all ${done ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-white'}`}>
+                            <button
+                              onClick={() => toggleStep(actionMenu.client.name, action.id)}
+                              className={`flex items-center justify-center w-10 flex-shrink-0 rounded-l-lg transition-colors ${done ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-50 hover:bg-gray-100'}`}
+                              data-testid={`toggle-${action.id}`}
+                            >
+                              {done ? <Check className="w-4 h-4 text-white" strokeWidth={3} /> : <div className="w-4 h-4 rounded border-2 border-gray-300" />}
+                            </button>
+                            <div className="flex-1 p-2 sm:p-2.5 flex items-center gap-2 min-w-0">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1.5">
+                                  {action.type === 'email' ? <Mail className="w-3 h-3 text-blue-500 flex-shrink-0" /> : <MessageSquare className="w-3 h-3 text-green-500 flex-shrink-0" />}
+                                  <span className="text-xs font-semibold text-gray-700 truncate">{action.name}</span>
+                                </div>
+                                <p className="text-[10px] text-gray-400 line-clamp-1 mt-0.5">{preview}</p>
+                              </div>
+                              <button
+                                onClick={() => action.type === 'email' ? handleSendEmail(actionMenu.client, action) : handleCopySMS(actionMenu.client, action)}
+                                className={`p-1.5 rounded-md flex-shrink-0 ${action.type === 'email' ? 'hover:bg-blue-100 text-blue-500' : 'hover:bg-green-100 text-green-500'}`}
+                                title={action.type === 'email' ? 'Open in Outlook' : 'Copy to clipboard'}
+                              >
+                                {action.type === 'email' ? <Send className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );
