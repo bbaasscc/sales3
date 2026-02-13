@@ -279,6 +279,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     df['mitsubishi'] = df['mitsubishi'].apply(lambda x: safe_float(x))
     df['surge_protector'] = df['surge_protector'].apply(lambda x: safe_float(x))
     df['duct_cleaning'] = df['duct_cleaning'].apply(lambda x: safe_float(x))
+    df['self_gen_mits'] = df['self_gen_mits'].apply(lambda x: safe_float(x))
     
     # Commission percent handling
     def clean_commission_percent(x):
