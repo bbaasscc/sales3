@@ -582,9 +582,14 @@ function App() {
                   </div>
                 </div>
 
-                <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#B45309' }}>
-                  Under Book Price <span className="font-normal text-amber-500">(5% Commission)</span>
-                </p>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ color: '#B45309' }}>
+                    Under Book Price <span className="font-normal text-amber-500">(5% Commission)</span>
+                  </p>
+                  <span className="text-[10px] sm:text-xs font-mono bg-amber-100 px-2 py-0.5 sm:py-1 rounded-full text-amber-700 font-semibold">
+                    {kpiData.closed_deals > 0 ? Math.round(kpiData.price_margin_sales_count / kpiData.closed_deals * 100) : 0}% of sales
+                  </span>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mb-5">
                   <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 shadow-sm border border-amber-100">
                     <div className="flex items-center gap-1.5 mb-2">
