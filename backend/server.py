@@ -485,17 +485,6 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         }
         spiff_total += duct_total
     
-    # Self Gen Mits (4%)
-    self_gen_total = closed_deals_df['self_gen_mits'].sum()
-    self_gen_count = len(closed_deals_df[closed_deals_df['self_gen_mits'] > 0])
-    if self_gen_total > 0 or self_gen_count > 0:
-        spiff_breakdown['Self Gen Mits'] = {
-            'count': self_gen_count,
-            'commission': round(self_gen_total, 2),
-            'percent_of_sales': round((self_gen_count / closed_deals * 100), 1) if closed_deals > 0 else 0
-        }
-        spiff_total += self_gen_total
-    
     # === FOLLOW-UPS (pending follow-ups with dates) ===
     # Follow-ups are based on visit_date (not install_date) since they haven't been sold yet
     follow_ups = []
