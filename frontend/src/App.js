@@ -1106,7 +1106,7 @@ function App() {
                       <p className="text-xs sm:text-sm text-red-500/80">Follow up with these clients now</p>
                     </div>
                     <div className="bg-red-500 text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-sm" data-testid="followup-count">
-                      {kpiData.follow_ups.length}
+                      {kpiData.follow_ups.filter(f => { const p = getPipelineProgress(f.name); return p.done < p.total; }).length}
                     </div>
                   </div>
                   
