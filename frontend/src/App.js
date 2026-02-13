@@ -275,7 +275,9 @@ function App() {
   const [selectedClient, setSelectedClient] = useState(null);
   const [selectedSale, setSelectedSale] = useState(null);
   const [followUpActions, setFollowUpActions] = useState([]);
-  const [actionMenu, setActionMenu] = useState(null); // { client, type: 'email'|'sms' }
+  const [actionMenu, setActionMenu] = useState(null);
+  const [clientNote, setClientNote] = useState({ next_follow_up: '', comment: '' });
+  const [noteSaving, setNoteSaving] = useState(false); // { client, type: 'email'|'sms' }
 
   const fetchDashboardData = useCallback(async (showToast = false, resetToCurrentPeriod = false) => {
     if (showToast) {
