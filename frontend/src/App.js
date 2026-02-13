@@ -808,7 +808,7 @@ function App() {
                 <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4" style={{ color: '#047857' }}>
                   My Performance
                 </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
                   <SummaryCard title="Total Revenue" value={kpiData.total_revenue} prefix="$" icon={DollarSign} description="Closed deals revenue" highlight />
                   <SummaryCard title="Commission" value={kpiData.total_commission} prefix="$" icon={BadgeDollarSign} description="Total commission earned" highlight />
                   <SummaryCard title="Closed Deals" value={kpiData.closed_deals} icon={Target} description="SALE status deals" />
