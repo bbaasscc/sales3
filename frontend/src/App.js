@@ -35,6 +35,7 @@ import {
   Percent,
   Target,
   TrendingUp,
+  Users,
   PieChart as PieIcon,
   BarChart3,
   Settings,
