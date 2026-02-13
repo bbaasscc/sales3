@@ -1130,21 +1130,37 @@ function App() {
                         <TableBody>
                           {kpiData.follow_ups.slice(0, 10).map((followUp, index) => {
                             const progress = getPipelineProgress(followUp.name);
+                            const notes = allClientNotes[followUp.name] || {};
+                            const priority = notes.priority || 'high';
+                            // Check if pipeline is overdue: has incomplete steps and next scheduled date is past
+                            const nextAction = ALL_PIPELINE_ACTIONS.find(a => !isStepDone(followUp.name, a.id));
+                            const isOverdue = nextAction && followUp.follow_up_date && new Date(followUp.follow_up_date) < new Date(new Date().toISOString().split('T')[0]);
                             return (
                             <TableRow 
                               key={index} 
-                              className={`border-b border-gray-100 transition-colors ${followUp.is_urgent ? 'bg-red-50/50 hover:bg-red-100/50' : 'hover:bg-gray-50'}`}
+                              className={`border-b border-gray-100 transition-colors ${isOverdue ? 'bg-red-50/70 hover:bg-red-100/50' : 'hover:bg-gray-50'}`}
                               data-testid={`followup-row-${index}`}
                             >
                               <TableCell className="py-2 px-1 sm:px-3">
-                                {followUp.is_urgent ? (
+                                {isOverdue ? (
+                                  <span className="inline-flex items-center gap-0.5 px-1 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-red-600 text-white animate-pulse">
+                                    <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                    <span className="hidden sm:inline">LATE</span>
+                                  </span>
+                                ) : priority === 'high' ? (
                                   <span className="inline-flex items-center gap-0.5 px-1 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-red-100 text-red-700">
                                     <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                                    <span className="hidden sm:inline">URGENT</span>
+                                    <span className="hidden sm:inline">HIGH</span>
+                                  </span>
+                                ) : priority === 'medium' ? (
+                                  <span className="inline-flex items-center px-1 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-amber-100 text-amber-700">
+                                    <span className="hidden sm:inline">MED</span>
+                                    <span className="sm:hidden">M</span>
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center px-1 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-gray-100 text-gray-600">
-                                    <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                  <span className="inline-flex items-center px-1 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-gray-100 text-gray-500">
+                                    <span className="hidden sm:inline">LOW</span>
+                                    <span className="sm:hidden">L</span>
                                   </span>
                                 )}
                               </TableCell>
