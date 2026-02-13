@@ -55,6 +55,10 @@ import {
   Check,
   Copy,
   Send,
+  Plus,
+  Trash2,
+  Save,
+  ClipboardPaste,
 } from "lucide-react";
 import {
   AreaChart,
