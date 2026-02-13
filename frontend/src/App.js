@@ -556,11 +556,11 @@ function App() {
                   </div>
                   <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 text-center shadow-sm border border-emerald-100">
                     <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Commission Payable</p>
-                    <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-emerald-800">${(kpiData.commission_payment_amount || 0).toLocaleString()}</p>
+                    <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-emerald-800">${(kpiData.commission_payment_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   </div>
                   <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 text-center shadow-sm border border-emerald-100">
                     <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">SPIFF Included</p>
-                    <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-amber-600">${(kpiData.commission_payment_spiff || 0).toLocaleString()}</p>
+                    <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-amber-600">${(kpiData.commission_payment_spiff || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   </div>
                 </div>
               </div>
@@ -603,14 +603,14 @@ function App() {
                       <DollarSign className="w-3.5 h-3.5 text-amber-500" />
                       <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500">Revenue</span>
                     </div>
-                    <p className="text-2xl sm:text-3xl font-mono font-bold text-gray-900">${kpiData.price_margin_total.toLocaleString()}</p>
+                    <p className="text-2xl sm:text-3xl font-mono font-bold text-gray-900">${kpiData.price_margin_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   </div>
                   <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 shadow-sm border border-amber-100" style={{ background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)' }}>
                     <div className="flex items-center gap-1.5 mb-2">
                       <BadgeDollarSign className="w-3.5 h-3.5 text-amber-700" />
                       <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-700">Commission</span>
                     </div>
-                    <p className="text-2xl sm:text-3xl font-mono font-bold text-amber-800">${kpiData.price_margin_commission.toLocaleString()}</p>
+                    <p className="text-2xl sm:text-3xl font-mono font-bold text-amber-800">${kpiData.price_margin_commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   </div>
                 </div>
 
@@ -624,7 +624,7 @@ function App() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-white/80 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1">Total SPIFF</p>
-                      <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-white">${kpiData.spiff_total.toLocaleString()}</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-white">${kpiData.spiff_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                     </div>
                     <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-white/30" />
                   </div>
@@ -776,10 +776,10 @@ function App() {
                                 <span className="line-clamp-1">{record.unit_type}</span>
                               </TableCell>
                               <TableCell className="py-2 px-2 sm:px-4 font-mono text-gray-700 text-xs sm:text-sm font-semibold">
-                                ${record.ticket_value.toLocaleString()}
+                                ${record.ticket_value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </TableCell>
                               <TableCell className="py-2 px-2 sm:px-4 font-mono text-xs sm:text-sm font-semibold" style={{ color: '#8B5CF6' }}>
-                                ${record.commission_value.toLocaleString()}
+                                ${record.commission_value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </TableCell>
                               <TableCell className="py-2 px-2 sm:px-4 font-mono text-xs text-gray-600">
                                 {record.install_date}
@@ -980,7 +980,7 @@ function App() {
                     <p className="text-sm text-gray-900">{selectedClient.unit_type}</p>
                     {selectedClient.ticket_value > 0 && (
                       <p className="text-sm font-mono font-semibold" style={{ color: BRAND_COLORS.primary }}>
-                        ${selectedClient.ticket_value.toLocaleString()}
+                        ${selectedClient.ticket_value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </p>
                     )}
                   </div>
@@ -1062,7 +1062,7 @@ function App() {
               {/* Sale Amount */}
               <div className="bg-green-50 rounded-lg p-4 text-center">
                 <p className="text-xs text-green-600 uppercase tracking-wider mb-1">Sale Value</p>
-                <p className="text-3xl font-bold text-green-700">${selectedSale.ticket_value.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-green-700">${selectedSale.ticket_value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
               </div>
 
               {/* Commission */}
@@ -1070,21 +1070,21 @@ function App() {
                 <div className="flex justify-between items-center border-b border-gray-200 pb-2 mb-2">
                   <span className="text-xs text-gray-600 font-semibold">Total Commission</span>
                   <span className="text-lg font-mono font-bold" style={{ color: BRAND_COLORS.primary }}>
-                    ${selectedSale.commission_value.toLocaleString()}
+                    ${selectedSale.commission_value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
                 <p className="text-[10px] text-gray-400 uppercase tracking-wider">Breakdown</p>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-500">Base ({selectedSale.commission_percent}% of sale)</span>
                   <span className="text-sm font-mono text-gray-700">
-                    ${(selectedSale.commission_value - (selectedSale.spif_total || 0)).toLocaleString()}
+                    ${(selectedSale.commission_value - (selectedSale.spif_total || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
                 {selectedSale.spif_total > 0 && (
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-gray-500">SPIFF (included)</span>
                     <span className="text-sm font-mono text-amber-600">
-                      ${selectedSale.spif_total.toLocaleString()}
+                      ${selectedSale.spif_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
                 )}
