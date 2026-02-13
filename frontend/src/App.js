@@ -1808,7 +1808,11 @@ function App() {
 
 
       {/* Edit Lead Modal (Data tab) */}
-      {editingLead && (
+      {editingLead && (() => {
+        const spiffSum = (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
+        const baseComm = (editingLead.ticket_value || 0) * (editingLead.commission_percent || 0) / 100;
+        const totalComm = baseComm + spiffSum;
+        return (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setEditingLead(null)}>
           <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
@@ -1831,11 +1835,33 @@ function App() {
                     <option>PENDING</option><option>SALE</option><option>LOST</option>
                   </select>
                 </div>
-                {[['ticket_value','Ticket Value'],['commission_percent','Commission %'],['commission_value','Commission $'],['spif_total','SPIFF Total']].map(([k,l]) => (
-                  <div key={k}><label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
-                    <input type="number" step="0.01" value={editingLead[k] || 0} onChange={(e) => setEditingLead(p => ({...p, [k]: parseFloat(e.target.value) || 0}))}
-                      className="w-full px-2 py-1.5 text-sm border rounded-lg" /></div>
-                ))}
+                <div>
+                  <label className="text-[10px] font-bold uppercase text-gray-500">Ticket Value</label>
+                  <input type="number" step="0.01" value={editingLead.ticket_value ?? ''} 
+                    onChange={(e) => setEditingLead(p => ({...p, ticket_value: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
+                    className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold uppercase text-gray-500">Commission %</label>
+                  <input type="number" step="0.01" value={editingLead.commission_percent ?? ''} 
+                    onChange={(e) => setEditingLead(p => ({...p, commission_percent: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
+                    className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                </div>
+                {/* Auto-calculated commission */}
+                <div className="col-span-2 bg-green-50 rounded-lg p-2.5 border border-green-200">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-500">Base ({editingLead.commission_percent || 0}% of ${(editingLead.ticket_value || 0).toLocaleString()})</span>
+                    <span className="font-mono font-semibold">${baseComm.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-500">+ SPIFFs</span>
+                    <span className="font-mono font-semibold text-amber-600">${spiffSum.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                  </div>
+                  <div className="flex justify-between text-sm font-bold border-t border-green-300 mt-1 pt-1">
+                    <span className="text-green-700">Total Commission</span>
+                    <span className="font-mono text-green-700">${totalComm.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                  </div>
+                </div>
                 {[['visit_date','Visit Date'],['close_date','Close Date'],['install_date','Install Date'],['follow_up_date','Follow-up Date']].map(([k,l]) => (
                   <div key={k}><label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
                     <input type="date" value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
@@ -1846,7 +1872,8 @@ function App() {
               <div className="grid grid-cols-3 gap-2">
                 {[['apco_x','APCO X'],['samsung','Samsung'],['mitsubishi','Mitsubishi'],['surge_protector','Surge Prot.'],['duct_cleaning','Duct Clean.'],['self_gen_mits','Self Gen Mits']].map(([k,l]) => (
                   <div key={k}><label className="text-[10px] font-bold uppercase text-gray-400">{l}</label>
-                    <input type="number" step="0.01" value={editingLead[k] || 0} onChange={(e) => setEditingLead(p => ({...p, [k]: parseFloat(e.target.value) || 0}))}
+                    <input type="number" step="0.01" value={editingLead[k] ?? ''} 
+                      onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
                       className="w-full px-2 py-1 text-xs border rounded-lg" /></div>
                 ))}
               </div>
