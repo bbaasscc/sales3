@@ -1118,7 +1118,7 @@ function App() {
                             <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap">Priority</TableHead>
                             <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3">Name</TableHead>
                             <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 hidden md:table-cell">City</TableHead>
-                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap hidden sm:table-cell">Follow-up</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap hidden sm:table-cell">Since Visit</TableHead>
                             <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap">Next Step</TableHead>
                             <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap">Actions</TableHead>
                           </TableRow>
