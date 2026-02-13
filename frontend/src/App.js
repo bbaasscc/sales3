@@ -1224,6 +1224,59 @@ function App() {
               </div>
             )}
 
+            {/* Pipeline Complete - leads that finished all 7 steps */}
+            {kpiData.follow_ups && (() => {
+              const completed = kpiData.follow_ups.filter(f => {
+                const p = getPipelineProgress(f.name);
+                return p.done === p.total;
+              });
+              return completed.length > 0 ? (
+                <div className="mt-6 rounded-2xl border-l-4 overflow-hidden p-4 sm:p-6" style={{ backgroundColor: '#F0FDF4', borderLeftColor: '#22C55E' }}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-green-500 shadow-sm">
+                      <Check className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-green-800">Pipeline Complete</h2>
+                      <p className="text-xs text-green-600">{completed.length} lead{completed.length > 1 ? 's' : ''} finished all steps — waiting for decision</p>
+                    </div>
+                  </div>
+                  <Card className="bg-white border border-green-200 shadow-sm rounded-xl overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-green-50/80">
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-green-600 py-2 px-2 sm:px-3">Name</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-green-600 py-2 px-2 sm:px-3 hidden sm:table-cell">City</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-green-600 py-2 px-2 sm:px-3">Since Visit</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-green-600 py-2 px-2 sm:px-3">Status</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {completed.map((f, i) => {
+                            const visitD = f.visit_date ? new Date(f.visit_date) : null;
+                            const daysSince = visitD ? Math.floor((new Date(new Date().toISOString().split('T')[0]) - visitD) / 86400000) : 0;
+                            return (
+                              <TableRow key={i} className="border-b border-gray-100 hover:bg-green-50 cursor-pointer" onClick={() => openClientModal(f)}>
+                                <TableCell className="py-2 px-2 sm:px-3 text-xs sm:text-sm font-medium text-gray-800 underline decoration-dotted">{f.name}</TableCell>
+                                <TableCell className="py-2 px-2 sm:px-3 text-xs text-gray-600 hidden sm:table-cell">{f.city}</TableCell>
+                                <TableCell className="py-2 px-2 sm:px-3 font-mono text-xs font-bold text-gray-600">{daysSince}d</TableCell>
+                                <TableCell className="py-2 px-2 sm:px-3">
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">
+                                    <Check className="w-3 h-3" /> 7/7
+                                  </span>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </Card>
+                </div>
+              ) : null;
+            })()}
+
           </div>
             )}
 
