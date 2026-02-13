@@ -1230,7 +1230,7 @@ function App() {
                 </div>
               )}
 
-              {/* Comments */}
+              {/* Comments from Sheet */}
               {selectedClient.comments && (
                 <div className="flex items-start gap-3">
                   <FileText className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
@@ -1240,14 +1240,76 @@ function App() {
                   </div>
                 </div>
               )}
+
+              {/* === OUTREACH HISTORY === */}
+              {(() => {
+                const clientEmails = EMAIL_TEMPLATES.filter(t => isActionSent(selectedClient.name, 'email', t.id));
+                const clientSms = SMS_TEMPLATES.filter(t => isActionSent(selectedClient.name, 'sms', t.id));
+                const hasHistory = clientEmails.length > 0 || clientSms.length > 0;
+                return hasHistory ? (
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <p className="text-xs text-blue-700 uppercase tracking-wider font-bold mb-2">Outreach Sent</p>
+                    <div className="space-y-1">
+                      {clientEmails.map(t => (
+                        <div key={`e-${t.id}`} className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-green-600" />
+                          <Mail className="w-3 h-3 text-blue-500" />
+                          <span className="text-xs text-gray-700">{t.name}</span>
+                        </div>
+                      ))}
+                      {clientSms.map(t => (
+                        <div key={`s-${t.id}`} className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-green-600" />
+                          <MessageSquare className="w-3 h-3 text-green-500" />
+                          <span className="text-xs text-gray-700">{t.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
+              {/* === NEXT FOLLOW-UP DATE === */}
+              <div className="bg-amber-50 rounded-lg p-3 space-y-3">
+                <p className="text-xs text-amber-700 uppercase tracking-wider font-bold">Next Follow-up</p>
+                <input
+                  type="date"
+                  value={clientNote.next_follow_up}
+                  onChange={(e) => setClientNote(prev => ({ ...prev, next_follow_up: e.target.value }))}
+                  className="w-full px-3 py-2 text-sm border border-amber-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  data-testid="next-followup-date"
+                />
+              </div>
+
+              {/* === SALESPERSON NOTES === */}
+              <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+                <p className="text-xs text-gray-600 uppercase tracking-wider font-bold">My Notes</p>
+                <textarea
+                  value={clientNote.comment}
+                  onChange={(e) => setClientNote(prev => ({ ...prev, comment: e.target.value }))}
+                  placeholder="Add a note about this client..."
+                  rows={3}
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+                  data-testid="client-note-input"
+                />
+              </div>
             </div>
             
             {/* Modal Footer */}
-            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3">
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 flex gap-2">
+              <Button 
+                onClick={saveClientNote}
+                disabled={noteSaving}
+                className="flex-1"
+                style={{ backgroundColor: '#2563EB' }}
+                data-testid="save-notes-btn"
+              >
+                {noteSaving ? 'Saving...' : 'Save Notes'}
+              </Button>
               <Button 
                 onClick={() => setSelectedClient(null)}
-                className="w-full"
-                style={{ backgroundColor: BRAND_COLORS.primary }}
+                variant="outline"
+                className="flex-1"
               >
                 Close
               </Button>
