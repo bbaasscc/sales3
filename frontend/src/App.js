@@ -1482,9 +1482,15 @@ function App() {
                   <span className="text-sm font-mono font-medium text-gray-900">{selectedClient.visit_date || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">Follow-up Date</span>
-                  <span className="text-sm font-mono font-medium" style={{ color: selectedClient.is_urgent ? BRAND_COLORS.primary : '#111' }}>
-                    {selectedClient.follow_up_date}
+                  <span className="text-xs text-gray-500">Last Follow-up</span>
+                  <span className="text-sm font-mono font-medium text-gray-900">
+                    {selectedClient.follow_up_date || 'N/A'}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500 font-semibold">Next Follow-up</span>
+                  <span className="text-sm font-mono font-bold" style={{ color: BRAND_COLORS.primary }}>
+                    {clientNote.next_follow_up || 'Not set'}
                   </span>
                 </div>
               </div>
