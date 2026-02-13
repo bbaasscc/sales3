@@ -723,6 +723,112 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         selected_pay_period=pay_period
     )
 
+# === Import & Lead Management Functions ===
+
+def parse_lead_email(text: str) -> dict:
+    """Parse lead info from the dispatch email format"""
+    data = {}
+    for line in text.strip().split('\n'):
+        line = line.strip()
+        if ' - ' in line:
+            key, val = line.split(' - ', 1)
+            key = key.strip().lower()
+            val = val.strip()
+            if 'customer name' in key:
+                data['name'] = val.strip()
+            elif key == 'address 1':
+                data['address'] = val.strip()
+            elif key == 'city':
+                data['city'] = val.strip()
+            elif 'email' in key:
+                data['email'] = val.strip()
+            elif 'customer phone' in key or 'caller phone' in key:
+                if not data.get('phone') and val.strip():
+                    data['phone'] = val.strip()
+    return data
+
+async def import_sheet_to_db(excel_url: str) -> int:
+    """Import Google Sheet data to MongoDB leads collection"""
+    df = parse_excel_data(excel_url)
+    
+    # Map columns using the same logic
+    kpis = process_sales_data(df.copy(), "all", None, from_db=False)
+    
+    # Now re-process to get clean rows for MongoDB
+    column_mapping = {}
+    for col in df.columns:
+        col_lower = str(col).lower().strip()
+        if col_lower == 'name': column_mapping[col] = 'name'
+        elif col_lower == 'address': column_mapping[col] = 'address'
+        elif col_lower == 'city': column_mapping[col] = 'city'
+        elif col_lower in ['unit', 'unit type']: column_mapping[col] = 'unit_type'
+        elif col_lower == 'ticket value': column_mapping[col] = 'ticket_value'
+        elif col_lower == 'commission %': column_mapping[col] = 'commission_percent'
+        elif col_lower == 'commission value': column_mapping[col] = 'commission_value'
+        elif col_lower == 'spif': column_mapping[col] = 'spif_total'
+        elif col_lower == 'status': column_mapping[col] = 'status'
+        elif col_lower == 'visit date': column_mapping[col] = 'visit_date'
+        elif col_lower == 'close date': column_mapping[col] = 'close_date'
+        elif col_lower == 'install date': column_mapping[col] = 'install_date'
+        elif col_lower in ['folow up on self gen', 'follow up on', 'folow up on', 'follow up']: column_mapping[col] = 'follow_up_date'
+        elif col_lower == 'email': column_mapping[col] = 'email'
+        elif col_lower == 'loss reason': column_mapping[col] = 'loss_reason'
+        elif col_lower == 'comments': column_mapping[col] = 'comments'
+        elif col_lower == 'feeling': column_mapping[col] = 'feeling'
+        elif col_lower == 'objections': column_mapping[col] = 'objections'
+        elif 'self gen' in col_lower and 'mits' in col_lower: column_mapping[col] = 'self_gen_mits'
+        elif 'apco' in col_lower: column_mapping[col] = 'apco_x'
+        elif 'samsung' in col_lower: column_mapping[col] = 'samsung'
+        elif 'mitsubishi' in col_lower or col_lower == 'mits': column_mapping[col] = 'mitsubishi'
+        elif 'surge' in col_lower: column_mapping[col] = 'surge_protector'
+        elif 'duct' in col_lower or 'dusct' in col_lower or 'celaning' in col_lower: column_mapping[col] = 'duct_cleaning'
+    
+    df = df.rename(columns=column_mapping)
+    df = df.loc[:, ~df.columns.duplicated()]
+    
+    float_cols = ['ticket_value', 'commission_value', 'spif_total', 'commission_percent',
+                  'apco_x', 'samsung', 'mitsubishi', 'surge_protector', 'duct_cleaning', 'self_gen_mits']
+    date_cols = ['visit_date', 'close_date', 'install_date', 'follow_up_date']
+    
+    leads = []
+    for _, row in df.iterrows():
+        name = str(row.get('name', '')).strip() if pd.notna(row.get('name')) else ''
+        if not name:
+            continue
+        lead = {
+            'lead_id': str(uuid.uuid4()),
+            'name': name,
+            'address': str(row.get('address', '')) if pd.notna(row.get('address')) else '',
+            'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
+            'email': str(row.get('email', '')) if pd.notna(row.get('email')) else '',
+            'phone': '',
+            'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
+            'status': normalize_status(row.get('status', 'PENDING')),
+            'loss_reason': str(row.get('loss_reason', '')) if pd.notna(row.get('loss_reason')) else '',
+            'comments': str(row.get('comments', '')) if pd.notna(row.get('comments')) else '',
+            'feeling': str(row.get('feeling', '')) if pd.notna(row.get('feeling')) else '',
+            'objections': str(row.get('objections', '')) if pd.notna(row.get('objections')) else '',
+            'created_at': datetime.now(timezone.utc).isoformat(),
+        }
+        for fc in float_cols:
+            lead[fc] = safe_float(row.get(fc, 0))
+        # Clean commission percent
+        cp = lead['commission_percent']
+        if 0 < cp < 1:
+            lead['commission_percent'] = round(cp * 100, 2)
+        else:
+            lead['commission_percent'] = round(cp, 2)
+        for dc in date_cols:
+            d = safe_date(row.get(dc))
+            lead[dc] = d.strftime('%Y-%m-%d') if d else ''
+        leads.append(lead)
+    
+    await db.leads.delete_many({})
+    if leads:
+        await db.leads.insert_many(leads)
+    logger.info(f"Imported {len(leads)} leads to MongoDB")
+    return len(leads)
+
 # Routes
 @api_router.get("/")
 async def root():
