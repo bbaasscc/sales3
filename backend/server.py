@@ -1008,6 +1008,11 @@ async def save_client_notes(data: ClientNoteCreate):
     )
     return {"message": "Notes saved"}
 
+@api_router.get("/client/all-notes")
+async def get_all_client_notes():
+    notes = await db.client_notes.find({}, {"_id": 0}).to_list(1000)
+    return {"notes": notes}
+
 PIPELINE_STEP_DAYS = [
     {"id": "d0_email", "day": 0}, {"id": "d0_sms", "day": 0},
     {"id": "d2_email", "day": 2},
