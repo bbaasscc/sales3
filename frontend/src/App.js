@@ -811,6 +811,7 @@ function App() {
                   <SummaryCard title="Total Revenue" value={kpiData.total_revenue} prefix="$" icon={DollarSign} description="Closed deals revenue" highlight />
                   <SummaryCard title="Commission" value={kpiData.total_commission} prefix="$" icon={BadgeDollarSign} description="Total commission earned" highlight />
                   <SummaryCard title="Closed Deals" value={kpiData.closed_deals} icon={Target} description="SALE status deals" />
+                  <SummaryCard title="Leads" value={kpiData.total_visits} icon={Users} description="Total visits" />
                   <SummaryCard title="Closing Rate" value={kpiData.closing_rate} suffix="%" icon={Percent} description="Win rate" />
                   <SummaryCard title="Avg Ticket" value={kpiData.average_ticket} prefix="$" icon={ShoppingCart} description="Per deal average" />
                 </div>
