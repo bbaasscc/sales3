@@ -240,6 +240,8 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             column_mapping[col] = 'install_date'
         elif col_lower in ['folow up on self gen', 'follow up on', 'folow up on', 'follow up']:
             column_mapping[col] = 'follow_up_date'
+        elif 'self gen' in col_lower and 'mits' in col_lower:
+            column_mapping[col] = 'self_gen_mits'
         elif 'apco' in col_lower or 'apx' in col_lower:
             column_mapping[col] = 'apco_x'
         elif 'samsung' in col_lower:
@@ -263,7 +265,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     # Ensure required columns exist
     for col in ['name', 'status', 'unit_type', 'ticket_value', 'commission_value', 'commission_percent', 
                 'visit_date', 'close_date', 'install_date', 'follow_up_date', 'spif_total',
-                'apco_x', 'samsung', 'mitsubishi', 'surge_protector', 'duct_cleaning']:
+                'apco_x', 'samsung', 'mitsubishi', 'surge_protector', 'duct_cleaning', 'self_gen_mits']:
         if col not in df.columns:
             df[col] = None
     
