@@ -757,10 +757,7 @@ async def import_sheet_to_db(excel_url: str) -> int:
     """Import Google Sheet data to MongoDB leads collection"""
     df = parse_excel_data(excel_url)
     
-    # Map columns using the same logic
-    kpis = process_sales_data(df.copy(), "all", None, from_db=False)
-    
-    # Now re-process to get clean rows for MongoDB
+    # Map columns for MongoDB storage
     column_mapping = {}
     for col in df.columns:
         col_lower = str(col).lower().strip()
