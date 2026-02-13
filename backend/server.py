@@ -576,6 +576,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             days_until = (follow_date - today).days
             visit_date = row.get('visit_date')
             follow_ups.append({
+                'lead_id': str(row.get('lead_id', '')) if pd.notna(row.get('lead_id', None)) else '',
                 'name': str(row.get('name', '')),
                 'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
                 'address': str(row.get('address', '')) if pd.notna(row.get('address')) else '',
@@ -583,14 +584,13 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
                 'follow_up_date': follow_date.strftime('%Y-%m-%d') if pd.notna(follow_date) else '',
                 'days_until': days_until,
                 'is_urgent': days_until is not None and days_until <= 7,
-                # Additional details for modal
                 'visit_date': visit_date.strftime('%Y-%m-%d') if pd.notna(visit_date) else '',
                 'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
                 'ticket_value': safe_float(row.get('ticket_value', 0)),
-                'email': str(row.get('Email', '')) if 'Email' in row and pd.notna(row.get('Email')) else '',
-                'feeling': str(row.get('Feeling', '')) if 'Feeling' in row and pd.notna(row.get('Feeling')) else '',
-                'comments': str(row.get('Comments', '')) if 'Comments' in row and pd.notna(row.get('Comments')) else '',
-                'objections': str(row.get('Objections', '')) if 'Objections' in row and pd.notna(row.get('Objections')) else '',
+                'email': str(row.get('email', '')) if pd.notna(row.get('email')) else '',
+                'feeling': str(row.get('feeling', '')) if pd.notna(row.get('feeling')) else '',
+                'comments': str(row.get('comments', '')) if pd.notna(row.get('comments')) else '',
+                'objections': str(row.get('objections', '')) if pd.notna(row.get('objections')) else '',
             })
     
     # Sort by date (closest first)
