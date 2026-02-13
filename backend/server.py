@@ -270,11 +270,12 @@ def safe_date(value) -> Optional[datetime]:
     except Exception:
         return None
 
-def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: str = None) -> KPIResponse:
+def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: str = None, from_db: bool = False) -> KPIResponse:
     """Process sales data and calculate KPIs"""
     
-    # Standardize column names - map to internal names
-    column_mapping = {}
+    if not from_db:
+        # Standardize column names - map to internal names (only for Sheet data)
+        column_mapping = {}
     
     for col in df.columns:
         col_lower = str(col).lower().strip()
