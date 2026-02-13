@@ -668,6 +668,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     sales_df = installed_deals_df.head(50)  # Only SALE status with install_date in period
     for _, row in sales_df.iterrows():
         records.append({
+            'lead_id': str(row.get('lead_id', '')) if pd.notna(row.get('lead_id', None)) else '',
             'name': str(row.get('name', '')),
             'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
             'address': str(row.get('address', '')) if pd.notna(row.get('address')) else '',
@@ -680,9 +681,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'visit_date': row.get('visit_date').strftime('%Y-%m-%d') if pd.notna(row.get('visit_date')) else '',
             'close_date': row.get('close_date').strftime('%Y-%m-%d') if pd.notna(row.get('close_date')) else '',
             'install_date': row.get('install_date').strftime('%Y-%m-%d') if pd.notna(row.get('install_date')) else '',
-            'email': str(row.get('Email', '')) if 'Email' in row and pd.notna(row.get('Email')) else '',
-            'feeling': str(row.get('Feeling', '')) if 'Feeling' in row and pd.notna(row.get('Feeling')) else '',
-            'comments': str(row.get('Comments', '')) if 'Comments' in row and pd.notna(row.get('Comments')) else '',
+            'email': str(row.get('email', '')) if pd.notna(row.get('email')) else '',
+            'feeling': str(row.get('feeling', '')) if pd.notna(row.get('feeling')) else '',
+            'comments': str(row.get('comments', '')) if pd.notna(row.get('comments')) else '',
         })
     
     return KPIResponse(
