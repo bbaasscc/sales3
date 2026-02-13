@@ -549,18 +549,18 @@ function App() {
                 <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4" style={{ color: '#047857' }}>
                   Payments <span className="font-normal text-emerald-500">(Install Date)</span>
                 </p>
-                <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
                   <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 text-center shadow-sm border border-emerald-100">
                     <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Installations</p>
-                    <p className="text-xl sm:text-2xl md:text-3xl font-mono font-bold text-emerald-800">{kpiData.commission_payment_count || 0}</p>
+                    <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-emerald-800">{kpiData.commission_payment_count || 0}</p>
                   </div>
                   <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 text-center shadow-sm border border-emerald-100">
                     <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Commission Payable</p>
-                    <p className="text-xl sm:text-2xl md:text-3xl font-mono font-bold text-emerald-800">${(kpiData.commission_payment_amount || 0).toLocaleString()}</p>
+                    <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-emerald-800">${(kpiData.commission_payment_amount || 0).toLocaleString()}</p>
                   </div>
                   <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 text-center shadow-sm border border-emerald-100">
                     <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">SPIFF Included</p>
-                    <p className="text-xl sm:text-2xl md:text-3xl font-mono font-bold text-amber-600">${(kpiData.commission_payment_spiff || 0).toLocaleString()}</p>
+                    <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-amber-600">${(kpiData.commission_payment_spiff || 0).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
