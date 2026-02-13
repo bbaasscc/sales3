@@ -436,9 +436,11 @@ function App() {
       await axios.post(`${API}/client/notes`, {
         client_name: selectedClient.name,
         next_follow_up: clientNote.next_follow_up,
-        comment: clientNote.comment
+        comment: clientNote.comment,
+        priority: clientNote.priority
       });
       toast.success("Notes saved");
+      fetchAllNotes();
     } catch (err) { toast.error("Error saving notes"); }
     setNoteSaving(false);
   };
