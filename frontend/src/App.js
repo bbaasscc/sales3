@@ -958,8 +958,7 @@ function App() {
                         </TableHeader>
                         <TableBody>
                           {kpiData.follow_ups.slice(0, 10).map((followUp, index) => {
-                            const emailsSent = EMAIL_TEMPLATES.filter(t => isActionSent(followUp.name, 'email', t.id)).length;
-                            const smsSent = SMS_TEMPLATES.filter(t => isActionSent(followUp.name, 'sms', t.id)).length;
+                            const progress = getPipelineProgress(followUp.name);
                             return (
                             <TableRow 
                               key={index} 
@@ -996,30 +995,18 @@ function App() {
                                 ) : '-'}
                               </TableCell>
                               <TableCell className="py-2 px-1 sm:px-3">
-                                <div className="flex items-center gap-1">
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); setActionMenu({ client: followUp, type: 'email' }); }}
-                                    className="relative p-1.5 rounded-lg hover:bg-blue-50 transition-colors group"
-                                    title="Send Email"
-                                    data-testid={`email-btn-${index}`}
-                                  >
-                                    <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
-                                    {emailsSent > 0 && (
-                                      <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">{emailsSent}</span>
-                                    )}
-                                  </button>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); setActionMenu({ client: followUp, type: 'sms' }); }}
-                                    className="relative p-1.5 rounded-lg hover:bg-green-50 transition-colors group"
-                                    title="Copy SMS"
-                                    data-testid={`sms-btn-${index}`}
-                                  >
-                                    <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600" />
-                                    {smsSent > 0 && (
-                                      <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">{smsSent}</span>
-                                    )}
-                                  </button>
-                                </div>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); setActionMenu({ client: followUp }); }}
+                                  className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors"
+                                  data-testid={`pipeline-btn-${index}`}
+                                >
+                                  <div className="flex gap-0.5">
+                                    {ALL_PIPELINE_ACTIONS.map(a => (
+                                      <div key={a.id} className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${isStepDone(followUp.name, a.id) ? 'bg-green-500' : 'bg-gray-300'}`} />
+                                    ))}
+                                  </div>
+                                  <span className="text-[10px] sm:text-xs font-mono font-bold text-gray-500">{progress.done}/{progress.total}</span>
+                                </button>
                               </TableCell>
                             </TableRow>
                             );
