@@ -490,8 +490,12 @@ function App() {
 
   const handleSaveEditLead = async () => {
     if (!editingLead?.lead_id) return;
+    // Auto-calculate commission and spiff total
+    const spiffSum = (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
+    const baseComm = (editingLead.ticket_value || 0) * (editingLead.commission_percent || 0) / 100;
+    const dataToSave = { ...editingLead, commission_value: Math.round((baseComm + spiffSum) * 100) / 100, spif_total: Math.round(spiffSum * 100) / 100 };
     try {
-      await axios.put(`${API}/leads/${editingLead.lead_id}`, editingLead);
+      await axios.put(`${API}/leads/${editingLead.lead_id}`, dataToSave);
       toast.success("Lead updated");
       setEditingLead(null);
       fetchDashboardData(); fetchAllLeads();
