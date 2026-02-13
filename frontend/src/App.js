@@ -1444,6 +1444,15 @@ function App() {
               >
                 {noteSaving ? 'Saving...' : 'Save Notes'}
               </Button>
+              {selectedClient.lead_id && (
+                <Button 
+                  onClick={() => setDeleteConfirm(selectedClient)}
+                  variant="outline"
+                  className="text-red-600 border-red-200 hover:bg-red-50"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              )}
               <Button 
                 onClick={() => setSelectedClient(null)}
                 variant="outline"
