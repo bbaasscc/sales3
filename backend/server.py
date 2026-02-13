@@ -85,6 +85,61 @@ class ClientNoteCreate(BaseModel):
     next_follow_up: str = ""
     comment: str = ""
 
+class LeadCreate(BaseModel):
+    name: str = ""
+    address: str = ""
+    city: str = ""
+    email: str = ""
+    phone: str = ""
+    unit_type: str = ""
+    ticket_value: float = 0
+    commission_percent: float = 0
+    commission_value: float = 0
+    spif_total: float = 0
+    status: str = "PENDING"
+    visit_date: str = ""
+    close_date: str = ""
+    install_date: str = ""
+    follow_up_date: str = ""
+    loss_reason: str = ""
+    comments: str = ""
+    feeling: str = ""
+    objections: str = ""
+    duct_cleaning: float = 0
+    apco_x: float = 0
+    samsung: float = 0
+    mitsubishi: float = 0
+    surge_protector: float = 0
+    self_gen_mits: float = 0
+
+class LeadUpdate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    name: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    unit_type: Optional[str] = None
+    ticket_value: Optional[float] = None
+    commission_percent: Optional[float] = None
+    commission_value: Optional[float] = None
+    spif_total: Optional[float] = None
+    status: Optional[str] = None
+    visit_date: Optional[str] = None
+    close_date: Optional[str] = None
+    install_date: Optional[str] = None
+    follow_up_date: Optional[str] = None
+    loss_reason: Optional[str] = None
+    comments: Optional[str] = None
+    feeling: Optional[str] = None
+    objections: Optional[str] = None
+    duct_cleaning: Optional[float] = None
+    apco_x: Optional[float] = None
+    samsung: Optional[float] = None
+    mitsubishi: Optional[float] = None
+    surge_protector: Optional[float] = None
+    self_gen_mits: Optional[float] = None
+
 class KPIResponse(BaseModel):
     # Main Summary KPIs (based on close_date - when sales are closed)
     total_revenue: float
