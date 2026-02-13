@@ -1167,18 +1167,34 @@ function App() {
                                 <span className="line-clamp-1 underline decoration-dotted">{followUp.name}</span>
                               </TableCell>
                               <TableCell className="py-2 px-1 sm:px-3 text-xs sm:text-sm text-gray-600 hidden md:table-cell">{followUp.city}</TableCell>
-                              <TableCell className={`py-2 px-1 sm:px-3 font-mono text-[10px] sm:text-xs hidden sm:table-cell ${followUp.is_urgent ? 'font-bold text-red-600' : 'text-gray-600'}`}>
-                                {followUp.follow_up_date}
+                              <TableCell className="py-2 px-1 sm:px-3 hidden sm:table-cell">
+                                {(() => {
+                                  if (!followUp.visit_date) return <span className="text-[10px] text-gray-400">N/A</span>;
+                                  const visitD = new Date(followUp.visit_date);
+                                  const today = new Date(new Date().toISOString().split('T')[0]);
+                                  const daysSince = Math.floor((today - visitD) / 86400000);
+                                  return (
+                                    <span className={`font-mono text-[10px] sm:text-xs font-bold ${daysSince > 8 ? 'text-red-600' : daysSince > 4 ? 'text-amber-600' : 'text-gray-600'}`}>
+                                      {daysSince}d {daysSince > 8 && <span className="text-[9px] font-normal bg-red-100 text-red-700 px-1 py-0.5 rounded ml-0.5">LATE</span>}
+                                    </span>
+                                  );
+                                })()}
                               </TableCell>
                               <TableCell className="py-2 px-1 sm:px-3 text-[10px] sm:text-xs">
                                 {(() => {
-                                  const nextAction = ALL_PIPELINE_ACTIONS.find(a => !isStepDone(followUp.name, a.id));
-                                  if (!nextAction) return <span className="text-green-600 font-bold">Done</span>;
-                                  const step = PIPELINE_STEPS.find(s => s.actions.some(a => a.id === nextAction.id));
+                                  const nextAct = ALL_PIPELINE_ACTIONS.find(a => !isStepDone(followUp.name, a.id));
+                                  if (!nextAct) return <span className="text-green-600 font-bold">Done</span>;
+                                  const step = PIPELINE_STEPS.find(s => s.actions.some(a => a.id === nextAct.id));
+                                  // Check if this step is overdue based on visit_date
+                                  const visitD = followUp.visit_date ? new Date(followUp.visit_date) : null;
+                                  const today = new Date(new Date().toISOString().split('T')[0]);
+                                  const dueDate = visitD ? new Date(visitD.getTime() + (step?.day || 0) * 86400000) : null;
+                                  const isLate = dueDate && dueDate < today;
                                   return (
-                                    <span className="flex items-center gap-1">
-                                      {nextAction.type === 'email' ? <Mail className="w-3 h-3 text-blue-500" /> : <MessageSquare className="w-3 h-3 text-green-500" />}
-                                      <span className="text-gray-600 truncate">D{step?.day}</span>
+                                    <span className={`flex items-center gap-1 ${isLate ? 'text-red-600 font-bold' : ''}`}>
+                                      {nextAct.type === 'email' ? <Mail className="w-3 h-3 text-blue-500" /> : <MessageSquare className="w-3 h-3 text-green-500" />}
+                                      <span className="truncate">D{step?.day}</span>
+                                      {isLate && <span className="text-[8px] bg-red-600 text-white px-1 rounded">!</span>}
                                     </span>
                                   );
                                 })()}
