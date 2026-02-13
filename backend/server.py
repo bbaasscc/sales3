@@ -140,6 +140,10 @@ class LeadUpdate(BaseModel):
     surge_protector: Optional[float] = None
     self_gen_mits: Optional[float] = None
 
+class PipelineScheduleUpdate(BaseModel):
+    client_name: str
+    steps: List[Dict[str, Any]]  # [{id, scheduled_date, comment}]
+
 class KPIResponse(BaseModel):
     # Main Summary KPIs (based on close_date - when sales are closed)
     total_revenue: float
