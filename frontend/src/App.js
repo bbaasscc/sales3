@@ -51,6 +51,10 @@ import {
   FileText,
   User,
   X,
+  MessageSquare,
+  Check,
+  Copy,
+  Send,
 } from "lucide-react";
 import {
   AreaChart,
