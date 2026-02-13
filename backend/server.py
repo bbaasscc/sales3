@@ -203,7 +203,7 @@ def safe_date(value) -> Optional[datetime]:
                 except ValueError:
                     continue
         return pd.to_datetime(value)
-    except:
+    except Exception:
         return None
 
 def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: str = None) -> KPIResponse:
@@ -211,7 +211,6 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
     # Standardize column names - map to internal names
     column_mapping = {}
-    original_columns = df.columns.tolist()
     
     for col in df.columns:
         col_lower = str(col).lower().strip()
