@@ -1,65 +1,79 @@
-# Sales Dashboard PRD
+# Sales Dashboard PRD - Four Seasons Heating & Cooling
 
 ## Original Problem Statement
-Create a web dashboard from an Excel file online that displays real-time salesperson statistics for Four Seasons Heating & Cooling.
+Sales performance dashboard for Benjamin S. Cardarelli with live data from Google Sheets, evolved into a full CRM with sales pipeline and lead management.
 
 ## Architecture
 - **Frontend**: React, Recharts, Shadcn UI, Tailwind CSS
 - **Backend**: FastAPI, Pandas
-- **Database**: MongoDB (config + follow-up action tracking)
-- **Data Source**: Google Sheets (public URL)
+- **Database**: MongoDB (leads, pipeline actions, client notes, schedules)
+- **Data Source**: Google Sheets (initial import) → MongoDB (primary)
 
-## Dashboard Layout (5 Color-Coded Blocks)
-1. **MY MONEY** (Green): 5 KPIs + 3 Payment items (unified)
-2. **HOW CAN I EARN MORE?** (Amber): Under Book Price + SPIFF Breakdown
-3. **WHAT AM I SELLING?** (Blue): 3 charts (Unit Type, Revenue, Monthly)
-4. **CLOSED SALES** (Purple): Table with detail modals
-5. **ACTION REQUIRED** (Red): Follow-ups with Email/SMS action buttons
+## 3-Module Structure
 
-## What's Been Implemented
+### Module 1 — DASHBOARD (view only)
+- 5 color-coded blocks: My Money (green), How Can I Earn More? (amber), What Am I Selling? (blue), Closed Sales (purple)
+- KPIs: Revenue, Commission, Closed Deals, Closing Rate, Avg Ticket
+- Payments by install_date: Installations, Commission Payable, SPIFF Included
+- Under Book Price (5%), SPIFF Breakdown by brand, Charts (3 max), Sales table
 
-### Phase 1-4: Core Dashboard (Complete)
-- All KPI calculations, date filtering, pay periods, branding, mobile responsive
+### Module 2 — FOLLOW-UPS (pipeline + actions)
+- Leads with pending follow-ups, priority (High/Med/Low), "Since Visit" days with overdue indicators
+- Pipeline: 7-step "Closing Flow" (Day 0/2/4/6/8) with email + SMS templates
+- Customizable schedule dates + notes per step
+- Checkmark toggles (independent of send/copy)
+- Client detail modal: dates, pipeline status, notes, next follow-up
 
-### Phase 5: Visual Block Redesign (Feb 13, 2026)
-- 5 color-coded blocks with distinct backgrounds and titles
+### Module 3 — DATA (full CRUD)
+- All 53+ leads in searchable/filterable table
+- Status filters: All, SALE, PENDING, LOST
+- Click to edit ALL fields: commission auto-calculated (Ticket × % + SPIFFs)
+- Add new lead: paste dispatch email → auto-parse, or manual entry (minimal fields)
+- Delete with confirmation
+- SPIFF details (APCO X, Samsung, Mitsubishi, Surge, Duct, Self Gen Mits)
 
-### Phase 6: Quality Fixes (Feb 13, 2026)
-- Money formatting (2 decimal places), floating point fix
-- Mobile responsive payments section, .gitignore cleanup
-- Follow-up days calculation fix (timezone issue)
+## Sales Pipeline (HVAC Post-Visit Closing Flow)
+- Day 0: Email (Positioning) + SMS (Reinforcement)
+- Day 2: Email (Soft Close)
+- Day 4: SMS (Trigger) + Email (Incentive $200)
+- Day 6: SMS (Decision Message)
+- Day 8: Email (Final Push)
 
-### Phase 7: Email/SMS Follow-up Actions (Feb 13, 2026)
-- [x] 4 pre-written email templates (Thank You, Follow Up, $200 Discount, Personal Touch)
-- [x] 4 pre-written SMS templates (Thank You, Follow Up, $200 Discount, Strong Close)
-- [x] Email opens Outlook via mailto: with pre-filled subject + body
-- [x] SMS copies to clipboard for easy paste
-- [x] Action tracking in MongoDB (records which templates sent to which client)
-- [x] Green checkmarks on sent templates, count badges on buttons
-- [x] Templates auto-fill client's first name (ALLCAPS -> Title Case)
+## Key Business Logic
+- **Executive Summary**: based on close_date
+- **Leads/Closing Rate**: based on visit_date
+- **Commission Payment**: based on install_date
+- **Commission $** = (Ticket Value × Commission %) + sum(SPIFF details)
+- **Follow-ups**: leads with visit_date in period, status ≠ SALE
 
 ## API Endpoints
-- `GET /api/dashboard/kpis` - Main KPI endpoint
-- `POST /api/config/excel` - Set Excel URL
-- `GET /api/followup/actions` - Get all follow-up action records
-- `POST /api/followup/action` - Record email/SMS sent
-- `DELETE /api/followup/action` - Remove action record
+- `GET /api/dashboard/kpis` — KPIs (auto-imports from Sheet if MongoDB empty)
+- `GET/POST /api/leads` — CRUD leads
+- `PUT/DELETE /api/leads/{id}` — Update/delete lead
+- `POST /api/leads/parse-email` — Parse dispatch email
+- `POST /api/leads/import` — Re-import from Google Sheet
+- `GET/POST /api/followup/action` — Pipeline step tracking
+- `GET/POST /api/client/notes` — Priority, next follow-up, comments
+- `GET/POST /api/pipeline/schedule` — Custom pipeline dates
 
-## P1 Features - TODO
+## What's Been Implemented (Feb 13, 2026)
+- [x] Full dashboard with 5 color-coded blocks
+- [x] MongoDB as primary data source (53 leads imported)
+- [x] 3-tab navigation: Dashboard | Follow-ups | Data
+- [x] Sales pipeline with 7 steps, customizable dates/notes
+- [x] Email (Outlook via mailto:) + SMS (clipboard) templates
+- [x] Priority system (High/Med/Low) with overdue indicators
+- [x] Lead CRUD: add (paste email parser), edit (auto-calc commission), delete
+- [x] Auto-import from Google Sheet on first load
+- [x] Money formatting (2 decimals), responsive mobile design
+- [x] Client notes, pipeline schedule persistence in MongoDB
+
+## P1 — TODO
 - [ ] Export data to CSV/PDF
-- [ ] Custom date range picker
+- [ ] Improve mobile UX for Data tab
 
-## P2 Features - BACKLOG
+## P2 — BACKLOG
 - [ ] Period comparison (YoY, MoM)
 - [ ] Goal tracking with progress bars
 - [ ] Multiple salesperson support
-- [ ] Refactor App.js into smaller components
-
-## Testing Status (Feb 13, 2026)
-- Iteration 8: Backend 100% (9/9), Frontend 100%
-- All previous iterations passed
-
-## Branding
-- **Company**: Four Seasons Heating & Cooling
-- **Salesperson**: Benjamin S. Cardarelli
-- **Block Colors**: Green, Amber, Blue, Purple, Red
+- [ ] Refactor App.js into component files
