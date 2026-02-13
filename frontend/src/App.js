@@ -1405,26 +1405,22 @@ function App() {
             ) : (
               <div className="p-4 space-y-3">
                 <div className="grid grid-cols-2 gap-2">
-                  {[['name','Name *'],['address','Address'],['city','City'],['email','Email'],['phone','Phone'],['unit_type','Unit Type']].map(([k,l]) => (
+                  {[['name','Name *'],['address','Address'],['city','City'],['email','Email'],['phone','Phone']].map(([k,l]) => (
                     <div key={k} className={k === 'name' ? 'col-span-2' : ''}>
                       <label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
                       <input value={newLeadForm[k] || ''} onChange={(e) => setNewLeadForm(p => ({...p, [k]: e.target.value}))} className="w-full px-2 py-1.5 text-sm border rounded-lg" />
                     </div>
                   ))}
-                  {[['ticket_value','Ticket Value'],['commission_percent','Commission %'],['commission_value','Commission Value']].map(([k,l]) => (
-                    <div key={k}><label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
-                      <input type="number" step="0.01" value={newLeadForm[k] || 0} onChange={(e) => setNewLeadForm(p => ({...p, [k]: parseFloat(e.target.value) || 0}))} className="w-full px-2 py-1.5 text-sm border rounded-lg" /></div>
-                  ))}
-                  <div><label className="text-[10px] font-bold uppercase text-gray-500">Status</label>
-                    <select value={newLeadForm.status || 'PENDING'} onChange={(e) => setNewLeadForm(p => ({...p, status: e.target.value}))} className="w-full px-2 py-1.5 text-sm border rounded-lg">
-                      <option>PENDING</option><option>SALE</option><option>LOST</option></select></div>
-                  {[['visit_date','Visit Date'],['close_date','Close Date'],['install_date','Install Date']].map(([k,l]) => (
-                    <div key={k}><label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
-                      <input type="date" value={newLeadForm[k] || ''} onChange={(e) => setNewLeadForm(p => ({...p, [k]: e.target.value}))} className="w-full px-2 py-1.5 text-sm border rounded-lg" /></div>
-                  ))}
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-gray-500">Visit Date</label>
+                    <input type="date" value={newLeadForm.visit_date || ''} onChange={(e) => setNewLeadForm(p => ({...p, visit_date: e.target.value}))} className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-gray-500">Comments</label>
+                    <input value={newLeadForm.comments || ''} onChange={(e) => setNewLeadForm(p => ({...p, comments: e.target.value}))} className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                  </div>
                 </div>
-                <div><label className="text-[10px] font-bold uppercase text-gray-500">Comments</label>
-                  <textarea value={newLeadForm.comments || ''} onChange={(e) => setNewLeadForm(p => ({...p, comments: e.target.value}))} rows={2} className="w-full px-2 py-1.5 text-sm border rounded-lg resize-none" /></div>
+                <p className="text-[10px] text-gray-400">The rest can be filled in later from the Data tab.</p>
                 <div className="flex gap-2">
                   <Button onClick={handleCreateLead} className="flex-1" style={{ backgroundColor: '#2563EB' }}>Create Lead</Button>
                   <Button onClick={() => setNewLeadStep('paste')} variant="outline">Back</Button>
