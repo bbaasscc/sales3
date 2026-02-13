@@ -422,10 +422,10 @@ function App() {
 
   const openClientModal = async (client) => {
     setSelectedClient(client);
-    setClientNote({ next_follow_up: '', comment: '' });
+    setClientNote({ next_follow_up: '', comment: '', priority: 'high' });
     try {
       const res = await axios.get(`${API}/client/notes`, { params: { client_name: client.name } });
-      setClientNote({ next_follow_up: res.data.next_follow_up || '', comment: res.data.comment || '' });
+      setClientNote({ next_follow_up: res.data.next_follow_up || '', comment: res.data.comment || '', priority: res.data.priority || 'high' });
     } catch (err) { console.error(err); }
   };
 
