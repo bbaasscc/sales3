@@ -325,6 +325,52 @@ function App() {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
+  // Fetch follow-up actions history
+  const fetchActions = useCallback(async () => {
+    try {
+      const res = await axios.get(`${API}/followup/actions`);
+      setFollowUpActions(res.data.actions || []);
+    } catch (err) { console.error("Error fetching actions:", err); }
+  }, []);
+
+  useEffect(() => { fetchActions(); }, [fetchActions]);
+
+  const isActionSent = (clientName, actionType, templateId) => {
+    return followUpActions.some(a => a.client_name === clientName && a.action_type === actionType && a.template_id === templateId);
+  };
+
+  const handleSendEmail = async (client, template) => {
+    const name = getFirstName(client.name);
+    const body = template.body.replace(/\[NAME\]/g, name);
+    const subject = template.subject;
+    const mailto = `mailto:${client.email || ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailto, '_blank');
+    try {
+      await axios.post(`${API}/followup/action`, {
+        client_name: client.name, client_email: client.email || '', action_type: 'email', template_id: template.id
+      });
+      fetchActions();
+      toast.success(`Email "${template.name}" opened for ${name}`);
+    } catch (err) { console.error(err); }
+    setActionMenu(null);
+  };
+
+  const handleCopySMS = async (client, template) => {
+    const name = getFirstName(client.name);
+    const text = template.text.replace(/\[NAME\]/g, name);
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(`SMS "${template.name}" copied to clipboard`);
+    } catch { toast.error("Could not copy to clipboard"); }
+    try {
+      await axios.post(`${API}/followup/action`, {
+        client_name: client.name, client_email: client.email || '', action_type: 'sms', template_id: template.id
+      });
+      fetchActions();
+    } catch (err) { console.error(err); }
+    setActionMenu(null);
+  };
+
   const handleRefresh = () => {
     // On manual refresh, reset to current pay period
     fetchDashboardData(true, true);
