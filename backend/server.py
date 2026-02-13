@@ -998,6 +998,36 @@ async def save_client_notes(data: ClientNoteCreate):
     )
     return {"message": "Notes saved"}
 
+PIPELINE_STEP_DAYS = [
+    {"id": "d0_email", "day": 0}, {"id": "d0_sms", "day": 0},
+    {"id": "d2_email", "day": 2},
+    {"id": "d4_sms", "day": 4}, {"id": "d4_email", "day": 4},
+    {"id": "d6_sms", "day": 6},
+    {"id": "d8_email", "day": 8},
+]
+
+def generate_pipeline_schedule(visit_date_str: str) -> list:
+    """Generate standard pipeline schedule from visit date"""
+    try:
+        vd = datetime.strptime(visit_date_str, '%Y-%m-%d')
+    except (ValueError, TypeError):
+        vd = datetime.now()
+    return [{"id": s["id"], "scheduled_date": (vd + timedelta(days=s["day"])).strftime('%Y-%m-%d'), "comment": ""} for s in PIPELINE_STEP_DAYS]
+
+@api_router.get("/pipeline/schedule")
+async def get_pipeline_schedule(client_name: str):
+    schedule = await db.pipeline_schedules.find_one({"client_name": client_name}, {"_id": 0})
+    return schedule or {"client_name": client_name, "steps": [], "is_custom": False}
+
+@api_router.post("/pipeline/schedule")
+async def save_pipeline_schedule(data: PipelineScheduleUpdate):
+    await db.pipeline_schedules.update_one(
+        {"client_name": data.client_name},
+        {"$set": {"steps": data.steps, "is_custom": True, "updated_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True
+    )
+    return {"message": "Schedule saved"}
+
 # Include the router
 app.include_router(api_router)
 
