@@ -359,6 +359,16 @@ function App() {
 
   useEffect(() => { fetchActions(); }, [fetchActions]);
 
+  // Fetch all leads for Data tab
+  const fetchAllLeads = useCallback(async () => {
+    try {
+      const res = await axios.get(`${API}/leads`);
+      setAllLeads(res.data.leads || []);
+    } catch (err) { console.error(err); }
+  }, []);
+
+  useEffect(() => { if (activeTab === 'data') fetchAllLeads(); }, [activeTab, fetchAllLeads]);
+
   const isStepDone = (clientName, stepId) => {
     return followUpActions.some(a => a.client_name === clientName && a.step_id === stepId);
   };
