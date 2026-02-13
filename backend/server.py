@@ -855,20 +855,84 @@ async def get_excel_config():
     return config
 
 @api_router.get("/dashboard/kpis")
-async def get_dashboard_kpis(excel_url: Optional[str] = None, date_filter: str = "all", pay_period: Optional[str] = None):
-    """Get KPIs from Excel data"""
-    if not excel_url:
+async def get_dashboard_kpis(date_filter: str = "all", pay_period: Optional[str] = None):
+    """Get KPIs - reads from MongoDB if data exists, otherwise from Sheet"""
+    leads = await db.leads.find({}, {"_id": 0, "lead_id": 0, "created_at": 0, "phone": 0}).to_list(10000)
+    
+    if leads:
+        df = pd.DataFrame(leads)
+        kpis = process_sales_data(df, date_filter, pay_period, from_db=True)
+    else:
         config = await db.excel_config.find_one({}, {"_id": 0})
-        if config:
-            excel_url = config.get('excel_url')
-    
-    if not excel_url:
-        raise HTTPException(status_code=400, detail="No Excel URL configured.")
-    
-    df = parse_excel_data(excel_url)
-    kpis = process_sales_data(df, date_filter, pay_period)
+        excel_url = config.get('excel_url') if config else None
+        if not excel_url:
+            raise HTTPException(status_code=400, detail="No data. Import from Sheet or add leads.")
+        df = parse_excel_data(excel_url)
+        kpis = process_sales_data(df, date_filter, pay_period, from_db=False)
     
     return kpis
+
+@api_router.post("/leads/import")
+async def import_leads_from_sheet():
+    """Import all leads from Google Sheet to MongoDB"""
+    config = await db.excel_config.find_one({}, {"_id": 0})
+    excel_url = config.get('excel_url') if config else None
+    if not excel_url:
+        raise HTTPException(status_code=400, detail="No Sheet URL configured.")
+    count = await import_sheet_to_db(excel_url)
+    return {"message": f"Imported {count} leads", "count": count}
+
+@api_router.post("/leads/parse-email")
+async def parse_email_to_lead(body: dict):
+    """Parse a dispatch email text into lead fields"""
+    text = body.get("text", "")
+    parsed = parse_lead_email(text)
+    return parsed
+
+@api_router.post("/leads")
+async def create_lead(lead: LeadCreate):
+    """Create a new lead"""
+    doc = lead.model_dump()
+    doc['lead_id'] = str(uuid.uuid4())
+    doc['created_at'] = datetime.now(timezone.utc).isoformat()
+    if doc['status']:
+        doc['status'] = normalize_status(doc['status'])
+    # Auto-calculate follow-up date from visit_date if not set
+    if doc['visit_date'] and not doc['follow_up_date']:
+        try:
+            vd = datetime.strptime(doc['visit_date'], '%Y-%m-%d')
+            doc['follow_up_date'] = (vd + timedelta(days=2)).strftime('%Y-%m-%d')
+        except ValueError:
+            pass
+    await db.leads.insert_one(doc)
+    doc.pop('_id', None)
+    return {"message": "Lead created", "lead": doc}
+
+@api_router.put("/leads/{lead_id}")
+async def update_lead(lead_id: str, updates: LeadUpdate):
+    """Update a lead"""
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    if 'status' in update_data:
+        update_data['status'] = normalize_status(update_data['status'])
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    result = await db.leads.update_one({"lead_id": lead_id}, {"$set": update_data})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    return {"message": "Lead updated"}
+
+@api_router.delete("/leads/{lead_id}")
+async def delete_lead(lead_id: str):
+    """Delete a lead"""
+    result = await db.leads.delete_one({"lead_id": lead_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    return {"message": "Lead deleted"}
+
+@api_router.get("/leads")
+async def get_leads():
+    """Get all leads"""
+    leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
+    return {"leads": leads}
 
 @api_router.post("/dashboard/refresh")
 async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = "all", pay_period: Optional[str] = None):
