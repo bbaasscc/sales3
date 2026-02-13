@@ -742,7 +742,33 @@ function App() {
             <Button onClick={handleRefresh} className="mt-3 sm:mt-4" variant="outline" size="sm">Try Again</Button>
           </div>
         ) : kpiData ? (
-          <div className="space-y-8 sm:space-y-10">
+          <>
+            {/* Tab Navigation */}
+            <div className="flex gap-1 mb-6 bg-white rounded-xl p-1 shadow-sm border border-gray-200">
+              {[
+                { id: 'dashboard', label: 'Dashboard', icon: 'BarChart3' },
+                { id: 'followups', label: 'Follow-ups', icon: 'Phone' },
+                { id: 'data', label: 'Data', icon: 'FileText' },
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all ${
+                    activeTab === tab.id
+                      ? 'text-white shadow-md'
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  }`}
+                  style={activeTab === tab.id ? { backgroundColor: BRAND_COLORS.primary } : {}}
+                  data-testid={`tab-${tab.id}`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* === DASHBOARD TAB === */}
+            {activeTab === 'dashboard' && (
+            <div className="space-y-8 sm:space-y-10">
             {/* ═══════════════════════════════════════════════════════════════════════
                 BLOCK 1 – MY MONEY
                 Financial overview: Performance KPIs + Commission Payments (unified)
@@ -1026,6 +1052,12 @@ function App() {
               </div>
             </div>
 
+            </div>
+            )}
+
+            {/* === FOLLOW-UPS TAB === */}
+            {activeTab === 'followups' && (
+            <div>
             {/* ═══════════════════════════════════════════════════════════════════════
                 BLOCK 5 – ACTION REQUIRED
                 Pending follow-ups - visually strongest block
@@ -1144,6 +1176,95 @@ function App() {
             )}
 
           </div>
+            )}
+
+            {/* === DATA TAB === */}
+            {activeTab === 'data' && (
+            <div>
+              <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search by name or city..."
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    data-testid="data-search"
+                  />
+                  <Target className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                </div>
+                <div className="flex gap-1">
+                  {['all', 'SALE', 'PENDING', 'LOST'].map(s => (
+                    <button key={s} onClick={() => setStatusFilter(s)}
+                      className={`px-3 py-2 rounded-lg text-xs font-bold transition-all ${statusFilter === s ? 'text-white shadow-sm' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
+                      style={statusFilter === s ? { backgroundColor: s === 'SALE' ? '#22C55E' : s === 'LOST' ? '#EF4444' : s === 'PENDING' ? '#F59E0B' : BRAND_COLORS.primary } : {}}>
+                      {s === 'all' ? 'All' : s}
+                    </button>
+                  ))}
+                </div>
+                <button onClick={() => { setNewLeadOpen(true); setNewLeadStep('paste'); setNewLeadText(''); }}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors"
+                  data-testid="data-add-lead">
+                  <Plus className="w-4 h-4" /> New Lead
+                </button>
+              </div>
+
+              <Card className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-gray-50">
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3">Name</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden sm:table-cell">City</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3">Status</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3">Unit</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3">Value</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden md:table-cell">Commission</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden lg:table-cell">Visit</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden lg:table-cell">Close</TableHead>
+                        <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden xl:table-cell">Install</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {allLeads
+                        .filter(l => statusFilter === 'all' || l.status === statusFilter)
+                        .filter(l => {
+                          if (!searchTerm) return true;
+                          const s = searchTerm.toLowerCase();
+                          return (l.name || '').toLowerCase().includes(s) || (l.city || '').toLowerCase().includes(s) || (l.email || '').toLowerCase().includes(s);
+                        })
+                        .map((lead, i) => (
+                        <TableRow key={lead.lead_id || i} className="border-b border-gray-100 hover:bg-blue-50/50 cursor-pointer transition-colors"
+                          onClick={() => setEditingLead({...lead})} data-testid={`data-row-${i}`}>
+                          <TableCell className="py-2 px-2 sm:px-3 text-xs sm:text-sm font-medium text-gray-800">
+                            <span className="line-clamp-1">{lead.name}</span>
+                          </TableCell>
+                          <TableCell className="py-2 px-2 sm:px-3 text-xs text-gray-600 hidden sm:table-cell">{lead.city}</TableCell>
+                          <TableCell className="py-2 px-2 sm:px-3">
+                            <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                              lead.status === 'SALE' ? 'bg-green-100 text-green-700' :
+                              lead.status === 'LOST' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+                            }`}>{lead.status}</span>
+                          </TableCell>
+                          <TableCell className="py-2 px-2 sm:px-3 text-[10px] sm:text-xs text-gray-600">{lead.unit_type}</TableCell>
+                          <TableCell className="py-2 px-2 sm:px-3 font-mono text-xs font-semibold text-gray-800">${(lead.ticket_value || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</TableCell>
+                          <TableCell className="py-2 px-2 sm:px-3 font-mono text-xs text-green-700 hidden md:table-cell">${(lead.commission_value || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</TableCell>
+                          <TableCell className="py-2 px-2 sm:px-3 font-mono text-[10px] text-gray-500 hidden lg:table-cell">{lead.visit_date}</TableCell>
+                          <TableCell className="py-2 px-2 sm:px-3 font-mono text-[10px] text-gray-500 hidden lg:table-cell">{lead.close_date}</TableCell>
+                          <TableCell className="py-2 px-2 sm:px-3 font-mono text-[10px] text-gray-500 hidden xl:table-cell">{lead.install_date}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                <div className="p-3 border-t border-gray-100 text-xs text-gray-400 text-center">
+                  {allLeads.filter(l => statusFilter === 'all' || l.status === statusFilter).filter(l => !searchTerm || (l.name||'').toLowerCase().includes(searchTerm.toLowerCase()) || (l.city||'').toLowerCase().includes(searchTerm.toLowerCase())).length} records
+                </div>
+              </Card>
+            </div>
+            )}
+
+          </>
         ) : null}
       </main>
 
