@@ -372,6 +372,29 @@ function App() {
     } catch { toast.error("Could not copy"); }
   };
 
+  const openClientModal = async (client) => {
+    setSelectedClient(client);
+    setClientNote({ next_follow_up: '', comment: '' });
+    try {
+      const res = await axios.get(`${API}/client/notes`, { params: { client_name: client.name } });
+      setClientNote({ next_follow_up: res.data.next_follow_up || '', comment: res.data.comment || '' });
+    } catch (err) { console.error(err); }
+  };
+
+  const saveClientNote = async () => {
+    if (!selectedClient) return;
+    setNoteSaving(true);
+    try {
+      await axios.post(`${API}/client/notes`, {
+        client_name: selectedClient.name,
+        next_follow_up: clientNote.next_follow_up,
+        comment: clientNote.comment
+      });
+      toast.success("Notes saved");
+    } catch (err) { toast.error("Error saving notes"); }
+    setNoteSaving(false);
+  };
+
   const handleRefresh = () => {
     // On manual refresh, reset to current pay period
     fetchDashboardData(true, true);
