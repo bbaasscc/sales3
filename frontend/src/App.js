@@ -370,6 +370,18 @@ function App() {
 
   useEffect(() => { if (activeTab === 'data') fetchAllLeads(); }, [activeTab, fetchAllLeads]);
 
+  // Fetch all client notes for priority display
+  const fetchAllNotes = useCallback(async () => {
+    try {
+      const res = await axios.get(`${API}/client/all-notes`);
+      const map = {};
+      (res.data.notes || []).forEach(n => { map[n.client_name] = n; });
+      setAllClientNotes(map);
+    } catch (err) { console.error(err); }
+  }, []);
+
+  useEffect(() => { if (activeTab === 'followups') fetchAllNotes(); }, [activeTab, fetchAllNotes]);
+
   const isStepDone = (clientName, stepId) => {
     return followUpActions.some(a => a.client_name === clientName && a.step_id === stepId);
   };
