@@ -287,7 +287,14 @@ function App() {
   const [followUpActions, setFollowUpActions] = useState([]);
   const [actionMenu, setActionMenu] = useState(null);
   const [clientNote, setClientNote] = useState({ next_follow_up: '', comment: '' });
-  const [noteSaving, setNoteSaving] = useState(false); // { client, type: 'email'|'sms' }
+  const [noteSaving, setNoteSaving] = useState(false);
+  const [newLeadOpen, setNewLeadOpen] = useState(false);
+  const [newLeadText, setNewLeadText] = useState('');
+  const [newLeadForm, setNewLeadForm] = useState({});
+  const [newLeadStep, setNewLeadStep] = useState('paste'); // 'paste' or 'form'
+  const [editSale, setEditSale] = useState(null);
+  const [pipelineSchedule, setPipelineSchedule] = useState([]);
+  const [deleteConfirm, setDeleteConfirm] = useState(null); // { client, type: 'email'|'sms' }
 
   const fetchDashboardData = useCallback(async (showToast = false, resetToCurrentPeriod = false) => {
     if (showToast) {
