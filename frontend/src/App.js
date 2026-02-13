@@ -1383,7 +1383,7 @@ function App() {
                   </Table>
                 </div>
                 <div className="p-3 border-t border-gray-100 text-xs text-gray-400 text-center">
-                  {allLeads.filter(l => statusFilter === 'all' || l.status === statusFilter).filter(l => !searchTerm || (l.name||'').toLowerCase().includes(searchTerm.toLowerCase()) || (l.city||'').toLowerCase().includes(searchTerm.toLowerCase())).length} records
+                  {allLeads.filter(l => { if (payPeriod && payPeriod !== 'all') { const p = PAY_PERIODS_DATA.find(pp => pp.name === payPeriod); if (p) { const vd = l.visit_date ? new Date(l.visit_date) : null; if (!vd || vd < p.start || vd > p.end) return false; } } else if (dateFilter && dateFilter !== 'all') { const days = dateFilter === 'week' ? 7 : dateFilter === '2weeks' ? 14 : dateFilter === 'month' ? 30 : 365; const vd = l.visit_date ? new Date(l.visit_date) : null; if (!vd || vd < new Date(Date.now() - days * 86400000)) return false; } return true; }).filter(l => statusFilter === 'all' || l.status === statusFilter).filter(l => !searchTerm || (l.name||'').toLowerCase().includes(searchTerm.toLowerCase()) || (l.city||'').toLowerCase().includes(searchTerm.toLowerCase())).length} records
                 </div>
               </Card>
             </div>
