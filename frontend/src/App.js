@@ -521,7 +521,12 @@ function App() {
         ) : kpiData ? (
           <div className="space-y-6 sm:space-y-8">
             
-            {/* SECTION 1: EXECUTIVE SUMMARY */}
+            {/* ═══════════════════════════════════════════════════════════════════════
+                BLOCK 1 - MY RESULTS (Financial Summary)
+                What the seller wants to know first: How much did I sell? How much do I get paid?
+            ═══════════════════════════════════════════════════════════════════════ */}
+            
+            {/* Executive Summary */}
             <section>
               <SectionHeader 
                 title="Executive Summary" 
@@ -575,7 +580,7 @@ function App() {
               </div>
             </section>
 
-            {/* SECTION: COMMISSION PAYMENT (based on install_date) */}
+            {/* Commission Payment - What gets paid this period */}
             <section>
               <SectionHeader 
                 title="Commission Payment" 
@@ -607,7 +612,12 @@ function App() {
               </Card>
             </section>
 
-            {/* SECTION: UNDER BOOK PRICE */}
+            {/* ═══════════════════════════════════════════════════════════════════════
+                BLOCK 2 - WHERE DOES MY MONEY COME FROM?
+                Under Book Price and SPIFF breakdown - optimization insights
+            ═══════════════════════════════════════════════════════════════════════ */}
+            
+            {/* Under Book Price */}
             <section>
               <SectionHeader 
                 title="Under Book Price" 
@@ -648,7 +658,7 @@ function App() {
               </div>
             </section>
 
-            {/* SECTION 4: SPIFF COMMISSIONS */}
+            {/* SPIFF Breakdown */}
             <section>
               <SectionHeader 
                 title="SPIFF Breakdown" 
@@ -681,7 +691,7 @@ function App() {
                 ))}
               </div>
 
-              {/* SPIFF Chart - Hidden on very small screens */}
+              {/* SPIFF Chart */}
               {spiffChartData.length > 0 && (
                 <div className="mt-3 sm:mt-4 hidden sm:block">
                   <ChartCard title="SPIFF Distribution" icon={PieIcon}>
@@ -709,11 +719,16 @@ function App() {
               )}
             </section>
 
-            {/* SECTION 5: CHARTS */}
+            {/* ═══════════════════════════════════════════════════════════════════════
+                BLOCK 3 - WHAT AM I SELLING?
+                Sales analysis and performance trends - light analysis
+            ═══════════════════════════════════════════════════════════════════════ */}
+            
+            {/* Sales Analysis */}
             <section>
               <SectionHeader 
                 title="Sales Analysis" 
-                description="Unit types & status"
+                description="Unit types & revenue breakdown"
                 icon={TrendingUp}
               />
               
@@ -763,11 +778,11 @@ function App() {
               </div>
             </section>
 
-            {/* SECTION 6: TRENDS */}
+            {/* Performance Trends */}
             <section>
               <SectionHeader 
                 title="Performance Trends" 
-                description="Status & monthly revenue"
+                description="Deal status & monthly revenue"
                 icon={Award}
               />
               
@@ -819,7 +834,11 @@ function App() {
               </div>
             </section>
 
-            {/* SECTION 7: RECORDS TABLE */}
+            {/* ═══════════════════════════════════════════════════════════════════════
+                BLOCK 4 - MY CLOSED SALES
+                Detailed sales table - after seeing the summary
+            ═══════════════════════════════════════════════════════════════════════ */}
+            
             <section>
               <SectionHeader 
                 title="Sales This Period" 
@@ -880,20 +899,24 @@ function App() {
               </Card>
             </section>
 
-            {/* SECTION 8: PENDING FOLLOW-UPS (at the end) */}
+            {/* ═══════════════════════════════════════════════════════════════════════
+                BLOCK 5 - ACTION REQUIRED
+                Pending follow-ups - always at the end, generates immediate action
+            ═══════════════════════════════════════════════════════════════════════ */}
+            
             {kpiData.follow_ups && kpiData.follow_ups.length > 0 && (
-              <section>
+              <section className="mt-8 pt-6 border-t-4 border-red-200">
                 <SectionHeader 
                   title="Pending Follow-Ups" 
                   description="Action required - Click on client for details"
                   icon={Phone}
                 />
                 
-                <Card className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+                <Card className="bg-white border-2 border-red-200 shadow-sm rounded-xl overflow-hidden">
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-gray-50">
+                        <TableRow className="bg-red-50">
                           <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Priority</TableHead>
                           <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Name</TableHead>
                           <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 hidden sm:table-cell">City</TableHead>
