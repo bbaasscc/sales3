@@ -78,9 +78,7 @@ class ExcelConfigCreate(BaseModel):
 
 class FollowUpActionCreate(BaseModel):
     client_name: str
-    client_email: str = ""
-    action_type: str  # "email" or "sms"
-    template_id: int  # 1-4
+    step_id: str  # "d0_email", "d0_sms", "d2_email", etc.
 
 class ClientNoteCreate(BaseModel):
     client_name: str
@@ -745,9 +743,7 @@ async def get_pay_periods():
 async def record_followup_action(action: FollowUpActionCreate):
     doc = {
         "client_name": action.client_name,
-        "client_email": action.client_email,
-        "action_type": action.action_type,
-        "template_id": action.template_id,
+        "step_id": action.step_id,
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
     await db.followup_actions.insert_one(doc)
@@ -760,11 +756,10 @@ async def get_followup_actions():
     return {"actions": actions}
 
 @api_router.delete("/followup/action")
-async def delete_followup_action(client_name: str, action_type: str, template_id: int):
+async def delete_followup_action(client_name: str, step_id: str):
     result = await db.followup_actions.delete_one({
         "client_name": client_name,
-        "action_type": action_type,
-        "template_id": template_id
+        "step_id": step_id
     })
     return {"deleted": result.deleted_count}
 
