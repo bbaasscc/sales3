@@ -22,6 +22,13 @@ Create a web dashboard from an Excel file online that displays real-time salespe
 6. **Sales This Period**: Clickable with detail modal
 7. **Date Filtering**: Pay Period (bi-weekly based on install date), Quick filters
 
+## Dashboard Layout (5 Blocks)
+1. **Block 1 - My Results**: Executive Summary (close_date) + Commission Payment (install_date)
+2. **Block 2 - Where My Money Comes From**: Under Book Price (5%) + SPIFF Breakdown
+3. **Block 3 - What I'm Selling**: Sales Analysis charts + Performance Trends
+4. **Block 4 - My Closed Sales**: Sales This Period table with clickable detail modals
+5. **Block 5 - Action**: Pending Follow-Ups with clickable client modals
+
 ## Metric Calculation Logic (IMPORTANT)
 - **Executive Summary** (Revenue, Commission, Closed Deals, Avg Ticket): Based on **close_date**
 - **Leads**: Based on **visit_date** within period
@@ -29,7 +36,7 @@ Create a web dashboard from an Excel file online that displays real-time salespe
 - **Commission Payment**: Based on **install_date** (when commission is actually paid)
 - **Follow-ups**: Leads with visit_date in period, status != SALE
 
-## What's Been Implemented (Feb 2026)
+## What's Been Implemented
 
 ### Phase 1 - Initial MVP
 - [x] Backend Excel/Google Sheets parsing with pandas
@@ -61,8 +68,10 @@ Create a web dashboard from an Excel file online that displays real-time salespe
 - [x] Follow-ups filtered by visit_date
 - [x] Commission breakdown in sale modal (Base + SPIFF)
 - [x] Fixed duplicate column handling in pandas
+- [x] 5-Block layout reorganization (VERIFIED Feb 13, 2026)
 
 ## P0 Features (Critical) - COMPLETE
+- [x] All 5 blocks layout verified and tested
 - [x] Data parsing from Google Sheets
 - [x] All KPI calculations
 - [x] Dashboard display
@@ -70,6 +79,7 @@ Create a web dashboard from an Excel file online that displays real-time salespe
 - [x] Company branding
 - [x] Mobile responsiveness
 - [x] Commission Payment section
+- [x] Interactive modals (Sales + Follow-ups)
 
 ## P1 Features (Important) - TODO
 - [ ] Export data to CSV/PDF
@@ -81,36 +91,48 @@ Create a web dashboard from an Excel file online that displays real-time salespe
 - [ ] Goal tracking with progress bars
 - [ ] Multiple salesperson support
 - [ ] Dark mode
+- [ ] Refactor App.js into smaller components
+- [ ] Refactor server.py process_sales_data into smaller functions
 
-## Known Issues - RESOLVED
+## Known Issues - ALL RESOLVED
 - [x] Fixed "Truth value of Series is ambiguous" error (duplicate columns)
 - [x] Fixed Pay Period filter not working (end_date timezone issue)
 - [x] Fixed Follow-ups not showing in period filter (was using install_date)
 
+## Testing Status (Feb 13, 2026)
+- Backend: 100% - All 14 API tests passed
+- Frontend: 100% - All 5 blocks, modals, filters, and settings working
+- Test report: /app/test_reports/iteration_5.json
+
 ## API Endpoints
 - `GET /api/` - Health check
-- `GET /api/dashboard/kpis` - Main KPI endpoint
-  - Query params: `date_filter`, `pay_period`
+- `GET /api/dashboard/kpis` - Main KPI endpoint (params: date_filter, pay_period)
 - `GET /api/config/excel` - Get current Excel URL
 - `POST /api/config/excel` - Set Excel URL
+- `GET /api/pay-periods` - List all pay periods
+- `POST /api/dashboard/refresh` - Refresh dashboard data
 
 ## File Structure
 ```
 /app
 ├── backend/
-│   ├── server.py          # FastAPI backend (700+ lines)
-│   └── requirements.txt
+│   ├── server.py          # FastAPI backend (~740 lines)
+│   ├── requirements.txt
+│   └── tests/
+│       └── test_dashboard_api.py
 ├── frontend/
 │   ├── src/
-│   │   ├── App.js         # Main React component (1100+ lines)
+│   │   ├── App.js         # Main React component (~1258 lines)
 │   │   ├── index.css      # Global styles
 │   │   └── components/ui/ # Shadcn components
 │   └── package.json
-└── memory/
-    └── PRD.md             # This file
+├── memory/
+│   └── PRD.md
+└── test_reports/
+    └── iteration_5.json   # Latest test results
 ```
 
 ## Branding
 - **Company**: Four Seasons Heating & Cooling
-- **Colors**: Red (#C62828), White, Dark Gray (#374151)
+- **Colors**: Red (#C62828), Navy (#1E3A5F), White, Light Gray (#F5F5F5)
 - **Salesperson**: Benjamin S. Cardarelli
