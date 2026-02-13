@@ -586,8 +586,8 @@ function App() {
                   <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ color: '#B45309' }}>
                     Under Book Price <span className="font-normal text-amber-500">(5% Commission)</span>
                   </p>
-                  <span className="text-[10px] sm:text-xs font-mono bg-amber-100 px-2 py-0.5 sm:py-1 rounded-full text-amber-700 font-semibold">
-                    {kpiData.closed_deals > 0 ? Math.round(kpiData.price_margin_sales_count / kpiData.closed_deals * 100) : 0}% of sales
+                  <span className="text-[10px] sm:text-xs font-mono bg-gray-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-gray-600">
+                    {kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count / kpiData.closed_deals) * 100).toFixed(1) : 0}%
                   </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mb-5">
