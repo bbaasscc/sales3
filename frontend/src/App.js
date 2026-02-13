@@ -404,8 +404,13 @@ function App() {
     setNoteSaving(false);
   };
 
-  const handleRefresh = () => {
-    // On manual refresh, reset to current pay period
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await axios.post(`${API}/config/excel`, { excel_url: excelUrl });
+      await axios.post(`${API}/leads/import`);
+      toast.success("Data synced from Google Sheet");
+    } catch (err) { toast.error("Import failed"); }
     fetchDashboardData(true, true);
   };
 
