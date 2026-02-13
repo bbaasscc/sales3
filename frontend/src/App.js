@@ -1892,7 +1892,8 @@ function App() {
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* Footer - Mobile Responsive */}
       <footer className="py-3 sm:py-4 mt-6 sm:mt-8" style={{ backgroundColor: BRAND_COLORS.secondary }}>
