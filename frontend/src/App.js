@@ -1075,7 +1075,7 @@ function App() {
                               </TableCell>
                               <TableCell className="py-2 px-1 sm:px-3">
                                 <button
-                                  onClick={(e) => { e.stopPropagation(); setActionMenu({ client: followUp }); }}
+                                  onClick={(e) => { e.stopPropagation(); openPipelineMenu(followUp); }}
                                   className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors"
                                   data-testid={`pipeline-btn-${index}`}
                                 >
