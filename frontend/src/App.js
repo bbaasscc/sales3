@@ -1108,7 +1108,7 @@ function App() {
                             <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3">Name</TableHead>
                             <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 hidden md:table-cell">City</TableHead>
                             <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap hidden sm:table-cell">Follow-up</TableHead>
-                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap">Days</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap">Next Step</TableHead>
                             <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -1143,12 +1143,18 @@ function App() {
                               <TableCell className={`py-2 px-1 sm:px-3 font-mono text-[10px] sm:text-xs hidden sm:table-cell ${followUp.is_urgent ? 'font-bold text-red-600' : 'text-gray-600'}`}>
                                 {followUp.follow_up_date}
                               </TableCell>
-                              <TableCell className={`py-2 px-1 sm:px-3 font-mono text-[10px] sm:text-xs font-bold ${followUp.is_urgent ? 'text-red-600' : 'text-gray-600'}`}>
-                                {followUp.days_until !== null ? (
-                                  followUp.days_until < 0 ? `${Math.abs(followUp.days_until)}d ago` :
-                                  followUp.days_until === 0 ? 'Today' :
-                                  `${followUp.days_until}d`
-                                ) : '-'}
+                              <TableCell className="py-2 px-1 sm:px-3 text-[10px] sm:text-xs">
+                                {(() => {
+                                  const nextAction = ALL_PIPELINE_ACTIONS.find(a => !isStepDone(followUp.name, a.id));
+                                  if (!nextAction) return <span className="text-green-600 font-bold">Done</span>;
+                                  const step = PIPELINE_STEPS.find(s => s.actions.some(a => a.id === nextAction.id));
+                                  return (
+                                    <span className="flex items-center gap-1">
+                                      {nextAction.type === 'email' ? <Mail className="w-3 h-3 text-blue-500" /> : <MessageSquare className="w-3 h-3 text-green-500" />}
+                                      <span className="text-gray-600 truncate">D{step?.day}</span>
+                                    </span>
+                                  );
+                                })()}
                               </TableCell>
                               <TableCell className="py-2 px-1 sm:px-3">
                                 <button
