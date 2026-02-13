@@ -1124,7 +1124,10 @@ function App() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {kpiData.follow_ups.slice(0, 10).map((followUp, index) => {
+                          {kpiData.follow_ups.slice(0, 20).filter(f => {
+                            const p = getPipelineProgress(f.name);
+                            return p.done < p.total;
+                          }).map((followUp, index) => {
                             const progress = getPipelineProgress(followUp.name);
                             const notes = allClientNotes[followUp.name] || {};
                             const priority = notes.priority || 'high';
