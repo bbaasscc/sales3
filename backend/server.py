@@ -277,7 +277,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         # Standardize column names - map to internal names (only for Sheet data)
         column_mapping = {}
     
-    for col in df.columns:
+        for col in df.columns:
         col_lower = str(col).lower().strip()
         if col_lower == 'name':
             column_mapping[col] = 'name'
