@@ -343,39 +343,42 @@ function App() {
 
   useEffect(() => { fetchActions(); }, [fetchActions]);
 
-  const isActionSent = (clientName, actionType, templateId) => {
-    return followUpActions.some(a => a.client_name === clientName && a.action_type === actionType && a.template_id === templateId);
+  const isStepDone = (clientName, stepId) => {
+    return followUpActions.some(a => a.client_name === clientName && a.step_id === stepId);
   };
 
-  const toggleAction = async (client, actionType, templateId) => {
-    const alreadySent = isActionSent(client.name, actionType, templateId);
+  const toggleStep = async (clientName, stepId) => {
+    const done = isStepDone(clientName, stepId);
     try {
-      if (alreadySent) {
-        await axios.delete(`${API}/followup/action`, { params: { client_name: client.name, action_type: actionType, template_id: templateId } });
+      if (done) {
+        await axios.delete(`${API}/followup/action`, { params: { client_name: clientName, step_id: stepId } });
       } else {
-        await axios.post(`${API}/followup/action`, {
-          client_name: client.name, client_email: client.email || '', action_type: actionType, template_id: templateId
-        });
+        await axios.post(`${API}/followup/action`, { client_name: clientName, step_id: stepId });
       }
       fetchActions();
     } catch (err) { console.error(err); }
   };
 
-  const handleSendEmail = (client, template) => {
+  const getPipelineProgress = (clientName) => {
+    const done = ALL_PIPELINE_ACTIONS.filter(a => isStepDone(clientName, a.id)).length;
+    return { done, total: ALL_PIPELINE_ACTIONS.length };
+  };
+
+  const handleSendEmail = (client, action) => {
     const name = getFirstName(client.name);
-    const body = template.body.replace(/\[NAME\]/g, name);
-    const mailto = `mailto:${client.email || ''}?subject=${encodeURIComponent(template.subject)}&body=${encodeURIComponent(body)}`;
+    const body = action.body.replace(/\[NAME\]/g, name);
+    const mailto = `mailto:${client.email || ''}?subject=${encodeURIComponent(action.subject)}&body=${encodeURIComponent(body)}`;
     window.open(mailto, '_blank');
     toast.success(`Email opened for ${name}`);
   };
 
-  const handleCopySMS = async (client, template) => {
+  const handleCopySMS = async (client, action) => {
     const name = getFirstName(client.name);
-    const text = template.text.replace(/\[NAME\]/g, name);
+    const text = action.text.replace(/\[NAME\]/g, name);
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(`SMS copied to clipboard`);
-    } catch { toast.error("Could not copy"); }
+      toast.success('SMS copied to clipboard');
+    } catch { toast.error('Could not copy'); }
   };
 
   const openClientModal = async (client) => {
