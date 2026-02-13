@@ -1334,6 +1334,24 @@ function App() {
                     </TableHeader>
                     <TableBody>
                       {allLeads
+                        .filter(l => {
+                          // Date filter: match header Pay Period / Quick Filter
+                          if (payPeriod && payPeriod !== 'all') {
+                            const period = PAY_PERIODS_DATA.find(p => p.name === payPeriod);
+                            if (period) {
+                              const vd = l.visit_date ? new Date(l.visit_date) : null;
+                              if (!vd || vd < period.start || vd > period.end) return false;
+                            }
+                          } else if (dateFilter && dateFilter !== 'all') {
+                            const now = new Date();
+                            const days = dateFilter === 'week' ? 7 : dateFilter === '2weeks' ? 14 : dateFilter === 'month' ? 30 : dateFilter === 'year' ? 365 : 0;
+                            if (days > 0) {
+                              const vd = l.visit_date ? new Date(l.visit_date) : null;
+                              if (!vd || vd < new Date(now - days * 86400000)) return false;
+                            }
+                          }
+                          return true;
+                        })
                         .filter(l => statusFilter === 'all' || l.status === statusFilter)
                         .filter(l => {
                           if (!searchTerm) return true;
