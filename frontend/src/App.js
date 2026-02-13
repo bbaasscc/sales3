@@ -98,21 +98,27 @@ const SPIFF_COLORS = {
   'Self Gen Mits': '#00838F',
 };
 
-// Email templates for follow-ups
-const EMAIL_TEMPLATES = [
-  { id: 1, name: "Thank You", subject: "Thank You for Your Time", body: `Hi [NAME],\n\nThank you again for taking the time to meet with me today and welcoming me into your home. I truly appreciate the opportunity to look at your system and discuss the best options for you and your family.\n\nIf any questions come up — big or small — don't hesitate to call or text me directly. I'm here to make this process simple, comfortable, and stress-free for you.\n\nLooking forward to working together.` },
-  { id: 2, name: "Follow Up", subject: "Following Up on Your Proposal", body: `Hi [NAME],\n\nI just wanted to follow up and see if you had any questions about the proposal we reviewed.\n\nI know this is an important decision, and I want you to feel completely confident before moving forward. If there's anything you'd like me to clarify — pricing, financing, installation timeline — I'm happy to help.\n\nLet me know what you're thinking. I'd love to help you take the next step.` },
-  { id: 3, name: "$200 Discount", subject: "Special Savings on Your Installation", body: `Hi [NAME],\n\nI wanted to reach out with something that might help make your decision easier.\n\nFor a limited time, I can apply a $200 discount toward your new system installation if we move forward soon.\n\nThis helps you save upfront and secure your installation date before our schedule fills up.\n\nLet me know if you'd like me to reserve this savings for you.` },
-  { id: 4, name: "Personal Touch", subject: "A Quick Note From Benjamin", body: `Hi [NAME],\n\nI wanted to personally reach out because I truly believe we can put together something that works perfectly for you.\n\nI'm very interested in earning your business, and I'm confident I can make an extra effort to help you feel great about moving forward with us.\n\nGive me a quick call when you get a moment — I have something really good I'd like to go over with you.` },
+// Sales Pipeline Steps
+const PIPELINE_STEPS = [
+  { day: 0, label: 'Same Day', subtitle: '1-2 hrs after visit', actions: [
+    { id: 'd0_email', type: 'email', name: 'Positioning & Control', subject: 'Thank You for Your Time Today', body: 'Hi [NAME],\n\nThank you again for taking the time to meet with me today and for welcoming me into your home. I truly appreciate the opportunity.\n\nBased on what we discussed, I\'m confident the system we reviewed is the right fit for your home, your comfort, and your long-term savings.\n\nIf any questions come up tonight, feel free to reply or call me directly. I\'m here to make this easy for you.\n\nOnce you\'re ready, we can secure your installation date and take care of everything.\n\nTalk soon.' },
+    { id: 'd0_sms', type: 'sms', name: 'Reinforcement', text: 'Hi [NAME], this is Benjamin. Thanks again for your time today \u2014 I really appreciate it. If anything comes up after reviewing the proposal, just text me. I\'m here to make this simple for you.' },
+  ]},
+  { day: 2, label: 'Day 2', subtitle: 'Momentum Push', actions: [
+    { id: 'd2_email', type: 'email', name: 'Soft Close', subject: 'Following Up \u2014 Ready to Reserve Your Date?', body: 'Hi [NAME],\n\nI wanted to follow up and see how you\'re feeling about everything we discussed.\n\nOur install schedule is filling up, and I\'d hate for you to miss the timing that works best for you.\n\nWould you like me to go ahead and reserve your installation date?\n\nLet me know what questions you still have \u2014 I\'m happy to walk through anything again.' },
+  ]},
+  { day: 4, label: 'Day 4', subtitle: 'Urgency + Incentive', actions: [
+    { id: 'd4_sms', type: 'sms', name: 'Trigger', text: 'Hi [NAME], quick question \u2014 if I could make the numbers a little better for you, would you be ready to move forward?' },
+    { id: 'd4_email', type: 'email', name: 'Incentive Close ($200)', subject: 'Special Savings Available This Week', body: 'Hi [NAME],\n\nI wanted to reach out personally because I may be able to help a bit more.\n\nIf we move forward this week, I can apply a $200 discount toward your installation.\n\nThat secures your savings and your installation date before things get tighter on the schedule.\n\nIf this helps you feel more comfortable moving forward, just let me know and I\'ll take care of it right away.' },
+  ]},
+  { day: 6, label: 'Day 6', subtitle: 'Direct Close', actions: [
+    { id: 'd6_sms', type: 'sms', name: 'Decision Message', text: 'Hi [NAME], I\'ll be honest \u2014 I\'d really like to earn your business. If there\'s something holding you back, tell me what it is and let\'s solve it. I\'m confident we can make this work for you.' },
+  ]},
+  { day: 8, label: 'Day 8', subtitle: 'Final Push', actions: [
+    { id: 'd8_email', type: 'email', name: 'Professional Pressure', subject: 'One Last Note Before I Update Your File', body: 'Hi [NAME],\n\nI wanted to reach out one last time before I release the pricing and availability we discussed.\n\nI completely understand that this is a big decision \u2014 but I also don\'t want you to lose the current options and scheduling flexibility.\n\nAre we moving forward together?\n\nIf there\'s anything standing in the way, tell me what it is. I\'m here to help you make the right decision.' },
+  ]},
 ];
-
-// SMS templates for follow-ups
-const SMS_TEMPLATES = [
-  { id: 1, name: "Thank You", text: `Hi [NAME], this is Benjamin. Thanks again for taking the time to meet with me today. I really appreciate you having me over. If any questions come up about the system or proposal, feel free to text or call me anytime.` },
-  { id: 2, name: "Follow Up", text: `Hi [NAME], just wanted to check in and see how you're feeling about the proposal. I'd love to get your installation scheduled and take care of this for you. What questions can I answer to help you move forward?` },
-  { id: 3, name: "$200 Discount", text: `Hi [NAME], quick heads up — I can apply a $200 discount to your installation if we lock it in soon. Let me know if you'd like me to secure that savings and reserve your install date.` },
-  { id: 4, name: "Strong Close", text: `Hi [NAME], I'd really like to earn your business. Give me a quick call — I may be able to do something extra to make this decision easier for you. Let's get this taken care of.` },
-];
+const ALL_PIPELINE_ACTIONS = PIPELINE_STEPS.flatMap(s => s.actions);
 
 // Helper to get first name in title case
 const getFirstName = (fullName) => {
