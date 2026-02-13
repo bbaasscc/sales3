@@ -1030,32 +1030,58 @@ function App() {
                   ? template.body.replace(/\[NAME\]/g, name).substring(0, 80) + '...'
                   : template.text.replace(/\[NAME\]/g, name).substring(0, 80) + '...';
                 return (
-                  <button
+                  <div
                     key={template.id}
-                    onClick={() => actionMenu.type === 'email' ? handleSendEmail(actionMenu.client, template) : handleCopySMS(actionMenu.client, template)}
-                    className={`w-full text-left p-3 sm:p-4 rounded-xl border-2 transition-all hover:shadow-md ${
-                      sent ? 'border-green-300 bg-green-50' : 'border-gray-200 hover:border-blue-300 bg-white'
+                    className={`rounded-xl border-2 transition-all ${
+                      sent ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-white'
                     }`}
                     data-testid={`template-${actionMenu.type}-${template.id}`}
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2">
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                          actionMenu.type === 'email' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
-                        }`}>#{template.id}</span>
-                        <span className="text-sm font-semibold text-gray-800">{template.name}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        {sent && <Check className="w-4 h-4 text-green-600" />}
-                        {actionMenu.type === 'email' 
-                          ? <Send className="w-3.5 h-3.5 text-blue-500" />
-                          : <Copy className="w-3.5 h-3.5 text-green-500" />
+                    <div className="flex items-stretch">
+                      {/* Checkbox toggle - left side */}
+                      <button
+                        onClick={() => toggleAction(actionMenu.client, actionMenu.type, template.id)}
+                        className={`flex items-center justify-center w-12 sm:w-14 flex-shrink-0 rounded-l-xl transition-colors ${
+                          sent ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-100 hover:bg-gray-200'
+                        }`}
+                        data-testid={`toggle-${actionMenu.type}-${template.id}`}
+                      >
+                        {sent 
+                          ? <Check className="w-5 h-5 text-white" strokeWidth={3} />
+                          : <div className="w-5 h-5 rounded-md border-2 border-gray-300" />
                         }
+                      </button>
+                      
+                      {/* Template info + send button - right side */}
+                      <div className="flex-1 p-3 sm:p-4 flex items-center gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                              actionMenu.type === 'email' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
+                            }`}>#{template.id}</span>
+                            <span className="text-sm font-semibold text-gray-800">{template.name}</span>
+                          </div>
+                          <p className="text-[11px] sm:text-xs text-gray-500 line-clamp-1 leading-relaxed">{preview}</p>
+                        </div>
+                        
+                        {/* Send/Copy button */}
+                        <button
+                          onClick={() => actionMenu.type === 'email' ? handleSendEmail(actionMenu.client, template) : handleCopySMS(actionMenu.client, template)}
+                          className={`p-2 rounded-lg flex-shrink-0 transition-colors ${
+                            actionMenu.type === 'email' 
+                              ? 'hover:bg-blue-100 text-blue-600' 
+                              : 'hover:bg-green-100 text-green-600'
+                          }`}
+                          title={actionMenu.type === 'email' ? 'Open in Outlook' : 'Copy to clipboard'}
+                        >
+                          {actionMenu.type === 'email' 
+                            ? <Send className="w-4 h-4" />
+                            : <Copy className="w-4 h-4" />
+                          }
+                        </button>
                       </div>
                     </div>
-                    <p className="text-[11px] sm:text-xs text-gray-500 line-clamp-2 leading-relaxed">{preview}</p>
-                    {sent && <p className="text-[10px] text-green-600 font-medium mt-1">Sent</p>}
-                  </button>
+                  </div>
                 );
               })}
             </div>
