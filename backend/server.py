@@ -488,7 +488,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     # === FOLLOW-UPS (pending follow-ups with dates) ===
     # Follow-ups are based on visit_date (not install_date) since they haven't been sold yet
     follow_ups = []
-    today = datetime.now().replace(tzinfo=None)
+    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
     
     # Get ALL records with follow-up dates that are not SALE (pending leads)
     # Filter by visit_date if pay period is selected (has both start and end date)
