@@ -76,6 +76,12 @@ class ExcelConfig(BaseModel):
 class ExcelConfigCreate(BaseModel):
     excel_url: str
 
+class FollowUpActionCreate(BaseModel):
+    client_name: str
+    client_email: str = ""
+    action_type: str  # "email" or "sms"
+    template_id: int  # 1-4
+
 class KPIResponse(BaseModel):
     # Main Summary KPIs (based on close_date - when sales are closed)
     total_revenue: float
@@ -729,6 +735,33 @@ async def get_pay_periods():
     periods = [{"name": name, "start": start.isoformat(), "end": end.isoformat()} 
                for name, start, end in PAY_PERIODS]
     return {"pay_periods": periods}
+
+@api_router.post("/followup/action")
+async def record_followup_action(action: FollowUpActionCreate):
+    doc = {
+        "client_name": action.client_name,
+        "client_email": action.client_email,
+        "action_type": action.action_type,
+        "template_id": action.template_id,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    await db.followup_actions.insert_one(doc)
+    doc.pop('_id', None)
+    return {"message": "Action recorded", "action": doc}
+
+@api_router.get("/followup/actions")
+async def get_followup_actions():
+    actions = await db.followup_actions.find({}, {"_id": 0}).to_list(1000)
+    return {"actions": actions}
+
+@api_router.delete("/followup/action")
+async def delete_followup_action(client_name: str, action_type: str, template_id: int):
+    result = await db.followup_actions.delete_one({
+        "client_name": client_name,
+        "action_type": action_type,
+        "template_id": template_id
+    })
+    return {"deleted": result.deleted_count}
 
 # Include the router
 app.include_router(api_router)
