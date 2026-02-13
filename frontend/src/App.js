@@ -1108,14 +1108,6 @@ function App() {
                     <div className="bg-red-500 text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-sm" data-testid="followup-count">
                       {kpiData.follow_ups.length}
                     </div>
-                    <button
-                      onClick={() => { setNewLeadOpen(true); setNewLeadStep('paste'); setNewLeadText(''); }}
-                      className="ml-2 bg-white text-red-600 border-2 border-red-300 hover:bg-red-50 rounded-full p-2 shadow-sm transition-colors"
-                      title="Add New Lead"
-                      data-testid="add-lead-btn"
-                    >
-                      <Plus className="w-5 h-5" />
-                    </button>
                   </div>
                   
                   <Card className="bg-white border-2 border-red-200 shadow-sm rounded-xl overflow-hidden">
