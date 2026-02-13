@@ -278,51 +278,51 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         column_mapping = {}
     
         for col in df.columns:
-        col_lower = str(col).lower().strip()
-        if col_lower == 'name':
-            column_mapping[col] = 'name'
-        elif col_lower == 'address':
-            column_mapping[col] = 'address'
-        elif col_lower == 'city':
-            column_mapping[col] = 'city'
-        elif col_lower in ['unit', 'unit type']:
-            column_mapping[col] = 'unit_type'
-        elif col_lower == 'ticket value' or (col_lower == 'ticket' and 'value' in str(df.columns).lower()):
-            column_mapping[col] = 'ticket_value'
-        elif col_lower == 'commission %':
-            column_mapping[col] = 'commission_percent'
-        elif col_lower == 'commission value':
-            column_mapping[col] = 'commission_value'  # Actual commission paid
-        elif col_lower == 'spif':
-            column_mapping[col] = 'spif_total'
-        elif col_lower == 'status':
-            column_mapping[col] = 'status'
-        elif col_lower == 'visit date':
-            column_mapping[col] = 'visit_date'
-        elif col_lower == 'close date':
-            column_mapping[col] = 'close_date'
-        elif col_lower == 'install date':
-            column_mapping[col] = 'install_date'
-        elif col_lower in ['folow up on self gen', 'follow up on', 'folow up on', 'follow up']:
-            column_mapping[col] = 'follow_up_date'
-        elif 'self gen' in col_lower and 'mits' in col_lower:
-            column_mapping[col] = 'self_gen_mits'
-        elif 'apco' in col_lower or 'apx' in col_lower:
-            column_mapping[col] = 'apco_x'
-        elif 'samsung' in col_lower:
-            column_mapping[col] = 'samsung'
-        elif 'mitsubishi' in col_lower or 'mits' in col_lower:
-            column_mapping[col] = 'mitsubishi'
-        elif 'surge' in col_lower and 'protector' in col_lower:
-            column_mapping[col] = 'surge_protector'
-        elif 'surge' in col_lower:
-            column_mapping[col] = 'surge_protector'
-        elif 'duct' in col_lower or 'dusct' in col_lower or 'celaning' in col_lower:
-            column_mapping[col] = 'duct_cleaning'
+            col_lower = str(col).lower().strip()
+            if col_lower == 'name':
+                column_mapping[col] = 'name'
+            elif col_lower == 'address':
+                column_mapping[col] = 'address'
+            elif col_lower == 'city':
+                column_mapping[col] = 'city'
+            elif col_lower in ['unit', 'unit type']:
+                column_mapping[col] = 'unit_type'
+            elif col_lower == 'ticket value' or (col_lower == 'ticket' and 'value' in str(df.columns).lower()):
+                column_mapping[col] = 'ticket_value'
+            elif col_lower == 'commission %':
+                column_mapping[col] = 'commission_percent'
+            elif col_lower == 'commission value':
+                column_mapping[col] = 'commission_value'  # Actual commission paid
+            elif col_lower == 'spif':
+                column_mapping[col] = 'spif_total'
+            elif col_lower == 'status':
+                column_mapping[col] = 'status'
+            elif col_lower == 'visit date':
+                column_mapping[col] = 'visit_date'
+            elif col_lower == 'close date':
+                column_mapping[col] = 'close_date'
+            elif col_lower == 'install date':
+                column_mapping[col] = 'install_date'
+            elif col_lower in ['folow up on self gen', 'follow up on', 'folow up on', 'follow up']:
+                column_mapping[col] = 'follow_up_date'
+            elif 'self gen' in col_lower and 'mits' in col_lower:
+                column_mapping[col] = 'self_gen_mits'
+            elif 'apco' in col_lower or 'apx' in col_lower:
+                column_mapping[col] = 'apco_x'
+            elif 'samsung' in col_lower:
+                column_mapping[col] = 'samsung'
+            elif 'mitsubishi' in col_lower or 'mits' in col_lower:
+                column_mapping[col] = 'mitsubishi'
+            elif 'surge' in col_lower and 'protector' in col_lower:
+                column_mapping[col] = 'surge_protector'
+            elif 'surge' in col_lower:
+                column_mapping[col] = 'surge_protector'
+            elif 'duct' in col_lower or 'dusct' in col_lower or 'celaning' in col_lower:
+                column_mapping[col] = 'duct_cleaning'
     
-        df = df.rename(columns=column_mapping)
-        df = df.loc[:, ~df.columns.duplicated()]
-        logger.info(f"Mapped columns: {list(df.columns)}")
+            df = df.rename(columns=column_mapping)
+            df = df.loc[:, ~df.columns.duplicated()]
+            logger.info(f"Mapped columns: {list(df.columns)}")
     
     # Ensure required columns exist
     for col in ['name', 'status', 'unit_type', 'ticket_value', 'commission_value', 'commission_percent', 
