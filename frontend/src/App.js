@@ -1399,7 +1399,7 @@ function App() {
                   rows={8} className="w-full px-3 py-2 text-xs font-mono border rounded-lg resize-none" />
                 <div className="flex gap-2">
                   <Button onClick={handleParseEmail} className="flex-1" style={{ backgroundColor: '#2563EB' }} disabled={!newLeadText.trim()}>Parse & Continue</Button>
-                  <Button onClick={() => { setNewLeadForm({ name:'', address:'', city:'', email:'', phone:'', unit_type:'', ticket_value:0, commission_percent:0, commission_value:0, spif_total:0, status:'PENDING', visit_date:new Date().toISOString().split('T')[0], close_date:'', install_date:'', follow_up_date:'', comments:'', feeling:'', objections:'', duct_cleaning:0, apco_x:0, samsung:0, mitsubishi:0, surge_protector:0, self_gen_mits:0 }); setNewLeadStep('form'); }} variant="outline">Manual Entry</Button>
+                  <Button onClick={() => { setNewLeadForm({ name:'', address:'', city:'', email:'', phone:'', unit_type:'', ticket_value:'', commission_percent:'', status:'PENDING', visit_date:new Date().toISOString().split('T')[0], close_date:'', install_date:'', follow_up_date:'', comments:'', feeling:'', objections:''}); setNewLeadStep('form'); }} variant="outline">Manual Entry</Button>
                 </div>
               </div>
             ) : (
