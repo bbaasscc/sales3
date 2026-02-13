@@ -915,49 +915,82 @@ function App() {
                       <Table>
                         <TableHeader>
                           <TableRow className="bg-red-50/80">
-                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Priority</TableHead>
-                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-2 sm:px-4">Name</TableHead>
-                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-2 sm:px-4 hidden sm:table-cell">City</TableHead>
-                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Follow-up</TableHead>
-                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-2 sm:px-4 whitespace-nowrap">Days</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap">Priority</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3">Name</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 hidden md:table-cell">City</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap hidden sm:table-cell">Follow-up</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap">Days</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-red-400 py-2 sm:py-3 px-1 sm:px-3 whitespace-nowrap">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {kpiData.follow_ups.slice(0, 10).map((followUp, index) => (
+                          {kpiData.follow_ups.slice(0, 10).map((followUp, index) => {
+                            const emailsSent = EMAIL_TEMPLATES.filter(t => isActionSent(followUp.name, 'email', t.id)).length;
+                            const smsSent = SMS_TEMPLATES.filter(t => isActionSent(followUp.name, 'sms', t.id)).length;
+                            return (
                             <TableRow 
                               key={index} 
-                              className={`border-b border-gray-100 cursor-pointer transition-colors ${followUp.is_urgent ? 'bg-red-50/50 hover:bg-red-100/50' : 'hover:bg-gray-50'}`}
-                              onClick={() => setSelectedClient(followUp)}
+                              className={`border-b border-gray-100 transition-colors ${followUp.is_urgent ? 'bg-red-50/50 hover:bg-red-100/50' : 'hover:bg-gray-50'}`}
                               data-testid={`followup-row-${index}`}
                             >
-                              <TableCell className="py-2 px-2 sm:px-4">
+                              <TableCell className="py-2 px-1 sm:px-3">
                                 {followUp.is_urgent ? (
-                                  <span className="inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold bg-red-100 text-red-700">
+                                  <span className="inline-flex items-center gap-0.5 px-1 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-red-100 text-red-700">
                                     <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                     <span className="hidden sm:inline">URGENT</span>
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-gray-100 text-gray-600">
+                                  <span className="inline-flex items-center px-1 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-gray-100 text-gray-600">
                                     <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                   </span>
                                 )}
                               </TableCell>
-                              <TableCell className={`py-2 px-2 sm:px-4 text-xs sm:text-sm font-medium ${followUp.is_urgent ? 'text-red-700' : 'text-gray-700'}`}>
+                              <TableCell 
+                                className={`py-2 px-1 sm:px-3 text-xs sm:text-sm font-medium cursor-pointer ${followUp.is_urgent ? 'text-red-700' : 'text-gray-700'}`}
+                                onClick={() => setSelectedClient(followUp)}
+                              >
                                 <span className="line-clamp-1 underline decoration-dotted">{followUp.name}</span>
                               </TableCell>
-                              <TableCell className="py-2 px-2 sm:px-4 text-xs sm:text-sm text-gray-600 hidden sm:table-cell">{followUp.city}</TableCell>
-                              <TableCell className={`py-2 px-2 sm:px-4 font-mono text-[10px] sm:text-xs ${followUp.is_urgent ? 'font-bold text-red-600' : 'text-gray-600'}`}>
+                              <TableCell className="py-2 px-1 sm:px-3 text-xs sm:text-sm text-gray-600 hidden md:table-cell">{followUp.city}</TableCell>
+                              <TableCell className={`py-2 px-1 sm:px-3 font-mono text-[10px] sm:text-xs hidden sm:table-cell ${followUp.is_urgent ? 'font-bold text-red-600' : 'text-gray-600'}`}>
                                 {followUp.follow_up_date}
                               </TableCell>
-                              <TableCell className={`py-2 px-2 sm:px-4 font-mono text-[10px] sm:text-xs font-bold ${followUp.is_urgent ? 'text-red-600' : 'text-gray-600'}`}>
+                              <TableCell className={`py-2 px-1 sm:px-3 font-mono text-[10px] sm:text-xs font-bold ${followUp.is_urgent ? 'text-red-600' : 'text-gray-600'}`}>
                                 {followUp.days_until !== null ? (
                                   followUp.days_until < 0 ? `${Math.abs(followUp.days_until)}d ago` :
                                   followUp.days_until === 0 ? 'Today' :
                                   `${followUp.days_until}d`
                                 ) : '-'}
                               </TableCell>
+                              <TableCell className="py-2 px-1 sm:px-3">
+                                <div className="flex items-center gap-1">
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setActionMenu({ client: followUp, type: 'email' }); }}
+                                    className="relative p-1.5 rounded-lg hover:bg-blue-50 transition-colors group"
+                                    title="Send Email"
+                                    data-testid={`email-btn-${index}`}
+                                  >
+                                    <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
+                                    {emailsSent > 0 && (
+                                      <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">{emailsSent}</span>
+                                    )}
+                                  </button>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setActionMenu({ client: followUp, type: 'sms' }); }}
+                                    className="relative p-1.5 rounded-lg hover:bg-green-50 transition-colors group"
+                                    title="Copy SMS"
+                                    data-testid={`sms-btn-${index}`}
+                                  >
+                                    <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600" />
+                                    {smsSent > 0 && (
+                                      <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">{smsSent}</span>
+                                    )}
+                                  </button>
+                                </div>
+                              </TableCell>
                             </TableRow>
-                          ))}
+                            );
+                          })}
                         </TableBody>
                       </Table>
                     </div>
