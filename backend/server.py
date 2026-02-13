@@ -320,12 +320,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         elif 'duct' in col_lower or 'dusct' in col_lower or 'celaning' in col_lower:
             column_mapping[col] = 'duct_cleaning'
     
-    df = df.rename(columns=column_mapping)
-    
-    # Handle duplicate columns - keep only the first one
-    df = df.loc[:, ~df.columns.duplicated()]
-    
-    logger.info(f"Mapped columns: {list(df.columns)}")
+        df = df.rename(columns=column_mapping)
+        df = df.loc[:, ~df.columns.duplicated()]
+        logger.info(f"Mapped columns: {list(df.columns)}")
     
     # Ensure required columns exist
     for col in ['name', 'status', 'unit_type', 'ticket_value', 'commission_value', 'commission_percent', 
