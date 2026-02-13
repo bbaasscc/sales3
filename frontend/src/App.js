@@ -1003,6 +1003,67 @@ function App() {
         ) : null}
       </main>
 
+      {/* Action Template Selector Modal */}
+      {actionMenu && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setActionMenu(null)}>
+          <div 
+            className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={`sticky top-0 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl ${actionMenu.type === 'email' ? 'bg-blue-600' : 'bg-green-600'} text-white`}>
+              <div className="flex items-center gap-2">
+                {actionMenu.type === 'email' ? <Mail className="w-5 h-5" /> : <MessageSquare className="w-5 h-5" />}
+                <div>
+                  <h3 className="text-base font-bold">{actionMenu.type === 'email' ? 'Send Email' : 'Copy SMS'}</h3>
+                  <p className="text-xs text-white/80">{actionMenu.client.name}</p>
+                </div>
+              </div>
+              <button onClick={() => setActionMenu(null)} className="p-1.5 hover:bg-white/20 rounded-full">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-3 sm:p-4 space-y-2">
+              {(actionMenu.type === 'email' ? EMAIL_TEMPLATES : SMS_TEMPLATES).map((template) => {
+                const sent = isActionSent(actionMenu.client.name, actionMenu.type, template.id);
+                const name = getFirstName(actionMenu.client.name);
+                const preview = actionMenu.type === 'email' 
+                  ? template.body.replace(/\[NAME\]/g, name).substring(0, 80) + '...'
+                  : template.text.replace(/\[NAME\]/g, name).substring(0, 80) + '...';
+                return (
+                  <button
+                    key={template.id}
+                    onClick={() => actionMenu.type === 'email' ? handleSendEmail(actionMenu.client, template) : handleCopySMS(actionMenu.client, template)}
+                    className={`w-full text-left p-3 sm:p-4 rounded-xl border-2 transition-all hover:shadow-md ${
+                      sent ? 'border-green-300 bg-green-50' : 'border-gray-200 hover:border-blue-300 bg-white'
+                    }`}
+                    data-testid={`template-${actionMenu.type}-${template.id}`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                          actionMenu.type === 'email' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
+                        }`}>#{template.id}</span>
+                        <span className="text-sm font-semibold text-gray-800">{template.name}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        {sent && <Check className="w-4 h-4 text-green-600" />}
+                        {actionMenu.type === 'email' 
+                          ? <Send className="w-3.5 h-3.5 text-blue-500" />
+                          : <Copy className="w-3.5 h-3.5 text-green-500" />
+                        }
+                      </div>
+                    </div>
+                    <p className="text-[11px] sm:text-xs text-gray-500 line-clamp-2 leading-relaxed">{preview}</p>
+                    {sent && <p className="text-[10px] text-green-600 font-medium mt-1">Sent</p>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Client Detail Modal */}
       {selectedClient && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedClient(null)}>
