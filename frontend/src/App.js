@@ -415,6 +415,69 @@ function App() {
     setNoteSaving(false);
   };
 
+  // Parse email and open form
+  const handleParseEmail = async () => {
+    try {
+      const res = await axios.post(`${API}/leads/parse-email`, { text: newLeadText });
+      setNewLeadForm({
+        name: res.data.name || '', address: res.data.address || '', city: res.data.city || '',
+        email: res.data.email || '', phone: res.data.phone || '',
+        unit_type: '', ticket_value: 0, commission_percent: 0, commission_value: 0,
+        spif_total: 0, status: 'PENDING', visit_date: new Date().toISOString().split('T')[0],
+        close_date: '', install_date: '', follow_up_date: '', comments: '', feeling: '', objections: '',
+        duct_cleaning: 0, apco_x: 0, samsung: 0, mitsubishi: 0, surge_protector: 0, self_gen_mits: 0,
+      });
+      setNewLeadStep('form');
+    } catch { toast.error("Error parsing email"); }
+  };
+
+  const handleCreateLead = async () => {
+    if (!newLeadForm.name) { toast.error("Name is required"); return; }
+    try {
+      await axios.post(`${API}/leads`, newLeadForm);
+      toast.success(`Lead ${getFirstName(newLeadForm.name)} created`);
+      setNewLeadOpen(false); setNewLeadStep('paste'); setNewLeadText('');
+      fetchDashboardData();
+    } catch (err) { toast.error("Error creating lead"); }
+  };
+
+  const handleUpdateLead = async (leadId, updates) => {
+    try {
+      await axios.put(`${API}/leads/${leadId}`, updates);
+      toast.success("Lead updated");
+      fetchDashboardData();
+    } catch { toast.error("Error updating lead"); }
+  };
+
+  const handleDeleteLead = async (leadId) => {
+    try {
+      await axios.delete(`${API}/leads/${leadId}`);
+      toast.success("Lead deleted");
+      setDeleteConfirm(null); setSelectedClient(null); setSelectedSale(null);
+      fetchDashboardData();
+    } catch { toast.error("Error deleting lead"); }
+  };
+
+  // Pipeline schedule
+  const loadPipelineSchedule = async (clientName) => {
+    try {
+      const res = await axios.get(`${API}/pipeline/schedule`, { params: { client_name: clientName } });
+      setPipelineSchedule(res.data.steps || []);
+    } catch { setPipelineSchedule([]); }
+  };
+
+  const savePipelineSchedule = async (clientName, steps) => {
+    try {
+      await axios.post(`${API}/pipeline/schedule`, { client_name: clientName, steps });
+      toast.success("Schedule saved");
+    } catch { toast.error("Error saving schedule"); }
+  };
+
+  const openPipelineMenu = (client) => {
+    setActionMenu({ client });
+    loadPipelineSchedule(client.name);
+  };
+
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
