@@ -286,8 +286,9 @@ function App() {
   const [selectedSale, setSelectedSale] = useState(null);
   const [followUpActions, setFollowUpActions] = useState([]);
   const [actionMenu, setActionMenu] = useState(null);
-  const [clientNote, setClientNote] = useState({ next_follow_up: '', comment: '' });
+  const [clientNote, setClientNote] = useState({ next_follow_up: '', comment: '', priority: 'high' });
   const [noteSaving, setNoteSaving] = useState(false);
+  const [allClientNotes, setAllClientNotes] = useState({});
   const [newLeadOpen, setNewLeadOpen] = useState(false);
   const [newLeadText, setNewLeadText] = useState('');
   const [newLeadForm, setNewLeadForm] = useState({});
