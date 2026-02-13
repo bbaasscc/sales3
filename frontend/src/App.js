@@ -294,7 +294,12 @@ function App() {
   const [newLeadStep, setNewLeadStep] = useState('paste'); // 'paste' or 'form'
   const [editSale, setEditSale] = useState(null);
   const [pipelineSchedule, setPipelineSchedule] = useState([]);
-  const [deleteConfirm, setDeleteConfirm] = useState(null); // { client, type: 'email'|'sms' }
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [allLeads, setAllLeads] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [editingLead, setEditingLead] = useState(null); // { client, type: 'email'|'sms' }
 
   const fetchDashboardData = useCallback(async (showToast = false, resetToCurrentPeriod = false) => {
     if (showToast) {
