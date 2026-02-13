@@ -1608,16 +1608,26 @@ function App() {
                 ) : null;
               })()}
 
-              {/* === NEXT FOLLOW-UP DATE === */}
+              {/* === PRIORITY + NEXT FOLLOW-UP === */}
               <div className="bg-amber-50 rounded-lg p-3 space-y-3">
-                <p className="text-xs text-amber-700 uppercase tracking-wider font-bold">Next Follow-up</p>
-                <input
-                  type="date"
-                  value={clientNote.next_follow_up}
-                  onChange={(e) => setClientNote(prev => ({ ...prev, next_follow_up: e.target.value }))}
-                  className="w-full px-3 py-2 text-sm border border-amber-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-                  data-testid="next-followup-date"
-                />
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-amber-700 uppercase tracking-wider font-bold">Priority</p>
+                  <div className="flex gap-1">
+                    {[['high','High','bg-red-500'],['medium','Med','bg-amber-500'],['low','Low','bg-gray-400']].map(([v,l,c]) => (
+                      <button key={v} onClick={() => setClientNote(p => ({...p, priority: v}))}
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-all ${clientNote.priority === v ? `${c} text-white shadow-sm` : 'bg-white text-gray-500 border border-gray-200'}`}>
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-amber-700 uppercase tracking-wider font-bold mb-1.5">Next Follow-up</p>
+                  <input type="date" value={clientNote.next_follow_up}
+                    onChange={(e) => setClientNote(prev => ({ ...prev, next_follow_up: e.target.value }))}
+                    className="w-full px-3 py-2 text-sm border border-amber-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    data-testid="next-followup-date" />
+                </div>
               </div>
 
               {/* === SALESPERSON NOTES === */}
