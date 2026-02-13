@@ -935,25 +935,14 @@ async def get_leads():
     return {"leads": leads}
 
 @api_router.post("/dashboard/refresh")
-async def refresh_dashboard(excel_url: Optional[str] = None, date_filter: str = "all", pay_period: Optional[str] = None):
-    """Refresh dashboard data from Excel"""
-    if not excel_url:
-        config = await db.excel_config.find_one({}, {"_id": 0})
-        if config:
-            excel_url = config.get('excel_url')
-    
+async def refresh_dashboard():
+    """Re-import data from Google Sheet to MongoDB"""
+    config = await db.excel_config.find_one({}, {"_id": 0})
+    excel_url = config.get('excel_url') if config else None
     if not excel_url:
         raise HTTPException(status_code=400, detail="No Excel URL configured.")
-    
-    df = parse_excel_data(excel_url)
-    kpis = process_sales_data(df, date_filter, pay_period)
-    
-    await db.refresh_history.insert_one({
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "records_count": len(kpis.records)
-    })
-    
-    return {"message": "Data refreshed successfully", "kpis": kpis}
+    count = await import_sheet_to_db(excel_url)
+    return {"message": f"Data refreshed - {count} leads imported", "count": count}
 
 @api_router.get("/pay-periods")
 async def get_pay_periods():
