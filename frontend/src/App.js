@@ -91,6 +91,7 @@ const SPIFF_COLORS = {
   'Mitsubishi': '#4CAF50',
   'Surge Protector': '#FF9800',
   'Duct Cleaning': '#9C27B0',
+  'Self Gen Mits': '#00838F',
 };
 
 // Pay periods (bi-weekly) with date ranges for detection
