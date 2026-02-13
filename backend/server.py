@@ -82,6 +82,11 @@ class FollowUpActionCreate(BaseModel):
     action_type: str  # "email" or "sms"
     template_id: int  # 1-4
 
+class ClientNoteCreate(BaseModel):
+    client_name: str
+    next_follow_up: str = ""
+    comment: str = ""
+
 class KPIResponse(BaseModel):
     # Main Summary KPIs (based on close_date - when sales are closed)
     total_revenue: float
@@ -762,6 +767,24 @@ async def delete_followup_action(client_name: str, action_type: str, template_id
         "template_id": template_id
     })
     return {"deleted": result.deleted_count}
+
+@api_router.get("/client/notes")
+async def get_client_notes(client_name: str):
+    note = await db.client_notes.find_one({"client_name": client_name}, {"_id": 0})
+    return note or {"client_name": client_name, "next_follow_up": "", "comment": ""}
+
+@api_router.post("/client/notes")
+async def save_client_notes(data: ClientNoteCreate):
+    await db.client_notes.update_one(
+        {"client_name": data.client_name},
+        {"$set": {
+            "next_follow_up": data.next_follow_up,
+            "comment": data.comment,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    return {"message": "Notes saved"}
 
 # Include the router
 app.include_router(api_router)
