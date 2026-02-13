@@ -394,10 +394,6 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     # Closing Rate = Closed Deals / Total Leads
     closing_rate = (closed_deals / total_visits * 100) if total_visits > 0 else 0
     
-    # === COMMISSION METRICS (based on install_date for commission payment) ===
-    # These are the actual installs in the period for which commission is paid
-    installs_in_period = len(closed_deals_df)
-    
     # === MAIN METRICS (based on close_date - sales closed in period) ===
     # Total Revenue = Sum of Ticket Value for sales closed in period
     total_revenue = closed_deals_df['ticket_value'].sum()
