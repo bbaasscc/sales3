@@ -339,20 +339,26 @@ function App() {
     return followUpActions.some(a => a.client_name === clientName && a.action_type === actionType && a.template_id === templateId);
   };
 
-  const handleSendEmail = async (client, template) => {
+  const toggleAction = async (client, actionType, templateId) => {
+    const alreadySent = isActionSent(client.name, actionType, templateId);
+    try {
+      if (alreadySent) {
+        await axios.delete(`${API}/followup/action`, { params: { client_name: client.name, action_type: actionType, template_id: templateId } });
+      } else {
+        await axios.post(`${API}/followup/action`, {
+          client_name: client.name, client_email: client.email || '', action_type: actionType, template_id: templateId
+        });
+      }
+      fetchActions();
+    } catch (err) { console.error(err); }
+  };
+
+  const handleSendEmail = (client, template) => {
     const name = getFirstName(client.name);
     const body = template.body.replace(/\[NAME\]/g, name);
-    const subject = template.subject;
-    const mailto = `mailto:${client.email || ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailto = `mailto:${client.email || ''}?subject=${encodeURIComponent(template.subject)}&body=${encodeURIComponent(body)}`;
     window.open(mailto, '_blank');
-    try {
-      await axios.post(`${API}/followup/action`, {
-        client_name: client.name, client_email: client.email || '', action_type: 'email', template_id: template.id
-      });
-      fetchActions();
-      toast.success(`Email "${template.name}" opened for ${name}`);
-    } catch (err) { console.error(err); }
-    setActionMenu(null);
+    toast.success(`Email opened for ${name}`);
   };
 
   const handleCopySMS = async (client, template) => {
@@ -360,15 +366,8 @@ function App() {
     const text = template.text.replace(/\[NAME\]/g, name);
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(`SMS "${template.name}" copied to clipboard`);
-    } catch { toast.error("Could not copy to clipboard"); }
-    try {
-      await axios.post(`${API}/followup/action`, {
-        client_name: client.name, client_email: client.email || '', action_type: 'sms', template_id: template.id
-      });
-      fetchActions();
-    } catch (err) { console.error(err); }
-    setActionMenu(null);
+      toast.success(`SMS copied to clipboard`);
+    } catch { toast.error("Could not copy"); }
   };
 
   const handleRefresh = () => {
