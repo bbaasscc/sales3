@@ -84,6 +84,7 @@ class ClientNoteCreate(BaseModel):
     client_name: str
     next_follow_up: str = ""
     comment: str = ""
+    priority: str = "high"  # high, medium, low
 
 class LeadCreate(BaseModel):
     name: str = ""
@@ -991,7 +992,7 @@ async def delete_followup_action(client_name: str, step_id: str):
 @api_router.get("/client/notes")
 async def get_client_notes(client_name: str):
     note = await db.client_notes.find_one({"client_name": client_name}, {"_id": 0})
-    return note or {"client_name": client_name, "next_follow_up": "", "comment": ""}
+    return note or {"client_name": client_name, "next_follow_up": "", "comment": "", "priority": "high"}
 
 @api_router.post("/client/notes")
 async def save_client_notes(data: ClientNoteCreate):
@@ -1000,6 +1001,7 @@ async def save_client_notes(data: ClientNoteCreate):
         {"$set": {
             "next_follow_up": data.next_follow_up,
             "comment": data.comment,
+            "priority": data.priority,
             "updated_at": datetime.now(timezone.utc).isoformat()
         }},
         upsert=True
