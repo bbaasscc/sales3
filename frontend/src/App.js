@@ -971,7 +971,7 @@ function App() {
                               </TableCell>
                               <TableCell 
                                 className={`py-2 px-1 sm:px-3 text-xs sm:text-sm font-medium cursor-pointer ${followUp.is_urgent ? 'text-red-700' : 'text-gray-700'}`}
-                                onClick={() => setSelectedClient(followUp)}
+                                onClick={() => openClientModal(followUp)}
                               >
                                 <span className="line-clamp-1 underline decoration-dotted">{followUp.name}</span>
                               </TableCell>
