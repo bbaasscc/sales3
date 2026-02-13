@@ -1288,6 +1288,18 @@ function App() {
             {/* === DATA TAB === */}
             {activeTab === 'data' && (
             <div>
+              {payPeriod && payPeriod !== 'all' && (
+                <div className="mb-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700 flex items-center justify-between">
+                  <span>Filtered by period: <strong>{payPeriod}</strong> (visit date)</span>
+                  <button onClick={() => { setPayPeriod('all'); setDateFilter('all'); }} className="text-blue-500 hover:text-blue-700 font-bold">Show All</button>
+                </div>
+              )}
+              {dateFilter && dateFilter !== 'all' && (
+                <div className="mb-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700 flex items-center justify-between">
+                  <span>Filtered by: <strong>{dateFilter}</strong></span>
+                  <button onClick={() => setDateFilter('all')} className="text-blue-500 hover:text-blue-700 font-bold">Show All</button>
+                </div>
+              )}
               <div className="flex flex-col sm:flex-row gap-3 mb-4">
                 <div className="flex-1 relative">
                   <input
