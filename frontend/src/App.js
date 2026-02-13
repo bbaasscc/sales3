@@ -1351,14 +1351,14 @@ function App() {
                           if (payPeriod && payPeriod !== 'all') {
                             const period = PAY_PERIODS_DATA.find(p => p.name === payPeriod);
                             if (period) {
-                              const vd = l.visit_date ? new Date(l.visit_date) : null;
+                              const vd = l.visit_date ? new Date(l.visit_date + 'T00:00:00') : null;
                               if (!vd || vd < period.start || vd > period.end) return false;
                             }
                           } else if (dateFilter && dateFilter !== 'all') {
                             const now = new Date();
                             const days = dateFilter === 'week' ? 7 : dateFilter === '2weeks' ? 14 : dateFilter === 'month' ? 30 : dateFilter === 'year' ? 365 : 0;
                             if (days > 0) {
-                              const vd = l.visit_date ? new Date(l.visit_date) : null;
+                              const vd = l.visit_date ? new Date(l.visit_date + 'T00:00:00') : null;
                               if (!vd || vd < new Date(now - days * 86400000)) return false;
                             }
                           }
@@ -1395,7 +1395,7 @@ function App() {
                   </Table>
                 </div>
                 <div className="p-3 border-t border-gray-100 text-xs text-gray-400 text-center">
-                  {allLeads.filter(l => { if (payPeriod && payPeriod !== 'all') { const p = PAY_PERIODS_DATA.find(pp => pp.name === payPeriod); if (p) { const vd = l.visit_date ? new Date(l.visit_date) : null; if (!vd || vd < p.start || vd > p.end) return false; } } else if (dateFilter && dateFilter !== 'all') { const days = dateFilter === 'week' ? 7 : dateFilter === '2weeks' ? 14 : dateFilter === 'month' ? 30 : 365; const vd = l.visit_date ? new Date(l.visit_date) : null; if (!vd || vd < new Date(Date.now() - days * 86400000)) return false; } return true; }).filter(l => statusFilter === 'all' || l.status === statusFilter).filter(l => !searchTerm || (l.name||'').toLowerCase().includes(searchTerm.toLowerCase()) || (l.city||'').toLowerCase().includes(searchTerm.toLowerCase())).length} records
+                  {allLeads.filter(l => { if (payPeriod && payPeriod !== 'all') { const p = PAY_PERIODS_DATA.find(pp => pp.name === payPeriod); if (p) { const vd = l.visit_date ? new Date(l.visit_date + 'T00:00:00') : null; if (!vd || vd < p.start || vd > p.end) return false; } } else if (dateFilter && dateFilter !== 'all') { const days = dateFilter === 'week' ? 7 : dateFilter === '2weeks' ? 14 : dateFilter === 'month' ? 30 : 365; const vd = l.visit_date ? new Date(l.visit_date + 'T00:00:00') : null; if (!vd || vd < new Date(Date.now() - days * 86400000)) return false; } return true; }).filter(l => statusFilter === 'all' || l.status === statusFilter).filter(l => !searchTerm || (l.name||'').toLowerCase().includes(searchTerm.toLowerCase()) || (l.city||'').toLowerCase().includes(searchTerm.toLowerCase())).length} records
                 </div>
               </Card>
             </div>
