@@ -468,9 +468,19 @@ function App() {
     try {
       await axios.delete(`${API}/leads/${leadId}`);
       toast.success("Lead deleted");
-      setDeleteConfirm(null); setSelectedClient(null); setSelectedSale(null);
-      fetchDashboardData();
+      setDeleteConfirm(null); setSelectedClient(null); setSelectedSale(null); setEditingLead(null);
+      fetchDashboardData(); fetchAllLeads();
     } catch { toast.error("Error deleting lead"); }
+  };
+
+  const handleSaveEditLead = async () => {
+    if (!editingLead?.lead_id) return;
+    try {
+      await axios.put(`${API}/leads/${editingLead.lead_id}`, editingLead);
+      toast.success("Lead updated");
+      setEditingLead(null);
+      fetchDashboardData(); fetchAllLeads();
+    } catch { toast.error("Error updating lead"); }
   };
 
   // Pipeline schedule
