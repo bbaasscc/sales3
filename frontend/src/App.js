@@ -459,10 +459,22 @@ function App() {
   };
 
   // Pipeline schedule
-  const loadPipelineSchedule = async (clientName) => {
+  const loadPipelineSchedule = async (clientName, visitDate) => {
     try {
       const res = await axios.get(`${API}/pipeline/schedule`, { params: { client_name: clientName } });
-      setPipelineSchedule(res.data.steps || []);
+      if (res.data.steps && res.data.steps.length > 0) {
+        setPipelineSchedule(res.data.steps);
+      } else {
+        // Auto-generate from visit date
+        const vd = visitDate || new Date().toISOString().split('T')[0];
+        const base = new Date(vd);
+        const generated = ALL_PIPELINE_ACTIONS.map(a => {
+          const step = PIPELINE_STEPS.find(s => s.actions.some(act => act.id === a.id));
+          const d = new Date(base); d.setDate(d.getDate() + (step?.day || 0));
+          return { id: a.id, scheduled_date: d.toISOString().split('T')[0], comment: '' };
+        });
+        setPipelineSchedule(generated);
+      }
     } catch { setPipelineSchedule([]); }
   };
 
@@ -475,7 +487,7 @@ function App() {
 
   const openPipelineMenu = (client) => {
     setActionMenu({ client });
-    loadPipelineSchedule(client.name);
+    loadPipelineSchedule(client.name, client.visit_date);
   };
 
   const handleRefresh = async () => {
