@@ -1753,6 +1753,67 @@ function App() {
         </div>
       )}
 
+
+      {/* Edit Lead Modal (Data tab) */}
+      {editingLead && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setEditingLead(null)}>
+          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
+              <div><h3 className="text-base font-bold">Edit Lead</h3><p className="text-xs text-white/80">{editingLead.name}</p></div>
+              <button onClick={() => setEditingLead(null)} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="p-4 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                {[['name','Name'],['address','Address'],['city','City'],['email','Email'],['phone','Phone'],['unit_type','Unit Type']].map(([k,l]) => (
+                  <div key={k} className={k === 'name' || k === 'address' ? 'col-span-2' : ''}>
+                    <label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
+                    <input value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
+                      className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                  </div>
+                ))}
+                <div>
+                  <label className="text-[10px] font-bold uppercase text-gray-500">Status</label>
+                  <select value={editingLead.status || 'PENDING'} onChange={(e) => setEditingLead(p => ({...p, status: e.target.value}))}
+                    className="w-full px-2 py-1.5 text-sm border rounded-lg">
+                    <option>PENDING</option><option>SALE</option><option>LOST</option>
+                  </select>
+                </div>
+                {[['ticket_value','Ticket Value'],['commission_percent','Commission %'],['commission_value','Commission $'],['spif_total','SPIFF Total']].map(([k,l]) => (
+                  <div key={k}><label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
+                    <input type="number" step="0.01" value={editingLead[k] || 0} onChange={(e) => setEditingLead(p => ({...p, [k]: parseFloat(e.target.value) || 0}))}
+                      className="w-full px-2 py-1.5 text-sm border rounded-lg" /></div>
+                ))}
+                {[['visit_date','Visit Date'],['close_date','Close Date'],['install_date','Install Date'],['follow_up_date','Follow-up Date']].map(([k,l]) => (
+                  <div key={k}><label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
+                    <input type="date" value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
+                      className="w-full px-2 py-1.5 text-sm border rounded-lg" /></div>
+                ))}
+              </div>
+              <p className="text-[10px] font-bold uppercase text-gray-400 pt-2">SPIFF Details</p>
+              <div className="grid grid-cols-3 gap-2">
+                {[['apco_x','APCO X'],['samsung','Samsung'],['mitsubishi','Mitsubishi'],['surge_protector','Surge Prot.'],['duct_cleaning','Duct Clean.'],['self_gen_mits','Self Gen Mits']].map(([k,l]) => (
+                  <div key={k}><label className="text-[10px] font-bold uppercase text-gray-400">{l}</label>
+                    <input type="number" step="0.01" value={editingLead[k] || 0} onChange={(e) => setEditingLead(p => ({...p, [k]: parseFloat(e.target.value) || 0}))}
+                      className="w-full px-2 py-1 text-xs border rounded-lg" /></div>
+                ))}
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase text-gray-500">Comments</label>
+                <textarea value={editingLead.comments || ''} onChange={(e) => setEditingLead(p => ({...p, comments: e.target.value}))}
+                  rows={2} className="w-full px-2 py-1.5 text-sm border rounded-lg resize-none" />
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button onClick={handleSaveEditLead} className="flex-1" style={{ backgroundColor: '#2563EB' }}>Save Changes</Button>
+                <Button onClick={() => setDeleteConfirm(editingLead)} variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+                <Button onClick={() => setEditingLead(null)} variant="outline">Cancel</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer - Mobile Responsive */}
       <footer className="py-3 sm:py-4 mt-6 sm:mt-8" style={{ backgroundColor: BRAND_COLORS.secondary }}>
         <div className="max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8">
