@@ -98,6 +98,30 @@ const SPIFF_COLORS = {
   'Self Gen Mits': '#00838F',
 };
 
+// Email templates for follow-ups
+const EMAIL_TEMPLATES = [
+  { id: 1, name: "Thank You", subject: "Thank You for Your Time", body: `Hi [NAME],\n\nThank you again for taking the time to meet with me today and welcoming me into your home. I truly appreciate the opportunity to look at your system and discuss the best options for you and your family.\n\nIf any questions come up — big or small — don't hesitate to call or text me directly. I'm here to make this process simple, comfortable, and stress-free for you.\n\nLooking forward to working together.` },
+  { id: 2, name: "Follow Up", subject: "Following Up on Your Proposal", body: `Hi [NAME],\n\nI just wanted to follow up and see if you had any questions about the proposal we reviewed.\n\nI know this is an important decision, and I want you to feel completely confident before moving forward. If there's anything you'd like me to clarify — pricing, financing, installation timeline — I'm happy to help.\n\nLet me know what you're thinking. I'd love to help you take the next step.` },
+  { id: 3, name: "$200 Discount", subject: "Special Savings on Your Installation", body: `Hi [NAME],\n\nI wanted to reach out with something that might help make your decision easier.\n\nFor a limited time, I can apply a $200 discount toward your new system installation if we move forward soon.\n\nThis helps you save upfront and secure your installation date before our schedule fills up.\n\nLet me know if you'd like me to reserve this savings for you.` },
+  { id: 4, name: "Personal Touch", subject: "A Quick Note From Benjamin", body: `Hi [NAME],\n\nI wanted to personally reach out because I truly believe we can put together something that works perfectly for you.\n\nI'm very interested in earning your business, and I'm confident I can make an extra effort to help you feel great about moving forward with us.\n\nGive me a quick call when you get a moment — I have something really good I'd like to go over with you.` },
+];
+
+// SMS templates for follow-ups
+const SMS_TEMPLATES = [
+  { id: 1, name: "Thank You", text: `Hi [NAME], this is Benjamin. Thanks again for taking the time to meet with me today. I really appreciate you having me over. If any questions come up about the system or proposal, feel free to text or call me anytime.` },
+  { id: 2, name: "Follow Up", text: `Hi [NAME], just wanted to check in and see how you're feeling about the proposal. I'd love to get your installation scheduled and take care of this for you. What questions can I answer to help you move forward?` },
+  { id: 3, name: "$200 Discount", text: `Hi [NAME], quick heads up — I can apply a $200 discount to your installation if we lock it in soon. Let me know if you'd like me to secure that savings and reserve your install date.` },
+  { id: 4, name: "Strong Close", text: `Hi [NAME], I'd really like to earn your business. Give me a quick call — I may be able to do something extra to make this decision easier for you. Let's get this taken care of.` },
+];
+
+// Helper to get first name in title case
+const getFirstName = (fullName) => {
+  if (!fullName) return '';
+  const first = fullName.split(' ')[0];
+  return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+};
+
+
 // Pay periods (bi-weekly) with date ranges for detection
 const PAY_PERIODS_DATA = [
   { name: "Dec 25, 2025 - Jan 07, 2026", start: new Date(2025, 11, 25), end: new Date(2026, 0, 7) },
