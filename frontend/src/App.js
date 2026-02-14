@@ -60,6 +60,9 @@ import {
   Trash2,
   Save,
   ClipboardPaste,
+  LogOut,
+  Shield,
+  Upload,
 } from "lucide-react";
 import {
   AreaChart,
@@ -75,6 +78,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import LoginPage from "@/pages/LoginPage";
+import AdminPanel from "@/pages/AdminPanel";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
