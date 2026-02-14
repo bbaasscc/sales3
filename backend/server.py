@@ -586,6 +586,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             visit_date = row.get('visit_date')
             follow_ups.append({
                 'lead_id': str(row.get('lead_id', '')) if pd.notna(row.get('lead_id', None)) else '',
+                'customer_number': str(row.get('customer_number', '')) if pd.notna(row.get('customer_number', None)) else '',
                 'name': str(row.get('name', '')),
                 'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
                 'address': str(row.get('address', '')) if pd.notna(row.get('address')) else '',
