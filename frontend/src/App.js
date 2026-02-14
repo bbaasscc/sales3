@@ -893,7 +893,7 @@ function MainDashboard({ token, user, onLogout }) {
 
             {/* === DASHBOARD TAB === */}
             {activeTab === 'dashboard' && isAdmin && !filterSalespersonId && (
-              <AdminOverview token={token} onFilterSalesperson={handleFilterSalesperson} />
+              <AdminOverview token={token} onFilterSalesperson={handleFilterSalesperson} payPeriod={payPeriod} dateFilter={dateFilter} />
             )}
 
             {activeTab === 'dashboard' && (!isAdmin || filterSalespersonId) && (
