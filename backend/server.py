@@ -919,14 +919,14 @@ async def register_user(data: UserRegister):
         "user_id": user_id,
         "email": email,
         "name": data.name.strip(),
-        "customer_number": data.customer_number.strip(),
+        "sales_number": data.sales_number.strip(),
         "role": "salesperson",
         "password_hash": pwd_context.hash(data.password),
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.users.insert_one(user_doc)
     token = create_token(user_id, "salesperson")
-    return {"token": token, "user": {"user_id": user_id, "email": email, "name": data.name.strip(), "customer_number": data.customer_number.strip(), "role": "salesperson"}}
+    return {"token": token, "user": {"user_id": user_id, "email": email, "name": data.name.strip(), "sales_number": data.sales_number.strip(), "role": "salesperson"}}
 
 @api_router.post("/auth/login")
 async def login_user(data: UserLogin):
