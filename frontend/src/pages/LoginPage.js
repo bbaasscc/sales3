@@ -45,7 +45,7 @@ export default function LoginPage({ onLogin }) {
         const res = await axios.post(`${API}/auth/register`, {
           email: form.email,
           name: form.name,
-          customer_number: form.customer_number,
+          sales_number: form.sales_number,
           password: form.password,
         });
         toast.success("Account created!");
