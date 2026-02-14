@@ -15,7 +15,7 @@
 
 ## Admin Experience
 - **Tabs**: Overview | Salespeople | All Data
-- **Overview**: Company-level KPIs (Revenue, Commission, Closed, Total Leads, Lost), Key Rates (R%, Access %, Avg Ticket, GP%, PM Jobs, PM%), Lead Status pie chart
+- **Overview**: Company-level KPIs (Revenue, Commission, Closed, Total Leads, Lost), Key Rates (R%, Access %, Avg Ticket, GP%, PM Jobs, PM%), Lead Status pie chart, Equipment Revenue chart + Breakdown table, Accessories Sold (APCO X, Samsung, Mitsubishi, Surge Protector, Duct Cleaning, Self Gen Mits)
 - **Salespeople**: Full ranking table with columns: Overall Rank, Salesperson, R% + Rank, Access % + Rank, Sales + Rank, Avg Ticket + Rank, Net Value + Rank, Total Jobs + Rank, PM Jobs, GP % + Rank, PM % + Rank. User Management section.
 - **All Data**: All leads with "Salesperson" column, full search/filter/CRUD
 - Can click salesperson name -> see their specific dashboard
@@ -61,7 +61,7 @@ src/
 - [x] Auth on destructive endpoints
 - [x] Removed obsolete Data Source modal (Feb 14, 2026)
 - [x] Frontend refactored: App.js from ~2160 to ~580 lines (Feb 14, 2026)
-- [x] Admin panel redesigned: no duplicated info, full ranking table (Feb 14, 2026)
+- [x] Admin Overview: equipment types + revenue + accessories sold (Feb 14, 2026)
 
 ## P1 TODO
 - [ ] Refactor server.py into modules (routers, models, services)
