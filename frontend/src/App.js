@@ -526,6 +526,11 @@ function MainDashboard({ token, user, onLogout }) {
               />
             )}
 
+            {/* Goals & Comparison Tab */}
+            {activeTab === 'goals' && !isAdmin && (
+              <GoalsTab token={token} payPeriod={payPeriod} />
+            )}
+
             {/* Data Tab */}
             {activeTab === 'data' && (
               <DataTab
