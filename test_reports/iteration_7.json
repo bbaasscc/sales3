@@ -40,5 +40,5 @@
   "seed_data_creation": "None - uses live Google Sheet data",
   "retest_needed": false,
   "should_main_agent_self_test": true,
-  "context_for_next_testing_agent": "Iteration 7 focused on formatting fixes: (1) All $ amounts use minimumFractionDigits:2 showing exactly 2 decimal places, (2) commission_percent rounded in backend to avoid floating point, (3) Payments section uses grid-cols-1 on mobile, grid-cols-3 sm:grid-cols-3 on desktop. Known SPIFF discrepancy ($254 difference between brand breakdown total and SPIF column) is source data issue, not code bug. Dashboard URL: https://sales-dashboard-340.preview.emergentagent.com"
+  "context_for_next_testing_agent": "Iteration 7 focused on formatting fixes: (1) All $ amounts use minimumFractionDigits:2 showing exactly 2 decimal places, (2) commission_percent rounded in backend to avoid floating point, (3) Payments section uses grid-cols-1 on mobile, grid-cols-3 sm:grid-cols-3 on desktop. Known SPIFF discrepancy ($254 difference between brand breakdown total and SPIF column) is source data issue, not code bug. Dashboard URL: https://sales-mgmt-app.preview.emergentagent.com"
 }
