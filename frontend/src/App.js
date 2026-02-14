@@ -855,6 +855,7 @@ function MainDashboard({ token, user, onLogout }) {
                 { id: 'dashboard', label: 'Dashboard', icon: 'BarChart3' },
                 { id: 'followups', label: 'Follow-ups', icon: 'Phone' },
                 { id: 'data', label: 'Data', icon: 'FileText' },
+                ...(isAdmin ? [{ id: 'admin', label: 'Admin', icon: 'Shield' }] : []),
               ].map(tab => (
                 <button
                   key={tab.id}
@@ -871,6 +872,19 @@ function MainDashboard({ token, user, onLogout }) {
                 </button>
               ))}
             </div>
+
+            {/* Admin salesperson filter banner */}
+            {isAdmin && filterSalespersonName && activeTab !== 'admin' && (
+              <div className="mb-4 px-4 py-2.5 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-700 flex items-center justify-between" data-testid="sp-filter-banner">
+                <span>Viewing: <strong>{filterSalespersonName}</strong></span>
+                <button onClick={clearSalespersonFilter} className="text-blue-500 hover:text-blue-700 font-bold text-xs">Show All</button>
+              </div>
+            )}
+
+            {/* === ADMIN TAB === */}
+            {activeTab === 'admin' && isAdmin && (
+              <AdminPanel token={token} user={user} onFilterSalesperson={handleFilterSalesperson} />
+            )}
 
             {/* === DASHBOARD TAB === */}
             {activeTab === 'dashboard' && (
