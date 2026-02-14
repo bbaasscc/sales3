@@ -1188,7 +1188,7 @@ function MainDashboard({ token, user, onLogout }) {
             )}
 
             {/* === FOLLOW-UPS TAB === */}
-            {activeTab === 'followups' && (
+            {activeTab === 'followups' && !isAdmin && (
             <div>
             {/* ═══════════════════════════════════════════════════════════════════════
                 BLOCK 5 – ACTION REQUIRED
