@@ -37,6 +37,60 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# === AUTH UTILITIES ===
+JWT_SECRET = os.environ.get('JWT_SECRET', str(uuid.uuid4()))
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRATION_HOURS = 72
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+security = HTTPBearer(auto_error=False)
+
+def create_token(user_id: str, role: str) -> str:
+    payload = {
+        "sub": user_id,
+        "role": role,
+        "exp": datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRATION_HOURS),
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+def decode_token(token: str) -> dict:
+    try:
+        return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    if not credentials:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    payload = decode_token(credentials.credentials)
+    user = await db.users.find_one({"user_id": payload["sub"]}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
+
+async def get_optional_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    if not credentials:
+        return None
+    try:
+        payload = decode_token(credentials.credentials)
+        user = await db.users.find_one({"user_id": payload["sub"]}, {"_id": 0})
+        return user
+    except Exception:
+        return None
+
+# === USER MODELS ===
+class UserRegister(BaseModel):
+    email: str
+    name: str
+    customer_number: str
+    password: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
 # Pay periods (bi-weekly) based on install date
 PAY_PERIODS = [
     ("Dec 25, 2025 - Jan 07, 2026", datetime(2025, 12, 25), datetime(2026, 1, 7)),
