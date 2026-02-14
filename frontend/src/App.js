@@ -779,6 +779,18 @@ function MainDashboard({ token, user, onLogout }) {
                 <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${refreshing ? 'animate-spin' : ''} sm:mr-2`} />
                 <span className="hidden sm:inline">{refreshing ? 'Updating...' : 'Update'}</span>
               </Button>
+
+              {/* Logout Button */}
+              <Button
+                onClick={onLogout}
+                variant="ghost"
+                size="icon"
+                className="text-white hover:bg-white/10 h-8 w-8 sm:h-9 sm:w-9"
+                data-testid="logout-button"
+                title="Sign Out"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
             </div>
           </div>
 
