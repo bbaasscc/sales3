@@ -1511,6 +1511,7 @@ function MainDashboard({ token, user, onLogout }) {
                           <TableCell className="py-2 px-2 sm:px-3 text-xs sm:text-sm font-medium text-gray-800">
                             <span className="line-clamp-1">{lead.name}</span>
                           </TableCell>
+                          {isAdmin && <TableCell className="py-2 px-2 sm:px-3 text-[10px] sm:text-xs text-blue-600 hidden sm:table-cell">{lead.salesperson_name || '—'}</TableCell>}
                           <TableCell className="py-2 px-2 sm:px-3 text-xs text-gray-600 hidden sm:table-cell">{lead.city}</TableCell>
                           <TableCell className="py-2 px-2 sm:px-3">
                             <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
