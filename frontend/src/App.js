@@ -556,7 +556,7 @@ function MainDashboard({ token, user, onLogout }) {
 
   const handleDeleteLead = async (leadId) => {
     try {
-      await axios.delete(`${API}/leads/${leadId}`);
+      await axios.delete(`${API}/leads/${leadId}`, { headers: authHeaders });
       toast.success("Lead deleted");
       setDeleteConfirm(null); setSelectedClient(null); setSelectedSale(null); setEditingLead(null);
       fetchDashboardData(); fetchAllLeads();
