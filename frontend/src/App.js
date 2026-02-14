@@ -448,7 +448,7 @@ function MainDashboard({ token, user, onLogout }) {
   // Fetch all client notes for priority display
   const fetchAllNotes = useCallback(async () => {
     try {
-      const res = await axios.get(`${API}/client/all-notes`);
+      const res = await axios.get(`${API}/client/all-notes`, { headers: authHeaders });
       const map = {};
       (res.data.notes || []).forEach(n => { map[n.client_name] = n; });
       setAllClientNotes(map);
