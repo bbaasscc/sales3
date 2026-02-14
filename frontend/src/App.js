@@ -426,7 +426,7 @@ function MainDashboard({ token, user, onLogout }) {
   // Fetch follow-up actions history
   const fetchActions = useCallback(async () => {
     try {
-      const res = await axios.get(`${API}/followup/actions`);
+      const res = await axios.get(`${API}/followup/actions`, { headers: authHeaders });
       setFollowUpActions(res.data.actions || []);
     } catch (err) { console.error("Error fetching actions:", err); }
   }, []);
