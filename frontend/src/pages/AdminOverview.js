@@ -17,7 +17,7 @@ import {
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const CHART_COLORS = ["#C62828", "#1E3A5F", "#4CAF50", "#FF9800", "#9C27B0", "#00BCD4"];
 
-export default function AdminOverview({ token, onFilterSalesperson }) {
+export default function AdminOverview({ token, onFilterSalesperson, payPeriod, dateFilter }) {
   const [comparison, setComparison] = useState([]);
   const [totals, setTotals] = useState({});
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,10 @@ export default function AdminOverview({ token, onFilterSalesperson }) {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${API}/admin/comparison`, { headers });
+      const params = {};
+      if (payPeriod && payPeriod !== "all") params.pay_period = payPeriod;
+      if (dateFilter && dateFilter !== "all") params.date_filter = dateFilter;
+      const res = await axios.get(`${API}/admin/comparison`, { headers, params });
       setComparison(res.data.comparison || []);
       setTotals(res.data.totals || {});
     } catch (err) {
@@ -35,7 +38,7 @@ export default function AdminOverview({ token, onFilterSalesperson }) {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, payPeriod, dateFilter]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
