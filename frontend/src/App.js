@@ -513,7 +513,7 @@ function MainDashboard({ token, user, onLogout }) {
         next_follow_up: clientNote.next_follow_up,
         comment: clientNote.comment,
         priority: clientNote.priority
-      });
+      }, { headers: authHeaders });
       toast.success("Notes saved");
       fetchAllNotes();
     } catch (err) { toast.error("Error saving notes"); }
