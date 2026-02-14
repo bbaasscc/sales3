@@ -32,8 +32,8 @@ export default function LoginPage({ onLogin }) {
           setLoading(false);
           return;
         }
-        if (!form.email.toLowerCase().endsWith("@fshac.com")) {
-          toast.error("Only @fshac.com emails are allowed");
+        if (!form.email.toLowerCase().endsWith("@fshac.com") && !form.email.toLowerCase().endsWith("@gmail.com")) {
+          toast.error("Only @fshac.com or @gmail.com emails are allowed");
           setLoading(false);
           return;
         }
