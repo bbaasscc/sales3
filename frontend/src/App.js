@@ -570,7 +570,7 @@ function MainDashboard({ token, user, onLogout }) {
     const baseComm = (editingLead.ticket_value || 0) * (editingLead.commission_percent || 0) / 100;
     const dataToSave = { ...editingLead, commission_value: Math.round((baseComm + spiffSum) * 100) / 100, spif_total: Math.round(spiffSum * 100) / 100 };
     try {
-      await axios.put(`${API}/leads/${editingLead.lead_id}`, dataToSave);
+      await axios.put(`${API}/leads/${editingLead.lead_id}`, dataToSave, { headers: authHeaders });
       toast.success("Lead updated");
       setEditingLead(null);
       fetchDashboardData(); fetchAllLeads();
