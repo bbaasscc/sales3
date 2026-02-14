@@ -806,6 +806,7 @@ async def import_sheet_to_db(excel_url: str) -> int:
             continue
         lead = {
             'lead_id': str(uuid.uuid4()),
+            'customer_number': str(int(row.get('customer_number', 0))) if pd.notna(row.get('customer_number')) and row.get('customer_number') else '',
             'name': name,
             'address': str(row.get('address', '')) if pd.notna(row.get('address')) else '',
             'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
