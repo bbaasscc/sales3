@@ -1035,7 +1035,7 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
 
     # Compute rankings (higher is better for all metrics except pm_pct)
     rank_fields = [
-        ("closing_rate", True), ("access_pct", True), ("closed_deals", True),
+        ("closing_rate", True), ("closed_deals", True),
         ("avg_ticket", True), ("total_revenue", True), ("total_leads", True),
         ("gp_pct", True), ("pm_pct", False),
     ]
