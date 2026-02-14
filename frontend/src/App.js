@@ -479,6 +479,7 @@ function MainDashboard({ token, user, onLogout }) {
               ] : [
                 { id: 'dashboard', label: 'Dashboard' },
                 { id: 'followups', label: 'Follow-ups' },
+                { id: 'goals', label: 'Goals' },
                 { id: 'data', label: 'Data' },
               ]).map(tab => (
                 <button
