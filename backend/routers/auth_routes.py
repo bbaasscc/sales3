@@ -29,11 +29,19 @@ async def register_user(data: UserRegister):
 
 @router.post("/login")
 async def login_user(data: UserLogin):
+    import logging
+    logger = logging.getLogger(__name__)
     email = data.email.strip().lower()
+    logger.info(f"Login attempt for: {email}")
     user = await db.users.find_one({"email": email}, {"_id": 0})
-    if not user or not pwd_context.verify(data.password, user["password_hash"]):
+    if not user:
+        logger.warning(f"Login failed: user not found for {email}")
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    if not pwd_context.verify(data.password, user["password_hash"]):
+        logger.warning(f"Login failed: wrong password for {email}")
         raise HTTPException(status_code=401, detail="Invalid email or password")
     token = create_token(user["user_id"], user["role"])
+    logger.info(f"Login success: {email} ({user['role']})")
     return {"token": token, "user": {"user_id": user["user_id"], "email": user["email"], "name": user["name"], "sales_number": user.get("sales_number", ""), "role": user["role"]}}
 
 
