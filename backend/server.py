@@ -935,11 +935,11 @@ async def login_user(data: UserLogin):
     if not user or not pwd_context.verify(data.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     token = create_token(user["user_id"], user["role"])
-    return {"token": token, "user": {"user_id": user["user_id"], "email": user["email"], "name": user["name"], "customer_number": user.get("customer_number", ""), "role": user["role"]}}
+    return {"token": token, "user": {"user_id": user["user_id"], "email": user["email"], "name": user["name"], "sales_number": user.get("sales_number", ""), "role": user["role"]}}
 
 @api_router.get("/auth/me")
 async def get_me(user=Depends(get_current_user)):
-    return {"user_id": user["user_id"], "email": user["email"], "name": user["name"], "customer_number": user.get("customer_number", ""), "role": user["role"]}
+    return {"user_id": user["user_id"], "email": user["email"], "name": user["name"], "sales_number": user.get("sales_number", ""), "role": user["role"]}
 
 @api_router.put("/auth/user/{user_id}/role")
 async def update_user_role(user_id: str, body: dict, user=Depends(get_current_user)):
