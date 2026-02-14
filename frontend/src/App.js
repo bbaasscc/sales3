@@ -892,7 +892,11 @@ function MainDashboard({ token, user, onLogout }) {
             )}
 
             {/* === DASHBOARD TAB === */}
-            {activeTab === 'dashboard' && (
+            {activeTab === 'dashboard' && isAdmin && !filterSalespersonId && (
+              <AdminOverview token={token} onFilterSalesperson={handleFilterSalesperson} />
+            )}
+
+            {activeTab === 'dashboard' && (!isAdmin || filterSalespersonId) && (
             <div className="space-y-8 sm:space-y-10">
             {/* ═══════════════════════════════════════════════════════════════════════
                 BLOCK 1 – MY MONEY
