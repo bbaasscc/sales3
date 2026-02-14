@@ -1135,21 +1135,9 @@ async def get_dashboard_kpis(date_filter: str = "all", pay_period: Optional[str]
             df = pd.DataFrame()
             kpis = process_sales_data(df, date_filter, pay_period, from_db=True)
         else:
-            # DB truly empty - try auto-import from Sheet
-            config = await db.excel_config.find_one({}, {"_id": 0})
-            excel_url = config.get('excel_url') if config else None
-            if excel_url:
-                try:
-                    count = await import_sheet_to_db(excel_url)
-                    logger.info(f"Auto-imported {count} leads on first load")
-                    leads = await db.leads.find(lead_filter, query).to_list(10000)
-                    if leads:
-                        df = pd.DataFrame(leads)
-                        kpis = process_sales_data(df, date_filter, pay_period, from_db=True)
-                        return kpis
-                except Exception as e:
-                    logger.error(f"Auto-import failed: {e}")
-            raise HTTPException(status_code=400, detail="No data available.")
+            # DB truly empty - return empty KPIs (no more auto-import to prevent data corruption)
+            df = pd.DataFrame()
+            kpis = process_sales_data(df, date_filter, pay_period, from_db=True)
     
     return kpis
 
