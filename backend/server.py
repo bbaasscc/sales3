@@ -84,7 +84,7 @@ async def get_optional_user(credentials: HTTPAuthorizationCredentials = Depends(
 class UserRegister(BaseModel):
     email: str
     name: str
-    customer_number: str
+    sales_number: str
     password: str
 
 class UserLogin(BaseModel):
