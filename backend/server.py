@@ -975,12 +975,14 @@ async def get_salesperson_comparison(user=Depends(get_current_user)):
         total_commission = sum(l.get("commission_value", 0) for l in sales)
         closed_deals = len(sales)
         closing_rate = (closed_deals / total_leads * 100) if total_leads > 0 else 0
+        lost = [l for l in leads if l.get("status") == "LOST"]
         comparison.append({
             "user_id": sp["user_id"],
             "name": sp["name"],
             "email": sp["email"],
             "total_leads": total_leads,
             "closed_deals": closed_deals,
+            "lost_deals": len(lost),
             "total_revenue": round(total_revenue, 2),
             "total_commission": round(total_commission, 2),
             "closing_rate": round(closing_rate, 1),
