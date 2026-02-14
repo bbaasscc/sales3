@@ -1428,6 +1428,29 @@ function MainDashboard({ token, user, onLogout }) {
                   data-testid="data-add-lead">
                   <Plus className="w-4 h-4" /> New Lead
                 </button>
+                <label
+                  className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 transition-colors cursor-pointer"
+                  data-testid="data-import-xls"
+                >
+                  <Upload className="w-4 h-4" /> Import XLS
+                  <input type="file" accept=".xls,.xlsx" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    try {
+                      const res = await axios.post(`${API}/leads/import-xls`, formData, {
+                        headers: { ...authHeaders, 'Content-Type': 'multipart/form-data' }
+                      });
+                      toast.success(`Imported ${res.data.count} leads`);
+                      fetchAllLeads();
+                      fetchDashboardData();
+                    } catch (err) {
+                      toast.error(err.response?.data?.detail || "Import failed");
+                    }
+                    e.target.value = '';
+                  }} />
+                </label>
               </div>
 
               <Card className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
