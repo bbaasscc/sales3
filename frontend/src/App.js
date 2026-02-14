@@ -621,10 +621,6 @@ function MainDashboard({ token, user, onLogout }) {
       setRefreshing(false);
     }
   };
-      toast.success("Data synced from Google Sheet");
-    } catch (err) { toast.error("Import failed"); }
-    fetchDashboardData(true, true);
-  };
 
   const handleSaveSettings = () => {
     setExcelUrl(tempExcelUrl);
