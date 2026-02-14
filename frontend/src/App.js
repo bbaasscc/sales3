@@ -852,12 +852,15 @@ function MainDashboard({ token, user, onLogout }) {
           <>
             {/* Tab Navigation */}
             <div className="flex gap-1 mb-6 bg-white rounded-xl p-1 shadow-sm border border-gray-200">
-              {[
-                { id: 'dashboard', label: 'Dashboard', icon: 'BarChart3' },
-                { id: 'followups', label: 'Follow-ups', icon: 'Phone' },
-                { id: 'data', label: 'Data', icon: 'FileText' },
-                ...(isAdmin ? [{ id: 'admin', label: 'Admin', icon: 'Shield' }] : []),
-              ].map(tab => (
+              {(isAdmin ? [
+                { id: 'dashboard', label: 'Overview' },
+                { id: 'admin', label: 'Salespeople' },
+                { id: 'data', label: 'All Data' },
+              ] : [
+                { id: 'dashboard', label: 'Dashboard' },
+                { id: 'followups', label: 'Follow-ups' },
+                { id: 'data', label: 'Data' },
+              ]).map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
