@@ -3,38 +3,36 @@
 ## Architecture
 - **Frontend**: React, Recharts, Shadcn UI, Tailwind CSS
 - **Backend**: FastAPI (modular), PyJWT, Pandas
-- **Database**: MongoDB (leads, users, goals, pipeline actions, client notes, schedules)
+- **Database**: MongoDB
 - **Auth**: JWT + bcrypt
 
-## Backend Structure (Refactored Feb 14, 2026)
+## Backend Structure
 ```
 backend/
-  server.py          Entry point + leads/dashboard/import routes
-  database.py        MongoDB connection
-  auth.py            JWT utilities + user dependencies
-  models.py          All Pydantic models (including GoalCreate)
+  server.py          (606 lines) Entry point + leads/dashboard/import routes
+  database.py        (11 lines) MongoDB connection
+  auth.py            (55 lines) JWT utilities + user dependencies
+  models.py          (96 lines) All Pydantic models
   routers/
-    auth_routes.py   Register, login, me, role update
-    admin.py         Salespeople list, comparison + ranking
-    pipeline.py      Follow-up actions, client notes, schedules
-    goals.py         Goals CRUD + period comparison
+    auth_routes.py   (53 lines) Register, login, me, role update
+    admin.py         (166 lines) Salespeople list, comparison + ranking
+    pipeline.py      (81 lines) Follow-up actions, client notes, schedules
 ```
 
-## Frontend Component Architecture
+## Frontend Structure
 ```
 src/
-  App.js              Auth wrapper + MainDashboard orchestrator
+  App.js              (580 lines) Auth wrapper + MainDashboard orchestrator
   lib/constants.js     Brand colors, pipeline steps, pay periods
   components/
     shared.js          SummaryCard, ChartCard, SectionHeader, SpiffBrandCard
     DashboardTab.jsx   Salesperson dashboard (Blocks 1-4)
     FollowupsTab.jsx   Follow-ups pipeline
-    GoalsTab.jsx       NEW: Goals + Period Comparison
     DataTab.jsx        Data table with CRUD
-    Modals.jsx         All modal components
+    Modals.jsx         All modal components (7 modals)
   pages/
     LoginPage.js       Login/Register
-    AdminPanel.js      Admin Salespeople ranking
+    AdminPanel.js      Admin Salespeople ranking + User Management
     AdminOverview.js   Admin Overview + equipment + accessories
 ```
 
@@ -45,26 +43,33 @@ src/
 | bcardarelli@fshac.com | salesperson | Benja123 |
 | fbarbagallo@fshac.com | salesperson | Franco123 |
 
-## Salesperson Tabs: Dashboard | Follow-ups | Goals | Data
-- **Goals tab**: Set personal goals (Revenue, Deals, Commission) per pay period. Progress rings. Period comparison with delta indicators vs previous period.
+## Salesperson (3 tabs): Dashboard | Follow-ups | Data
+- **Dashboard**: My Money KPIs, Payments, SPIFF Breakdown, What Am I Selling (charts), Closed Sales table
+- **Follow-ups**: Action Required pipeline, Pipeline Complete, Client Detail modal with notes
+- **Data**: Search, status filters, New Lead, Import XLS, Edit Lead modal
 
-## Admin Tabs: Overview | Salespeople | All Data
-- **Overview**: Company totals, key rates, lead status, equipment revenue/breakdown, accessories
-- **Salespeople**: Full ranking table with R%, Sales, Avg Ticket, Net Value, Total Jobs, PM Jobs, GP%, PM%
+## Admin (3 tabs): Overview | Salespeople | All Data
+- **Overview**: Company Totals, Key Rates (R%, Avg Ticket, GP%, PM Jobs, PM%), Lead Status pie, Equipment Revenue + Breakdown, Accessories Sold
+- **Salespeople**: Full ranking table (Overall, R%, Sales, Avg Ticket, Net Value, Total Jobs, PM Jobs, GP%, PM%), User Management
+- **All Data**: All leads with Salesperson column
+
+## Data
+- 53 leads total: 23 SALE, 19 PENDING, 11 LOST
+- Benjamin S. Cardarelli: all leads
+- Franco Barbagallo: 0 leads
 
 ## Completed
 - [x] JWT auth with role-based access
 - [x] Admin/salesperson separate experiences
 - [x] Data isolation per salesperson
-- [x] Frontend refactored (~580 lines App.js)
-- [x] Backend refactored into modules (Feb 14, 2026)
+- [x] Frontend refactored (App.js 2160→580 lines)
+- [x] Backend refactored into modules (server.py 1435→606 lines)
 - [x] Admin ranking with all metrics + rank badges
 - [x] Admin equipment types + accessories
-- [x] Goals & Period Comparison tab for salespeople (Feb 14, 2026)
+- [x] Comprehensive testing: 100% pass (28 backend + full frontend)
 
 ## P1 TODO
 - [ ] Export CSV/PDF
 
 ## P2 BACKLOG
 - [ ] Notifications/reminders
-- [ ] Goal history across periods
