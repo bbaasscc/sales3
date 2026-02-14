@@ -18,7 +18,7 @@ const BRAND_COLORS = {
 export default function LoginPage({ onLogin }) {
   const [mode, setMode] = useState("login"); // 'login' | 'register'
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ email: "", password: "", name: "", customer_number: "" });
+  const [form, setForm] = useState({ email: "", password: "", name: "", sales_number: "" });
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 
