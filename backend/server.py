@@ -747,6 +747,8 @@ def parse_lead_email(text: str) -> dict:
             val = val.strip()
             if 'customer name' in key:
                 data['name'] = val.strip()
+            elif 'customer #' in key or 'customer number' in key:
+                data['customer_number'] = val.strip()
             elif key == 'address 1':
                 data['address'] = val.strip()
             elif key == 'city':
