@@ -465,9 +465,9 @@ function MainDashboard({ token, user, onLogout }) {
     const done = isStepDone(clientName, stepId);
     try {
       if (done) {
-        await axios.delete(`${API}/followup/action`, { params: { client_name: clientName, step_id: stepId } });
+        await axios.delete(`${API}/followup/action`, { params: { client_name: clientName, step_id: stepId }, headers: authHeaders });
       } else {
-        await axios.post(`${API}/followup/action`, { client_name: clientName, step_id: stepId });
+        await axios.post(`${API}/followup/action`, { client_name: clientName, step_id: stepId }, { headers: authHeaders });
       }
       fetchActions();
     } catch (err) { console.error(err); }
