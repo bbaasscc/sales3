@@ -27,7 +27,7 @@ export default function LoginPage({ onLogin }) {
     setLoading(true);
     try {
       if (mode === "register") {
-        if (!form.email || !form.password || !form.name || !form.customer_number) {
+        if (!form.email || !form.password || !form.name || !form.sales_number) {
           toast.error("All fields are required");
           setLoading(false);
           return;
