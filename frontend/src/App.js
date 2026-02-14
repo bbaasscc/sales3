@@ -1944,9 +1944,15 @@ function App() {
                 </div>
               )) : <p className="text-center text-gray-400 py-4">No installations in this period</p>}
               {kpiData.records?.length > 0 && (
-                <div className="mt-3 p-3 bg-emerald-50 rounded-lg flex justify-between text-sm font-bold">
-                  <span className="text-emerald-700">Total</span>
-                  <span className="font-mono text-emerald-800">${kpiData.commission_payment_revenue?.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                <div className="mt-3 p-3 bg-emerald-50 rounded-lg space-y-1">
+                  <div className="flex justify-between text-sm font-bold">
+                    <span className="text-emerald-700">Total Revenue</span>
+                    <span className="font-mono text-emerald-800">${kpiData.commission_payment_revenue?.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                  </div>
+                  <div className="flex justify-between text-sm font-bold">
+                    <span className="text-emerald-700">Total Commission</span>
+                    <span className="font-mono text-emerald-600">${kpiData.commission_payment_amount?.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                  </div>
                 </div>
               )}
             </div>
