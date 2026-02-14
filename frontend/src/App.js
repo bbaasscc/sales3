@@ -743,33 +743,6 @@ function MainDashboard({ token, user, onLogout }) {
                 <Menu className="w-4 h-4" />
               </Button>
 
-              {/* Settings */}
-              <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 h-8 w-8 sm:h-9 sm:w-9">
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[500px] mx-4">
-                  <DialogHeader>
-                    <DialogTitle>Data Source</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label>Google Sheet URL</Label>
-                      <Input
-                        value={tempExcelUrl}
-                        onChange={(e) => setTempExcelUrl(e.target.value)}
-                        className="font-mono text-xs"
-                      />
-                    </div>
-                    <Button onClick={handleSaveSettings} className="w-full" style={{ backgroundColor: BRAND_COLORS.primary }}>
-                      Save
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-
               {/* Update Button */}
               <Button
                 onClick={handleRefresh}
