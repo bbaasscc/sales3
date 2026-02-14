@@ -243,7 +243,7 @@ export default function AdminPanel({ token, user, onFilterSalesperson }) {
                     <TableRow key={sp.user_id} className="border-b border-gray-100 hover:bg-violet-50/30">
                       <TableCell className="py-2 px-3 text-sm font-medium text-gray-800">{sp.name}</TableCell>
                       <TableCell className="py-2 px-3 text-xs text-gray-600">{sp.email}</TableCell>
-                      <TableCell className="py-2 px-3 font-mono text-xs text-gray-500 hidden sm:table-cell">{sp.customer_number}</TableCell>
+                      <TableCell className="py-2 px-3 font-mono text-xs text-gray-500 hidden sm:table-cell">{sp.sales_number}</TableCell>
                       <TableCell className="py-2 px-3">
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                           sp.role === 'admin' ? 'bg-violet-100 text-violet-700' : 'bg-blue-100 text-blue-700'
