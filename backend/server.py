@@ -610,6 +610,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def seed_database():
+    """Seed database with initial data if empty (for fresh deployments)."""
+    import json
+    seed_file = ROOT_DIR / "seed_data.json"
+    if not seed_file.exists():
+        logger.info("No seed_data.json found, skipping seed.")
+        return
+    user_count = await db.users.count_documents({})
+    if user_count > 0:
+        logger.info(f"Database already has {user_count} users, skipping seed.")
+        return
+    logger.info("Empty database detected — seeding initial data...")
+    with open(seed_file) as f:
+        data = json.load(f)
+    if data.get("users"):
+        await db.users.insert_many(data["users"])
+        logger.info(f"Seeded {len(data['users'])} users.")
+    if data.get("leads"):
+        await db.leads.insert_many(data["leads"])
+        logger.info(f"Seeded {len(data['leads'])} leads.")
+    if data.get("excel_config"):
+        for cfg in data["excel_config"]:
+            await db.excel_config.update_one({}, {"$set": cfg}, upsert=True)
+        logger.info(f"Seeded excel config.")
+    if data.get("pipeline_schedules"):
+        for ps in data["pipeline_schedules"]:
+            await db.pipeline_schedules.update_one(
+                {"client_name": ps.get("client_name")}, {"$set": ps}, upsert=True
+            )
+        logger.info(f"Seeded {len(data['pipeline_schedules'])} pipeline schedules.")
+    logger.info("Database seed complete.")
+
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
