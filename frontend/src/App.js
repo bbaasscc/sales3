@@ -416,7 +416,7 @@ function MainDashboard({ token, user, onLogout }) {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [dateFilter, payPeriod, excelUrl, filterSalespersonId]);
+  }, [dateFilter, payPeriod, filterSalespersonId]);
 
   useEffect(() => {
     fetchDashboardData();
