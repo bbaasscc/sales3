@@ -888,7 +888,7 @@ function MainDashboard({ token, user, onLogout }) {
 
             {/* === ADMIN TAB === */}
             {activeTab === 'admin' && isAdmin && (
-              <AdminPanel token={token} user={user} onFilterSalesperson={handleFilterSalesperson} />
+              <AdminPanel token={token} user={user} onFilterSalesperson={handleFilterSalesperson} payPeriod={payPeriod} dateFilter={dateFilter} />
             )}
 
             {/* === DASHBOARD TAB === */}
