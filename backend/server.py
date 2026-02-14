@@ -334,7 +334,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             logger.info(f"Mapped columns: {list(df.columns)}")
     
     # Ensure required columns exist
-    for col in ['name', 'status', 'unit_type', 'ticket_value', 'commission_value', 'commission_percent', 
+    for col in ['customer_number', 'name', 'status', 'unit_type', 'ticket_value', 'commission_value', 'commission_percent', 
                 'visit_date', 'close_date', 'install_date', 'follow_up_date', 'spif_total',
                 'apco_x', 'samsung', 'mitsubishi', 'surge_protector', 'duct_cleaning', 'self_gen_mits']:
         if col not in df.columns:
