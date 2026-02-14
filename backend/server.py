@@ -990,9 +990,11 @@ async def get_salesperson_comparison(user=Depends(get_current_user)):
     # Also compute global totals
     all_leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
     all_sales = [l for l in all_leads if l.get("status") == "SALE"]
+    all_lost = [l for l in all_leads if l.get("status") == "LOST"]
     totals = {
         "total_leads": len(all_leads),
         "closed_deals": len(all_sales),
+        "lost_deals": len(all_lost),
         "total_revenue": round(sum(l.get("ticket_value", 0) for l in all_sales), 2),
         "total_commission": round(sum(l.get("commission_value", 0) for l in all_sales), 2),
         "closing_rate": round((len(all_sales) / len(all_leads) * 100) if all_leads else 0, 1),
