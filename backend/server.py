@@ -1226,8 +1226,10 @@ async def get_leads(salesperson_id: Optional[str] = None, user=Depends(get_optio
     return {"leads": leads}
 
 @api_router.post("/dashboard/refresh")
-async def refresh_dashboard():
-    """Re-import data from Google Sheet to MongoDB"""
+async def refresh_dashboard(user=Depends(get_current_user)):
+    """Re-import data from Google Sheet to MongoDB - admin only"""
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
     config = await db.excel_config.find_one({}, {"_id": 0})
     excel_url = config.get('excel_url') if config else None
     if not excel_url:
