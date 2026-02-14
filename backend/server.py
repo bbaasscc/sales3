@@ -1121,26 +1121,28 @@ async def get_dashboard_kpis(date_filter: str = "all", pay_period: Optional[str]
         df = pd.DataFrame(leads)
         kpis = process_sales_data(df, date_filter, pay_period, from_db=True)
     else:
-        # No leads in MongoDB - try to auto-import from Sheet
-        config = await db.excel_config.find_one({}, {"_id": 0})
-        excel_url = config.get('excel_url') if config else None
-        if excel_url:
-            try:
-                count = await import_sheet_to_db(excel_url)
-                logger.info(f"Auto-imported {count} leads on first load")
-                leads = await db.leads.find({}, {"_id": 0, "lead_id": 0, "created_at": 0, "phone": 0}).to_list(10000)
-                if leads:
-                    df = pd.DataFrame(leads)
-                    kpis = process_sales_data(df, date_filter, pay_period, from_db=True)
-                    return kpis
-            except Exception as e:
-                logger.error(f"Auto-import failed: {e}")
-        # Fallback: read directly from Sheet without MongoDB
-        if excel_url:
-            df = parse_excel_data(excel_url)
-            kpis = process_sales_data(df, date_filter, pay_period, from_db=False)
+        # Check if DB has ANY leads (user just has none assigned)
+        total_leads = await db.leads.count_documents({})
+        if total_leads > 0:
+            # DB has leads, this user just has none - return empty KPIs
+            df = pd.DataFrame()
+            kpis = process_sales_data(df, date_filter, pay_period, from_db=True)
         else:
-            raise HTTPException(status_code=400, detail="No data. Click Update to import from Google Sheet.")
+            # DB truly empty - try auto-import from Sheet
+            config = await db.excel_config.find_one({}, {"_id": 0})
+            excel_url = config.get('excel_url') if config else None
+            if excel_url:
+                try:
+                    count = await import_sheet_to_db(excel_url)
+                    logger.info(f"Auto-imported {count} leads on first load")
+                    leads = await db.leads.find(lead_filter, query).to_list(10000)
+                    if leads:
+                        df = pd.DataFrame(leads)
+                        kpis = process_sales_data(df, date_filter, pay_period, from_db=True)
+                        return kpis
+                except Exception as e:
+                    logger.error(f"Auto-import failed: {e}")
+            raise HTTPException(status_code=400, detail="No data available.")
     
     return kpis
 
