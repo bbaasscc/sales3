@@ -68,6 +68,7 @@ src/
 - [x] Admin equipment types + accessories
 - [x] Comprehensive testing: 100% pass (28 backend + full frontend)
 - [x] Added /health endpoint for Kubernetes deployment (Feb 2026)
+- [x] Auto-seed on startup: seed_data.json populates empty Atlas DB on deploy (Feb 2026)
 
 ## P1 TODO
 - [ ] Commission Calculator
