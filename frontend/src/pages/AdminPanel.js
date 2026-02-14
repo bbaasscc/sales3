@@ -233,7 +233,7 @@ export default function AdminPanel({ token, user, onFilterSalesperson }) {
                   <TableRow className="bg-violet-50/50">
                     <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-3">Name</TableHead>
                     <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-3">Email</TableHead>
-                    <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-3 hidden sm:table-cell">Customer #</TableHead>
+                    <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-3 hidden sm:table-cell">Sales #</TableHead>
                     <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-3">Role</TableHead>
                     <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-3">Actions</TableHead>
                   </TableRow>
