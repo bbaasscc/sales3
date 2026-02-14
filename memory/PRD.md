@@ -1,108 +1,50 @@
 # Sales Dashboard PRD - Four Seasons Heating & Cooling
 
-## Original Problem Statement
-Sales performance dashboard for FSHAC salespeople, evolved into a full CRM with sales pipeline, lead management, and multi-user support.
-
 ## Architecture
 - **Frontend**: React, Recharts, Shadcn UI, Tailwind CSS
-- **Backend**: FastAPI, Pandas, PyJWT (auth)
+- **Backend**: FastAPI, Pandas, PyJWT
 - **Database**: MongoDB (leads, users, pipeline actions, client notes, schedules)
-- **Auth**: JWT-based with bcrypt. Accepts @fshac.com and @gmail.com domains.
+- **Auth**: JWT + bcrypt. Domains: @fshac.com, @gmail.com
 
-## User Roles
-- **Admin** (bsanchezcar@gmail.com): Global view, salesperson comparison, user role management, filter by salesperson
-- **Salesperson** (benjamin@fshac.com): Sees only their own leads, dashboard, follow-ups, and data
+## Users
+| Email | Name | Role | Pass |
+|---|---|---|---|
+| bsanchezcar@gmail.com | Benjamin Sanchez | admin | Benja123 |
+| bcardarelli@fshac.com | Benjamin S. Cardarelli | salesperson | Benja123 |
+| fbarbagallo@fshac.com | Franco Barbagallo | salesperson | Franco123 |
 
-## 4-Tab Structure
+## Admin Experience
+- **Tabs**: Overview | Salespeople | All Data
+- **Overview**: Company-level KPIs, Revenue/Commission charts, Leads/Conversions charts, Salesperson Performance ranking table
+- **Salespeople**: User management, role changes
+- **All Data**: All leads with "Salesperson" column, full search/filter/CRUD
+- Can click salesperson name → see their specific dashboard
 
-### Tab 1 — DASHBOARD (view only)
-- KPI cards: Revenue, Commission, Closed Deals, Leads, Closing Rate, Avg Ticket
-- Payments by install_date, SPIFF Breakdown, Charts, Sales table
-- Filtered by authenticated user (admins see all or filter by salesperson)
+## Salesperson Experience
+- **Tabs**: Dashboard | Follow-ups | Data
+- **Dashboard**: My Money, How Can I Earn More, What Am I Selling, Closed Sales
+- **Follow-ups**: Pipeline with 7 steps, email/SMS templates, priority/overdue
+- **Data**: Their own leads, search/filter, New Lead, Import XLS
 
-### Tab 2 — FOLLOW-UPS (pipeline + actions)
-- Leads with pending follow-ups, priority system, overdue indicators
-- 7-step "Closing Flow" with email + SMS templates
-- Customizable schedule dates + notes per step
+## Data
+- Benjamin: 53 leads (22 SALE, 20 PENDING, 11 LOST) - $216,906 revenue
+- Franco: 0 leads (new)
 
-### Tab 3 — DATA (full CRUD)
-- All leads in searchable/filterable table
-- Add new lead (email parser or manual), edit, delete
-- **Import XLS** button: upload .xls/.xlsx, leads auto-assigned to current user
-
-### Tab 4 — ADMIN (admin users only)
-- Global Overview: Total leads, closed deals, revenue, commission, closing rate
-- Comparison Charts: Revenue/Commission and Leads/Closed per salesperson
-- Salesperson Comparison Table: Click name to filter dashboard
-- User Management: View users, change roles
-
-## API Endpoints
-### Auth
-- `POST /api/auth/register` — Self-registration (@fshac.com or @gmail.com)
-- `POST /api/auth/login` — Returns JWT token
-- `GET /api/auth/me` — Current user info
-- `PUT /api/auth/user/{user_id}/role` — Admin: change role
-
-### Admin
-- `GET /api/admin/salespeople` — List users (admin only)
-- `GET /api/admin/comparison` — Salesperson stats (admin only)
-
-### Dashboard & Leads
-- `GET /api/dashboard/kpis` — KPIs (auto-filtered by user)
-- `GET /api/leads` — List leads (auto-filtered by user)
-- `POST /api/leads` — Create lead (auto-assigns to user)
-- `PUT /api/leads/{id}` — Update lead (auth required)
-- `DELETE /api/leads/{id}` — Delete lead (auth required)
-- `POST /api/leads/import-xls` — Upload XLS (auth required)
-
-### Follow-ups & Pipeline
-- `GET/POST/DELETE /api/followup/action` — Pipeline step tracking
-- `GET/POST /api/client/notes` — Priority, follow-up, comments
-- `GET/POST /api/pipeline/schedule` — Custom pipeline dates
-
-## What's Been Implemented
-
-### Feb 14, 2026 - Multi-User & General Audit
-- [x] JWT auth with bcrypt, self-registration
-- [x] Admin: bsanchezcar@gmail.com / Benja123
-- [x] Salesperson: benjamin@fshac.com / test123
-- [x] Data isolation + fallback safety
-- [x] Admin panel with global stats + comparison charts
+## Completed (Feb 14, 2026)
+- [x] JWT auth with role-based access
+- [x] Admin overview with company KPIs + comparison charts
+- [x] Separate admin/salesperson experiences
+- [x] Data isolation (salespeople see only their leads)
 - [x] XLS import per user
-- [x] Field renamed: "Customer Number" → "Sales Number"
-- [x] Auth protection on PUT/DELETE leads endpoints
-- [x] Removed destructive auto-import from Google Sheet
-- [x] "Update" button only refreshes data, no re-import
-- [x] Cleaned test/garbage users from DB
-- [x] All 53 leads assigned to Benjamin (22 SALE, 20 PENDING, 11 LOST)
+- [x] Auth on destructive endpoints (PUT/DELETE leads)
+- [x] All leads assigned to correct salesperson
 
-### Feb 13, 2026 - Core Application
-- [x] Full dashboard with KPI blocks
-- [x] MongoDB as primary data source
-- [x] 3-tab navigation + sales pipeline
-- [x] Email + SMS templates
-- [x] Priority system + overdue indicators
-- [x] Lead CRUD with email parser
-- [x] Client notes, pipeline schedules
-
-## Test Accounts
-- **Admin**: bsanchezcar@gmail.com / Benja123
-- **Salesperson**: benjamin@fshac.com / test123
-
-## Verified Data (Feb 14, 2026)
-- Total Leads: 53 | SALE: 22 | PENDING: 20 | LOST: 11
-- Revenue: $216,906 | Commission: $25,470.99 | Closing Rate: 41.5%
-
-## Testing Status
-- Iteration 10: 15/15 backend, all frontend flows verified
-- Test file: /app/backend/tests/test_crm_comprehensive.py
-
-## P1 — TODO
-- [ ] Refactor App.js (2000+ lines) into component files
+## P1 TODO
+- [ ] Refactor App.js (~2000 lines) into components
 - [ ] Refactor server.py into modules
-- [ ] Export data to CSV/PDF
+- [ ] Export CSV/PDF
 
-## P2 — BACKLOG
+## P2 BACKLOG
 - [ ] Period comparison (YoY, MoM)
-- [ ] Goal tracking with progress bars
-- [ ] Notifications / reminders
+- [ ] Goal tracking
+- [ ] Notifications/reminders
