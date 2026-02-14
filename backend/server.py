@@ -504,13 +504,15 @@ async def parse_email_to_lead(body: dict):
 
 
 @api_router.post("/leads")
-async def create_lead(lead: LeadCreate, user=Depends(get_optional_user)):
+async def create_lead(lead: LeadCreate, user=Depends(get_current_user)):
     doc = lead.model_dump()
     if doc.get('status'):
         doc['status'] = normalize_status(doc['status'])
     doc['lead_id'] = str(uuid.uuid4())
     doc['created_at'] = datetime.now(timezone.utc).isoformat()
-    if user and not doc.get('salesperson_id'):
+    if user["role"] == "salesperson":
+        doc['salesperson_id'] = user["user_id"]
+    elif not doc.get('salesperson_id'):
         doc['salesperson_id'] = user["user_id"]
     if doc['visit_date'] and not doc['follow_up_date']:
         try:
@@ -526,7 +528,7 @@ async def create_lead(lead: LeadCreate, user=Depends(get_optional_user)):
 
 
 @api_router.put("/leads/{lead_id}")
-async def update_lead(lead_id: str, updates: LeadUpdate, user=Depends(get_optional_user)):
+async def update_lead(lead_id: str, updates: LeadUpdate, user=Depends(get_current_user)):
     update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
     if 'status' in update_data:
         update_data['status'] = normalize_status(update_data['status'])
