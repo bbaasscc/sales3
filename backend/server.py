@@ -1162,11 +1162,14 @@ async def parse_email_to_lead(body: dict):
     return parsed
 
 @api_router.post("/leads")
-async def create_lead(lead: LeadCreate):
+async def create_lead(lead: LeadCreate, user=Depends(get_optional_user)):
     """Create a new lead"""
     doc = lead.model_dump()
     doc['lead_id'] = str(uuid.uuid4())
     doc['created_at'] = datetime.now(timezone.utc).isoformat()
+    # Auto-assign salesperson_id from current user if not set
+    if user and not doc.get('salesperson_id'):
+        doc['salesperson_id'] = user["user_id"]
     if doc['status']:
         doc['status'] = normalize_status(doc['status'])
     # Auto-calculate follow-up date from visit_date if not set
