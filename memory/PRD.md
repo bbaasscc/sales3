@@ -67,9 +67,12 @@ src/
 - [x] Admin ranking with all metrics + rank badges
 - [x] Admin equipment types + accessories
 - [x] Comprehensive testing: 100% pass (28 backend + full frontend)
+- [x] Added /health endpoint for Kubernetes deployment (Feb 2026)
 
 ## P1 TODO
+- [ ] Commission Calculator
 - [ ] Export CSV/PDF
 
 ## P2 BACKLOG
 - [ ] Notifications/reminders
+- [ ] Gamification (badges/leaderboards)
