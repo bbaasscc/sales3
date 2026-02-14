@@ -386,8 +386,6 @@ function MainDashboard({ token, user, onLogout }) {
     }
 
     try {
-      await axios.post(`${API}/config/excel`, { excel_url: excelUrl }, { headers: authHeaders });
-
       const params = { date_filter: dateFilter };
       // Use currentPeriod for the API call (handles refresh case)
       const periodToUse = resetToCurrentPeriod ? currentPeriod : payPeriod;
