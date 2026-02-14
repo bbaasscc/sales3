@@ -599,7 +599,7 @@ function MainDashboard({ token, user, onLogout }) {
 
   const savePipelineSchedule = async (clientName, steps) => {
     try {
-      await axios.post(`${API}/pipeline/schedule`, { client_name: clientName, steps });
+      await axios.post(`${API}/pipeline/schedule`, { client_name: clientName, steps }, { headers: authHeaders });
       toast.success("Schedule saved");
     } catch { toast.error("Error saving schedule"); }
   };
