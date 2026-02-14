@@ -87,6 +87,7 @@ class ClientNoteCreate(BaseModel):
     priority: str = "high"  # high, medium, low
 
 class LeadCreate(BaseModel):
+    customer_number: str = ""
     name: str = ""
     address: str = ""
     city: str = ""
