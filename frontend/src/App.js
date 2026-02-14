@@ -1967,8 +1967,8 @@ function App() {
             </div>
             <div className="p-4 space-y-3">
               <div className="grid grid-cols-2 gap-2">
-                {[['name','Name'],['address','Address'],['city','City'],['email','Email'],['phone','Phone'],['unit_type','Unit Type']].map(([k,l]) => (
-                  <div key={k} className={k === 'name' || k === 'address' ? 'col-span-2' : ''}>
+                {[['customer_number','Client #'],['name','Name'],['address','Address'],['city','City'],['email','Email'],['phone','Phone'],['unit_type','Unit Type']].map(([k,l]) => (
+                  <div key={k} className={k === 'address' ? 'col-span-2' : ''}>
                     <label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
                     <input value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
                       className="w-full px-2 py-1.5 text-sm border rounded-lg" />
