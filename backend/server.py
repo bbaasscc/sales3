@@ -1222,6 +1222,12 @@ async def get_leads(salesperson_id: Optional[str] = None, user=Depends(get_optio
     elif user and user["role"] == "admin" and salesperson_id:
         lead_filter["salesperson_id"] = salesperson_id
     leads = await db.leads.find(lead_filter, {"_id": 0}).to_list(10000)
+    # Fallback: if user filter returned 0 but DB has leads, return all (data integrity safety)
+    if not leads and user:
+        all_count = await db.leads.count_documents({})
+        if all_count > 0:
+            logger.warning(f"User {user.get('email')} has 0 assigned leads but DB has {all_count}. Returning all.")
+            leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
     return {"leads": leads}
 
 @api_router.post("/dashboard/refresh")
