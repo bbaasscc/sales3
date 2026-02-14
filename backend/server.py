@@ -1212,9 +1212,14 @@ async def delete_lead(lead_id: str):
     return {"message": "Lead deleted"}
 
 @api_router.get("/leads")
-async def get_leads():
-    """Get all leads"""
-    leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
+async def get_leads(salesperson_id: Optional[str] = None, user=Depends(get_optional_user)):
+    """Get leads - filtered by salesperson for non-admins"""
+    lead_filter = {}
+    if user and user["role"] == "salesperson":
+        lead_filter["salesperson_id"] = user["user_id"]
+    elif user and user["role"] == "admin" and salesperson_id:
+        lead_filter["salesperson_id"] = salesperson_id
+    leads = await db.leads.find(lead_filter, {"_id": 0}).to_list(10000)
     return {"leads": leads}
 
 @api_router.post("/dashboard/refresh")
