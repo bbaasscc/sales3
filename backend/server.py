@@ -1227,6 +1227,14 @@ async def get_leads(salesperson_id: Optional[str] = None, user=Depends(get_optio
         if all_count > 0:
             logger.warning(f"User {user.get('email')} has 0 assigned leads but DB has {all_count}. Returning all.")
             leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
+    # For admin: enrich leads with salesperson name
+    if user and user["role"] == "admin" and leads:
+        sp_map = {}
+        users_list = await db.users.find({"role": "salesperson"}, {"_id": 0, "user_id": 1, "name": 1}).to_list(100)
+        for u in users_list:
+            sp_map[u["user_id"]] = u["name"]
+        for lead in leads:
+            lead["salesperson_name"] = sp_map.get(lead.get("salesperson_id", ""), "Unassigned")
     return {"leads": leads}
 
 @api_router.post("/dashboard/refresh")
