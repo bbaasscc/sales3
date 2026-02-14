@@ -894,10 +894,10 @@ async def import_sheet_to_db(excel_url: str) -> int:
             lead[dc] = d.strftime('%Y-%m-%d') if d else ''
         leads.append(lead)
     
-    await db.leads.delete_many({"salesperson_id": {"$in": ["", None]}})
+    await db.leads.delete_many({"$or": [{"salesperson_id": ""}, {"salesperson_id": None}, {"salesperson_id": {"$exists": False}}]})
     if leads:
         await db.leads.insert_many(leads)
-    logger.info(f"Imported {len(leads)} leads to MongoDB (without salesperson assignment)")
+    logger.info(f"Imported {len(leads)} leads to MongoDB (unassigned)")
     return len(leads)
 
 # Routes
