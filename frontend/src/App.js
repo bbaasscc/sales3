@@ -301,7 +301,8 @@ function App() {
   const [allLeads, setAllLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [editingLead, setEditingLead] = useState(null); // { client, type: 'email'|'sms' }
+  const [editingLead, setEditingLead] = useState(null);
+  const [installationsOpen, setInstallationsOpen] = useState(false); // { client, type: 'email'|'sms' }
 
   const fetchDashboardData = useCallback(async (showToast = false, resetToCurrentPeriod = false) => {
     if (showToast) {
