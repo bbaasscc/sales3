@@ -580,7 +580,7 @@ function MainDashboard({ token, user, onLogout }) {
   // Pipeline schedule
   const loadPipelineSchedule = async (clientName, visitDate) => {
     try {
-      const res = await axios.get(`${API}/pipeline/schedule`, { params: { client_name: clientName } });
+      const res = await axios.get(`${API}/pipeline/schedule`, { params: { client_name: clientName }, headers: authHeaders });
       if (res.data.steps && res.data.steps.length > 0) {
         setPipelineSchedule(res.data.steps);
       } else {
