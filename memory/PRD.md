@@ -7,93 +7,100 @@ Sales performance dashboard for FSHAC salespeople, evolved into a full CRM with 
 - **Frontend**: React, Recharts, Shadcn UI, Tailwind CSS
 - **Backend**: FastAPI, Pandas, PyJWT (auth)
 - **Database**: MongoDB (leads, users, pipeline actions, client notes, schedules)
-- **Auth**: JWT-based with bcrypt password hashing. @fshac.com domain restriction.
+- **Auth**: JWT-based with bcrypt. Accepts @fshac.com and @gmail.com domains.
 
 ## User Roles
-- **Admin**: Global view, salesperson comparison, user role management, can filter by salesperson
-- **Salesperson**: Sees only their own leads, dashboard, follow-ups, and data
+- **Admin** (bsanchezcar@gmail.com): Global view, salesperson comparison, user role management, filter by salesperson
+- **Salesperson** (benjamin@fshac.com): Sees only their own leads, dashboard, follow-ups, and data
 
-## 4-Module Structure
+## 4-Tab Structure
 
-### Module 1 — DASHBOARD (view only)
-- 5 color-coded blocks: My Money (green), How Can I Earn More? (amber), What Am I Selling? (blue), Closed Sales (purple)
-- KPIs filtered by authenticated user (or admin's selected salesperson)
+### Tab 1 — DASHBOARD (view only)
+- KPI cards: Revenue, Commission, Closed Deals, Leads, Closing Rate, Avg Ticket
 - Payments by install_date, SPIFF Breakdown, Charts, Sales table
+- Filtered by authenticated user (admins see all or filter by salesperson)
 
-### Module 2 — FOLLOW-UPS (pipeline + actions)
+### Tab 2 — FOLLOW-UPS (pipeline + actions)
 - Leads with pending follow-ups, priority system, overdue indicators
 - 7-step "Closing Flow" with email + SMS templates
 - Customizable schedule dates + notes per step
 
-### Module 3 — DATA (full CRUD)
+### Tab 3 — DATA (full CRUD)
 - All leads in searchable/filterable table
 - Add new lead (email parser or manual), edit, delete
-- **Import XLS** button: upload .xls/.xlsx file, leads auto-assigned to current user
+- **Import XLS** button: upload .xls/.xlsx, leads auto-assigned to current user
 
-### Module 4 — ADMIN (admin users only)
-- Global Overview: Total leads, closed deals, revenue, commission, closing rate across all salespeople
-- Comparison Charts: Revenue/Commission and Leads/Closed bars per salesperson
-- Salesperson Comparison Table: Click name to filter entire dashboard
-- User Management: View all users, change roles (admin/salesperson)
+### Tab 4 — ADMIN (admin users only)
+- Global Overview: Total leads, closed deals, revenue, commission, closing rate
+- Comparison Charts: Revenue/Commission and Leads/Closed per salesperson
+- Salesperson Comparison Table: Click name to filter dashboard
+- User Management: View users, change roles
 
 ## API Endpoints
 ### Auth
-- `POST /api/auth/register` — Self-registration (email @fshac.com, name, customer_number, password)
-- `POST /api/auth/login` — Returns JWT token + user info
+- `POST /api/auth/register` — Self-registration (@fshac.com or @gmail.com)
+- `POST /api/auth/login` — Returns JWT token
 - `GET /api/auth/me` — Current user info
-- `PUT /api/auth/user/{user_id}/role` — Admin: change user role
+- `PUT /api/auth/user/{user_id}/role` — Admin: change role
 
 ### Admin
-- `GET /api/admin/salespeople` — List all users (admin only)
-- `GET /api/admin/comparison` — Salesperson comparison stats (admin only)
+- `GET /api/admin/salespeople` — List users (admin only)
+- `GET /api/admin/comparison` — Salesperson stats (admin only)
 
 ### Dashboard & Leads
-- `GET /api/dashboard/kpis` — KPIs (filtered by user, accepts salesperson_id for admin)
-- `GET/POST /api/leads` — CRUD leads (filtered by user)
-- `PUT/DELETE /api/leads/{id}` — Update/delete lead
-- `POST /api/leads/import-xls` — Upload XLS, assign to current user
-- `POST /api/leads/parse-email` — Parse dispatch email
-- `POST /api/leads/import` — Re-import from Google Sheet
+- `GET /api/dashboard/kpis` — KPIs (auto-filtered by user)
+- `GET /api/leads` — List leads (auto-filtered by user)
+- `POST /api/leads` — Create lead (auto-assigns to user)
+- `PUT /api/leads/{id}` — Update lead (auth required)
+- `DELETE /api/leads/{id}` — Delete lead (auth required)
+- `POST /api/leads/import-xls` — Upload XLS (auth required)
 
 ### Follow-ups & Pipeline
-- `GET/POST /api/followup/action` — Pipeline step tracking
-- `GET/POST /api/client/notes` — Priority, next follow-up, comments
+- `GET/POST/DELETE /api/followup/action` — Pipeline step tracking
+- `GET/POST /api/client/notes` — Priority, follow-up, comments
 - `GET/POST /api/pipeline/schedule` — Custom pipeline dates
 
 ## What's Been Implemented
 
-### Feb 14, 2026 - Multi-User & Admin System
-- [x] JWT authentication with bcrypt password hashing
-- [x] Self-registration restricted to @fshac.com emails
-- [x] User roles: admin and salesperson
-- [x] Data isolation: salespeople see only their assigned leads
-- [x] Admin panel with global stats and salesperson comparison
-- [x] Admin dashboard filtering by salesperson
-- [x] User management (role changes)
-- [x] XLS file import per user
-- [x] Logout functionality
-- [x] All 53 existing leads assigned to Benjamin S. Cardarelli
+### Feb 14, 2026 - Multi-User & General Audit
+- [x] JWT auth with bcrypt, self-registration
+- [x] Admin: bsanchezcar@gmail.com / Benja123
+- [x] Salesperson: benjamin@fshac.com / test123
+- [x] Data isolation + fallback safety
+- [x] Admin panel with global stats + comparison charts
+- [x] XLS import per user
+- [x] Field renamed: "Customer Number" → "Sales Number"
+- [x] Auth protection on PUT/DELETE leads endpoints
+- [x] Removed destructive auto-import from Google Sheet
+- [x] "Update" button only refreshes data, no re-import
+- [x] Cleaned test/garbage users from DB
+- [x] All 53 leads assigned to Benjamin (22 SALE, 20 PENDING, 11 LOST)
 
 ### Feb 13, 2026 - Core Application
-- [x] Full dashboard with 5 color-coded blocks
+- [x] Full dashboard with KPI blocks
 - [x] MongoDB as primary data source
-- [x] 3-tab navigation: Dashboard | Follow-ups | Data
-- [x] Sales pipeline with 7 steps, customizable dates/notes
-- [x] Email (Outlook via mailto:) + SMS (clipboard) templates
-- [x] Priority system (High/Med/Low) with overdue indicators
-- [x] Lead CRUD: add (paste email parser), edit (auto-calc commission), delete
-- [x] Auto-import from Google Sheet on first load
-- [x] Client notes, pipeline schedule persistence in MongoDB
+- [x] 3-tab navigation + sales pipeline
+- [x] Email + SMS templates
+- [x] Priority system + overdue indicators
+- [x] Lead CRUD with email parser
+- [x] Client notes, pipeline schedules
 
 ## Test Accounts
-- **Admin**: admin@fshac.com / admin123
+- **Admin**: bsanchezcar@gmail.com / Benja123
 - **Salesperson**: benjamin@fshac.com / test123
 
+## Verified Data (Feb 14, 2026)
+- Total Leads: 53 | SALE: 22 | PENDING: 20 | LOST: 11
+- Revenue: $216,906 | Commission: $25,470.99 | Closing Rate: 41.5%
+
+## Testing Status
+- Iteration 10: 15/15 backend, all frontend flows verified
+- Test file: /app/backend/tests/test_crm_comprehensive.py
+
 ## P1 — TODO
-- [ ] Refactor App.js into component files (2000+ lines)
+- [ ] Refactor App.js (2000+ lines) into component files
 - [ ] Refactor server.py into modules
 - [ ] Export data to CSV/PDF
-- [ ] Improve mobile UX for Data tab
 
 ## P2 — BACKLOG
 - [ ] Period comparison (YoY, MoM)
