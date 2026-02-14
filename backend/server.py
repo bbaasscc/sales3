@@ -1104,9 +1104,18 @@ async def get_excel_config():
     return config
 
 @api_router.get("/dashboard/kpis")
-async def get_dashboard_kpis(date_filter: str = "all", pay_period: Optional[str] = None):
-    """Get KPIs - reads from MongoDB if data exists, otherwise auto-imports from Sheet"""
-    leads = await db.leads.find({}, {"_id": 0, "lead_id": 0, "created_at": 0, "phone": 0}).to_list(10000)
+async def get_dashboard_kpis(date_filter: str = "all", pay_period: Optional[str] = None, salesperson_id: Optional[str] = None, user=Depends(get_optional_user)):
+    """Get KPIs - filtered by salesperson for non-admins"""
+    query = {"_id": 0, "lead_id": 0, "created_at": 0, "phone": 0}
+    lead_filter = {}
+    
+    # Access control: salespeople only see their own leads
+    if user and user["role"] == "salesperson":
+        lead_filter["salesperson_id"] = user["user_id"]
+    elif user and user["role"] == "admin" and salesperson_id:
+        lead_filter["salesperson_id"] = salesperson_id
+    
+    leads = await db.leads.find(lead_filter, query).to_list(10000)
     
     if leads:
         df = pd.DataFrame(leads)
