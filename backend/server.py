@@ -766,7 +766,8 @@ async def import_sheet_to_db(excel_url: str) -> int:
     column_mapping = {}
     for col in df.columns:
         col_lower = str(col).lower().strip()
-        if col_lower == 'name': column_mapping[col] = 'name'
+        if col_lower == '#' or col_lower == 'number': column_mapping[col] = 'customer_number'
+        elif col_lower == 'name': column_mapping[col] = 'name'
         elif col_lower == 'address': column_mapping[col] = 'address'
         elif col_lower == 'city': column_mapping[col] = 'city'
         elif col_lower in ['unit', 'unit type']: column_mapping[col] = 'unit_type'
