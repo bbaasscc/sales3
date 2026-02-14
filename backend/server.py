@@ -909,8 +909,8 @@ async def root():
 @api_router.post("/auth/register")
 async def register_user(data: UserRegister):
     email = data.email.strip().lower()
-    if not email.endswith("@fshac.com"):
-        raise HTTPException(status_code=400, detail="Only @fshac.com emails are allowed")
+    if not email.endswith("@fshac.com") and not email.endswith("@gmail.com"):
+        raise HTTPException(status_code=400, detail="Only @fshac.com or @gmail.com emails are allowed")
     existing = await db.users.find_one({"email": email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
