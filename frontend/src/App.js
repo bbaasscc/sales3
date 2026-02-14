@@ -85,8 +85,6 @@ import AdminOverview from "@/pages/AdminOverview";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Default Excel URL - Google Sheets (auto-updates on refresh)
-const DEFAULT_EXCEL_URL = "https://docs.google.com/spreadsheets/d/1h2ZMumcAsYYYvV1JTQPRXTa3kOcZ5K4-/edit";
 
 // Four Seasons brand colors
 const BRAND_COLORS = {
@@ -347,9 +345,6 @@ function MainDashboard({ token, user, onLogout }) {
   const [payPeriod, setPayPeriod] = useState(() => getCurrentPayPeriod()); // Auto-select current period
   const [kpiData, setKpiData] = useState(null);
   const [error, setError] = useState(null);
-  const [excelUrl, setExcelUrl] = useState(DEFAULT_EXCEL_URL);
-  const [tempExcelUrl, setTempExcelUrl] = useState(DEFAULT_EXCEL_URL);
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [selectedSale, setSelectedSale] = useState(null);
@@ -619,12 +614,6 @@ function MainDashboard({ token, user, onLogout }) {
     } finally {
       setRefreshing(false);
     }
-  };
-
-  const handleSaveSettings = () => {
-    setExcelUrl(tempExcelUrl);
-    setSettingsOpen(false);
-    toast.success("Excel URL Updated");
   };
 
   const handlePayPeriodChange = (value) => {
