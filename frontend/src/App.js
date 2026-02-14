@@ -436,10 +436,12 @@ function MainDashboard({ token, user, onLogout }) {
   // Fetch all leads for Data tab
   const fetchAllLeads = useCallback(async () => {
     try {
-      const res = await axios.get(`${API}/leads`);
+      const params = {};
+      if (isAdmin && filterSalespersonId) params.salesperson_id = filterSalespersonId;
+      const res = await axios.get(`${API}/leads`, { headers: authHeaders, params });
       setAllLeads(res.data.leads || []);
     } catch (err) { console.error(err); }
-  }, []);
+  }, [filterSalespersonId]);
 
   useEffect(() => { if (activeTab === 'data') fetchAllLeads(); }, [activeTab, fetchAllLeads]);
 
