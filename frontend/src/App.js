@@ -612,8 +612,8 @@ function MainDashboard({ token, user, onLogout }) {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      await axios.post(`${API}/config/excel`, { excel_url: excelUrl });
-      await axios.post(`${API}/leads/import`);
+      await axios.post(`${API}/config/excel`, { excel_url: excelUrl }, { headers: authHeaders });
+      await axios.post(`${API}/leads/import`, {}, { headers: authHeaders });
       toast.success("Data synced from Google Sheet");
     } catch (err) { toast.error("Import failed"); }
     fetchDashboardData(true, true);
