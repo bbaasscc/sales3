@@ -25,6 +25,15 @@ load_dotenv(ROOT_DIR / '.env')
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
+
+# ═══════════════════════════════════════════════
+# HEALTH CHECK (required by Kubernetes)
+# ═══════════════════════════════════════════════
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
