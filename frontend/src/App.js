@@ -47,6 +47,21 @@ function App() {
     setCurrentUser(null);
   };
 
+  // Global 401 interceptor - auto-logout on expired/invalid token
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      res => res,
+      err => {
+        if (err.response?.status === 401 && authToken) {
+          handleLogout();
+          toast.error("Session expired. Please sign in again.");
+        }
+        return Promise.reject(err);
+      }
+    );
+    return () => axios.interceptors.response.eject(interceptor);
+  }, [authToken]);
+
   useEffect(() => {
     if (authToken) {
       axios.get(`${API}/auth/me`, { headers: { Authorization: `Bearer ${authToken}` } })
