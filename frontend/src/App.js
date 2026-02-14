@@ -80,6 +80,7 @@ import {
 } from "recharts";
 import LoginPage from "@/pages/LoginPage";
 import AdminPanel from "@/pages/AdminPanel";
+import AdminOverview from "@/pages/AdminOverview";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
