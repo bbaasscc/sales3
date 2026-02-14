@@ -728,7 +728,7 @@ function MainDashboard({ token, user, onLogout }) {
               {/* Mobile Title */}
               <div className="sm:hidden min-w-0 mr-2">
                 <h1 className="text-sm font-bold tracking-tight text-white font-heading truncate" data-testid="dashboard-title-mobile">
-                  {user.name.split(' ')[0]}
+                  {isAdmin ? 'Admin' : user.name.split(' ')[0]}
                 </h1>
               </div>
 
