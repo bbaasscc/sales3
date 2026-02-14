@@ -2042,7 +2042,7 @@ function App() {
       })()}
 
       {/* Footer - Mobile Responsive */}
-      <footer className="py-3 sm:py-4 mt-6 sm:mt-8" style={{ backgroundColor: BRAND_COLORS.secondary }}>
+      <footer className="py-3 sm:py-4 mt-6 sm:mt-8 mb-16" style={{ backgroundColor: BRAND_COLORS.secondary }}>
         <div className="max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8">
           <p className="text-[10px] sm:text-xs text-white/60 text-center">
             © {new Date().getFullYear()} Four Seasons Heating & Cooling
