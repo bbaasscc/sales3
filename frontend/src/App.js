@@ -16,6 +16,7 @@ import AdminOverview from "@/pages/AdminOverview";
 import DashboardTab from "@/components/DashboardTab.jsx";
 import FollowupsTab from "@/components/FollowupsTab";
 import DataTab from "@/components/DataTab";
+import GoalsTab from "@/components/GoalsTab";
 import {
   PipelineModal, NewLeadModal, DeleteConfirmModal,
   ClientDetailModal, SaleDetailModal, InstallationsModal, EditLeadModal,
