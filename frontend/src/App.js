@@ -16,7 +16,6 @@ import AdminOverview from "@/pages/AdminOverview";
 import DashboardTab from "@/components/DashboardTab.jsx";
 import FollowupsTab from "@/components/FollowupsTab";
 import DataTab from "@/components/DataTab";
-import GoalsTab from "@/components/GoalsTab";
 import {
   PipelineModal, NewLeadModal, DeleteConfirmModal,
   ClientDetailModal, SaleDetailModal, InstallationsModal, EditLeadModal,
@@ -479,7 +478,6 @@ function MainDashboard({ token, user, onLogout }) {
               ] : [
                 { id: 'dashboard', label: 'Dashboard' },
                 { id: 'followups', label: 'Follow-ups' },
-                { id: 'goals', label: 'Goals' },
                 { id: 'data', label: 'Data' },
               ]).map(tab => (
                 <button
@@ -524,11 +522,6 @@ function MainDashboard({ token, user, onLogout }) {
                 kpiData={kpiData} allClientNotes={allClientNotes} followUpActions={followUpActions}
                 openClientModal={openClientModal} openPipelineMenu={openPipelineMenu}
               />
-            )}
-
-            {/* Goals & Comparison Tab */}
-            {activeTab === 'goals' && !isAdmin && (
-              <GoalsTab token={token} payPeriod={payPeriod} />
             )}
 
             {/* Data Tab */}
