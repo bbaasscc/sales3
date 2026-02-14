@@ -679,10 +679,10 @@ function MainDashboard({ token, user, onLogout }) {
               />
               <div className="hidden sm:block min-w-0">
                 <h1 className="text-sm md:text-lg lg:text-xl font-bold tracking-tight text-white font-heading truncate" data-testid="dashboard-title">
-                  {filterSalespersonName || user.name}
+                  {isAdmin ? 'Four Seasons Sales' : (filterSalespersonName || user.name)}
                 </h1>
                 <p className="text-xs text-white/80 truncate">
-                  {isAdmin ? (filterSalespersonName ? `Viewing ${filterSalespersonName}` : 'Admin Dashboard') : 'Sales Performance Dashboard'}
+                  {isAdmin ? (filterSalespersonName ? `Viewing: ${filterSalespersonName}` : 'Admin Dashboard') : 'Sales Performance Dashboard'}
                 </p>
               </div>
             </div>
