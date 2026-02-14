@@ -111,7 +111,6 @@ export default function AdminOverview({ token, payPeriod, dateFilter }) {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {[
             { label: "R%", value: `${totals.closing_rate || 0}%`, sub: "Closing Rate", color: '#8B5CF6' },
-            { label: "Access %", value: `${totals.access_pct || 0}%`, sub: "Non-lost leads", color: '#3B82F6' },
             { label: "Avg Ticket", value: `$${(totals.avg_ticket || 0).toLocaleString('en-US', {maximumFractionDigits: 0})}`, sub: "Per closed deal", color: '#22C55E' },
             { label: "GP %", value: `${totals.gp_pct || 0}%`, sub: "Avg Comm Rate", color: '#F59E0B' },
             { label: "PM Jobs", value: totals.pm_jobs || 0, sub: "Under book (5%)", color: '#EF4444' },
