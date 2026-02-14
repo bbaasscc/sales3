@@ -905,6 +905,184 @@ async def import_sheet_to_db(excel_url: str) -> int:
 async def root():
     return {"message": "Sales Dashboard API"}
 
+# === AUTH ROUTES ===
+@api_router.post("/auth/register")
+async def register_user(data: UserRegister):
+    email = data.email.strip().lower()
+    if not email.endswith("@fshac.com"):
+        raise HTTPException(status_code=400, detail="Only @fshac.com emails are allowed")
+    existing = await db.users.find_one({"email": email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    user_id = str(uuid.uuid4())
+    user_doc = {
+        "user_id": user_id,
+        "email": email,
+        "name": data.name.strip(),
+        "customer_number": data.customer_number.strip(),
+        "role": "salesperson",
+        "password_hash": pwd_context.hash(data.password),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.users.insert_one(user_doc)
+    token = create_token(user_id, "salesperson")
+    return {"token": token, "user": {"user_id": user_id, "email": email, "name": data.name.strip(), "customer_number": data.customer_number.strip(), "role": "salesperson"}}
+
+@api_router.post("/auth/login")
+async def login_user(data: UserLogin):
+    email = data.email.strip().lower()
+    user = await db.users.find_one({"email": email}, {"_id": 0})
+    if not user or not pwd_context.verify(data.password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    token = create_token(user["user_id"], user["role"])
+    return {"token": token, "user": {"user_id": user["user_id"], "email": user["email"], "name": user["name"], "customer_number": user.get("customer_number", ""), "role": user["role"]}}
+
+@api_router.get("/auth/me")
+async def get_me(user=Depends(get_current_user)):
+    return {"user_id": user["user_id"], "email": user["email"], "name": user["name"], "customer_number": user.get("customer_number", ""), "role": user["role"]}
+
+@api_router.put("/auth/user/{user_id}/role")
+async def update_user_role(user_id: str, body: dict, user=Depends(get_current_user)):
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    new_role = body.get("role", "salesperson")
+    if new_role not in ("admin", "salesperson"):
+        raise HTTPException(status_code=400, detail="Invalid role")
+    result = await db.users.update_one({"user_id": user_id}, {"$set": {"role": new_role}})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": f"Role updated to {new_role}"}
+
+# === ADMIN ROUTES ===
+@api_router.get("/admin/salespeople")
+async def get_salespeople(user=Depends(get_current_user)):
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
+    return {"users": users}
+
+@api_router.get("/admin/comparison")
+async def get_salesperson_comparison(user=Depends(get_current_user)):
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    salespeople = await db.users.find({"role": "salesperson"}, {"_id": 0, "password_hash": 0}).to_list(1000)
+    comparison = []
+    for sp in salespeople:
+        leads = await db.leads.find({"salesperson_id": sp["user_id"]}, {"_id": 0}).to_list(10000)
+        total_leads = len(leads)
+        sales = [l for l in leads if l.get("status") == "SALE"]
+        total_revenue = sum(l.get("ticket_value", 0) for l in sales)
+        total_commission = sum(l.get("commission_value", 0) for l in sales)
+        closed_deals = len(sales)
+        closing_rate = (closed_deals / total_leads * 100) if total_leads > 0 else 0
+        comparison.append({
+            "user_id": sp["user_id"],
+            "name": sp["name"],
+            "email": sp["email"],
+            "total_leads": total_leads,
+            "closed_deals": closed_deals,
+            "total_revenue": round(total_revenue, 2),
+            "total_commission": round(total_commission, 2),
+            "closing_rate": round(closing_rate, 1),
+        })
+    # Also compute global totals
+    all_leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
+    all_sales = [l for l in all_leads if l.get("status") == "SALE"]
+    totals = {
+        "total_leads": len(all_leads),
+        "closed_deals": len(all_sales),
+        "total_revenue": round(sum(l.get("ticket_value", 0) for l in all_sales), 2),
+        "total_commission": round(sum(l.get("commission_value", 0) for l in all_sales), 2),
+        "closing_rate": round((len(all_sales) / len(all_leads) * 100) if all_leads else 0, 1),
+    }
+    return {"comparison": comparison, "totals": totals}
+
+# === XLS IMPORT PER USER ===
+@api_router.post("/leads/import-xls")
+async def import_xls_file(file: UploadFile = File(...), user=Depends(get_current_user)):
+    """Import leads from an uploaded XLS/XLSX file and assign to current user"""
+    contents = await file.read()
+    try:
+        df = pd.read_excel(BytesIO(contents), engine='openpyxl')
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error reading Excel file: {str(e)}")
+    
+    # Map columns same as Google Sheet import
+    column_mapping = {}
+    for col in df.columns:
+        col_lower = str(col).lower().strip()
+        if col_lower == '#' or col_lower == 'number': column_mapping[col] = 'customer_number'
+        elif col_lower == 'name': column_mapping[col] = 'name'
+        elif col_lower == 'address': column_mapping[col] = 'address'
+        elif col_lower == 'city': column_mapping[col] = 'city'
+        elif col_lower in ['unit', 'unit type']: column_mapping[col] = 'unit_type'
+        elif col_lower == 'ticket value': column_mapping[col] = 'ticket_value'
+        elif col_lower == 'commission %': column_mapping[col] = 'commission_percent'
+        elif col_lower == 'commission value': column_mapping[col] = 'commission_value'
+        elif col_lower == 'spif': column_mapping[col] = 'spif_total'
+        elif col_lower == 'status': column_mapping[col] = 'status'
+        elif col_lower == 'visit date': column_mapping[col] = 'visit_date'
+        elif col_lower == 'close date': column_mapping[col] = 'close_date'
+        elif col_lower == 'install date': column_mapping[col] = 'install_date'
+        elif col_lower in ['folow up on self gen', 'follow up on', 'folow up on', 'follow up']: column_mapping[col] = 'follow_up_date'
+        elif col_lower == 'email': column_mapping[col] = 'email'
+        elif col_lower == 'loss reason': column_mapping[col] = 'loss_reason'
+        elif col_lower == 'comments': column_mapping[col] = 'comments'
+        elif col_lower == 'feeling': column_mapping[col] = 'feeling'
+        elif col_lower == 'objections': column_mapping[col] = 'objections'
+        elif 'self gen' in col_lower and 'mits' in col_lower: column_mapping[col] = 'self_gen_mits'
+        elif 'apco' in col_lower: column_mapping[col] = 'apco_x'
+        elif 'samsung' in col_lower: column_mapping[col] = 'samsung'
+        elif 'mitsubishi' in col_lower or col_lower == 'mits': column_mapping[col] = 'mitsubishi'
+        elif 'surge' in col_lower: column_mapping[col] = 'surge_protector'
+        elif 'duct' in col_lower or 'dusct' in col_lower or 'celaning' in col_lower: column_mapping[col] = 'duct_cleaning'
+    
+    df = df.rename(columns=column_mapping)
+    df = df.loc[:, ~df.columns.duplicated()]
+    
+    float_cols = ['ticket_value', 'commission_value', 'spif_total', 'commission_percent',
+                  'apco_x', 'samsung', 'mitsubishi', 'surge_protector', 'duct_cleaning', 'self_gen_mits']
+    date_cols = ['visit_date', 'close_date', 'install_date', 'follow_up_date']
+    
+    leads = []
+    for _, row in df.iterrows():
+        name = str(row.get('name', '')).strip() if pd.notna(row.get('name')) else ''
+        if not name:
+            continue
+        lead = {
+            'lead_id': str(uuid.uuid4()),
+            'salesperson_id': user["user_id"],
+            'customer_number': str(int(row.get('customer_number', 0))) if pd.notna(row.get('customer_number')) and row.get('customer_number') else '',
+            'name': name,
+            'address': str(row.get('address', '')) if pd.notna(row.get('address')) else '',
+            'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '',
+            'email': str(row.get('email', '')) if pd.notna(row.get('email')) else '',
+            'phone': '',
+            'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
+            'status': normalize_status(row.get('status', 'PENDING')),
+            'loss_reason': str(row.get('loss_reason', '')) if pd.notna(row.get('loss_reason')) else '',
+            'comments': str(row.get('comments', '')) if pd.notna(row.get('comments')) else '',
+            'feeling': str(row.get('feeling', '')) if pd.notna(row.get('feeling')) else '',
+            'objections': str(row.get('objections', '')) if pd.notna(row.get('objections')) else '',
+            'created_at': datetime.now(timezone.utc).isoformat(),
+        }
+        for fc in float_cols:
+            lead[fc] = safe_float(row.get(fc, 0))
+        cp = lead['commission_percent']
+        if 0 < cp < 1:
+            lead['commission_percent'] = round(cp * 100, 2)
+        else:
+            lead['commission_percent'] = round(cp, 2)
+        for dc in date_cols:
+            d = safe_date(row.get(dc))
+            lead[dc] = d.strftime('%Y-%m-%d') if d else ''
+        leads.append(lead)
+    
+    if leads:
+        await db.leads.insert_many(leads)
+    logger.info(f"User {user['name']} imported {len(leads)} leads via XLS upload")
+    return {"message": f"Imported {len(leads)} leads", "count": len(leads)}
+
 @api_router.post("/config/excel")
 async def set_excel_config(config: ExcelConfigCreate):
     """Set the Excel file URL configuration"""
