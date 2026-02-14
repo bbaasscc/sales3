@@ -286,7 +286,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     
         for col in df.columns:
             col_lower = str(col).lower().strip()
-            if col_lower == 'name':
+            if col_lower == '#' or col_lower == 'number':
+                column_mapping[col] = 'customer_number'
+            elif col_lower == 'name':
                 column_mapping[col] = 'name'
             elif col_lower == 'address':
                 column_mapping[col] = 'address'
