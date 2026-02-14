@@ -586,7 +586,7 @@ function App() {
     : [];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F5F5F5' }}>
+    <div className="min-h-screen pb-16" style={{ backgroundColor: '#F5F5F5' }}>
       <Toaster position="top-center" />
       
       {/* Header - Mobile Responsive */}
@@ -1411,7 +1411,7 @@ function App() {
       {/* Pipeline Modal */}
       {actionMenu && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setActionMenu(null)}>
-          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 bg-gradient-to-r from-red-600 to-orange-500 px-4 sm:px-6 py-3 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
               <div>
                 <h3 className="text-base font-bold">Closing Flow</h3>
@@ -1485,7 +1485,7 @@ function App() {
       {/* New Lead Modal */}
       {newLeadOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setNewLeadOpen(false)}>
-          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[85vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-500 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
               <div className="flex items-center gap-2"><Plus className="w-5 h-5" /><h3 className="text-base font-bold">New Lead</h3></div>
               <button onClick={() => setNewLeadOpen(false)} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
@@ -1551,7 +1551,7 @@ function App() {
       {selectedClient && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedClient(null)}>
           <div 
-            className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto pb-16"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -1782,7 +1782,7 @@ function App() {
       {selectedSale && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedSale(null)}>
           <div 
-            className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto pb-16"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -1915,7 +1915,7 @@ function App() {
       {/* Installations Detail Modal */}
       {installationsOpen && kpiData && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setInstallationsOpen(false)}>
-          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
               <div>
                 <h3 className="text-base font-bold">Installations This Period</h3>
@@ -1960,7 +1960,7 @@ function App() {
         const totalComm = baseComm + spiffSum;
         return (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setEditingLead(null)}>
-          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
               <div><h3 className="text-base font-bold">Edit Lead</h3><p className="text-xs text-white/80">{editingLead.name} {editingLead.customer_number && <span className="font-mono bg-white/20 px-1 rounded">#{editingLead.customer_number}</span>}</p></div>
               <button onClick={() => setEditingLead(null)} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
