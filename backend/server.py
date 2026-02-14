@@ -116,6 +116,7 @@ class LeadCreate(BaseModel):
 
 class LeadUpdate(BaseModel):
     model_config = ConfigDict(extra="ignore")
+    customer_number: Optional[str] = None
     name: Optional[str] = None
     address: Optional[str] = None
     city: Optional[str] = None
