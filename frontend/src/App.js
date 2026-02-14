@@ -1935,6 +1935,7 @@ function App() {
                       {r.customer_number && <span className="text-[10px] font-mono bg-gray-100 px-1.5 py-0.5 rounded text-gray-500">#{r.customer_number}</span>}
                     </div>
                     <p className="text-xs text-gray-500">{r.city} — {r.unit_type}</p>
+                    {r.install_date && <p className="text-[10px] font-mono text-gray-400">Installed: {r.install_date}</p>}
                   </div>
                   <div className="text-right flex-shrink-0">
                     <p className="text-sm font-mono font-bold text-gray-800">${r.ticket_value.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</p>
