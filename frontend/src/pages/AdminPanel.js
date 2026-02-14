@@ -84,9 +84,6 @@ export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod
                 <TableHead className="text-[9px] font-bold uppercase text-gray-500 py-2 px-2 text-center whitespace-nowrap">
                   <div>R%</div><div className="text-[8px] text-gray-400 font-normal">Close Rate</div>
                 </TableHead>
-                <TableHead className="text-[9px] font-bold uppercase text-gray-500 py-2 px-2 text-center whitespace-nowrap">
-                  <div>Access %</div><div className="text-[8px] text-gray-400 font-normal">Non-lost</div>
-                </TableHead>
                 <TableHead className="text-[9px] font-bold uppercase text-gray-500 py-2 px-2 text-center whitespace-nowrap">Sales</TableHead>
                 <TableHead className="text-[9px] font-bold uppercase text-gray-500 py-2 px-2 text-center whitespace-nowrap">
                   <div>Avg Ticket</div>
@@ -133,13 +130,6 @@ export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod
                         sp.closing_rate >= 40 ? 'bg-green-100 text-green-700' : sp.closing_rate >= 25 ? 'bg-amber-100 text-amber-700' : 'bg-red-50 text-red-600'
                       }`}>{sp.closing_rate}%</span>
                       <RankBadge rank={sp.closing_rate_rank} total={totalSp} />
-                    </div>
-                  </TableCell>
-                  {/* Access % + Rank */}
-                  <TableCell className="py-2.5 px-2 text-center">
-                    <div className="flex flex-col items-center gap-0.5">
-                      <span className="text-[11px] font-mono font-semibold text-gray-700">{sp.access_pct}%</span>
-                      <RankBadge rank={sp.access_pct_rank} total={totalSp} />
                     </div>
                   </TableCell>
                   {/* Sales + Rank */}
