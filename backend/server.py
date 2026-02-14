@@ -961,14 +961,49 @@ async def get_salespeople(user=Depends(get_current_user)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
     return {"users": users}
 
+def filter_leads_by_period(leads, pay_period=None, date_filter=None):
+    """Filter leads by pay period or date filter using visit_date"""
+    if pay_period and pay_period != "all":
+        period = next((p for p in PAY_PERIODS if p[0] == pay_period), None)
+        if period:
+            start, end = period[1], period[2]
+            filtered = []
+            for l in leads:
+                vd = l.get("visit_date", "")
+                if vd:
+                    try:
+                        d = datetime.strptime(str(vd)[:10], "%Y-%m-%d")
+                        if start <= d <= end:
+                            filtered.append(l)
+                    except (ValueError, TypeError):
+                        pass
+            return filtered
+    if date_filter and date_filter != "all":
+        days_map = {"week": 7, "2weeks": 14, "month": 30, "year": 365}
+        days = days_map.get(date_filter, 365)
+        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+        filtered = []
+        for l in leads:
+            vd = l.get("visit_date", "")
+            if vd:
+                try:
+                    d = datetime.strptime(str(vd)[:10], "%Y-%m-%d")
+                    if d >= cutoff.replace(tzinfo=None):
+                        filtered.append(l)
+                except (ValueError, TypeError):
+                    pass
+        return filtered
+    return leads
+
 @api_router.get("/admin/comparison")
-async def get_salesperson_comparison(user=Depends(get_current_user)):
+async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filter: Optional[str] = None, user=Depends(get_current_user)):
     if user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin only")
     salespeople = await db.users.find({"role": "salesperson"}, {"_id": 0, "password_hash": 0}).to_list(1000)
     comparison = []
     for sp in salespeople:
-        leads = await db.leads.find({"salesperson_id": sp["user_id"]}, {"_id": 0}).to_list(10000)
+        all_sp_leads = await db.leads.find({"salesperson_id": sp["user_id"]}, {"_id": 0}).to_list(10000)
+        leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter)
         total_leads = len(leads)
         sales = [l for l in leads if l.get("status") == "SALE"]
         total_revenue = sum(l.get("ticket_value", 0) for l in sales)
@@ -987,17 +1022,18 @@ async def get_salesperson_comparison(user=Depends(get_current_user)):
             "total_commission": round(total_commission, 2),
             "closing_rate": round(closing_rate, 1),
         })
-    # Also compute global totals
+    # Global totals
     all_leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
-    all_sales = [l for l in all_leads if l.get("status") == "SALE"]
-    all_lost = [l for l in all_leads if l.get("status") == "LOST"]
+    all_leads_filtered = filter_leads_by_period(all_leads, pay_period, date_filter)
+    all_sales = [l for l in all_leads_filtered if l.get("status") == "SALE"]
+    all_lost = [l for l in all_leads_filtered if l.get("status") == "LOST"]
     totals = {
-        "total_leads": len(all_leads),
+        "total_leads": len(all_leads_filtered),
         "closed_deals": len(all_sales),
         "lost_deals": len(all_lost),
         "total_revenue": round(sum(l.get("ticket_value", 0) for l in all_sales), 2),
         "total_commission": round(sum(l.get("commission_value", 0) for l in all_sales), 2),
-        "closing_rate": round((len(all_sales) / len(all_leads) * 100) if all_leads else 0, 1),
+        "closing_rate": round((len(all_sales) / len(all_leads_filtered) * 100) if all_leads_filtered else 0, 1),
     }
     return {"comparison": comparison, "totals": totals}
 
