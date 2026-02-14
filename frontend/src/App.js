@@ -1906,6 +1906,47 @@ function App() {
       )}
 
 
+      {/* Installations Detail Modal */}
+      {installationsOpen && kpiData && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setInstallationsOpen(false)}>
+          <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
+              <div>
+                <h3 className="text-base font-bold">Installations This Period</h3>
+                <p className="text-xs text-white/80">{kpiData.commission_payment_count} installations</p>
+              </div>
+              <button onClick={() => setInstallationsOpen(false)} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="p-3 sm:p-4">
+              {kpiData.records?.length > 0 ? kpiData.records.map((r, i) => (
+                <div key={i} className="flex items-center gap-3 p-3 border-b border-gray-100 last:border-0">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-emerald-700">{i + 1}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-gray-800 truncate">{r.name}</p>
+                      {r.customer_number && <span className="text-[10px] font-mono bg-gray-100 px-1.5 py-0.5 rounded text-gray-500">#{r.customer_number}</span>}
+                    </div>
+                    <p className="text-xs text-gray-500">{r.city} — {r.unit_type}</p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-sm font-mono font-bold text-gray-800">${r.ticket_value.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</p>
+                    <p className="text-xs font-mono text-emerald-600">${r.commission_value.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</p>
+                  </div>
+                </div>
+              )) : <p className="text-center text-gray-400 py-4">No installations in this period</p>}
+              {kpiData.records?.length > 0 && (
+                <div className="mt-3 p-3 bg-emerald-50 rounded-lg flex justify-between text-sm font-bold">
+                  <span className="text-emerald-700">Total</span>
+                  <span className="font-mono text-emerald-800">${kpiData.commission_payment_revenue?.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Edit Lead Modal (Data tab) */}
       {editingLead && (() => {
         const spiffSum = (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
