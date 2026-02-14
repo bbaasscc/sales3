@@ -1789,7 +1789,10 @@ function App() {
             <div className="sticky top-0 bg-green-600 text-white px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-xl">
               <div>
                 <h3 className="text-lg font-bold">{selectedSale.name}</h3>
-                <p className="text-sm text-white/80">Sale Details</p>
+                <div className="flex items-center gap-2">
+                  {selectedSale.customer_number && <span className="text-xs font-mono bg-white/20 px-1.5 py-0.5 rounded">#{selectedSale.customer_number}</span>}
+                  <p className="text-sm text-white/80">Sale Details</p>
+                </div>
               </div>
               <button 
                 onClick={() => setSelectedSale(null)}
