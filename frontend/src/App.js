@@ -386,7 +386,7 @@ function MainDashboard({ token, user, onLogout }) {
     }
 
     try {
-      await axios.post(`${API}/config/excel`, { excel_url: excelUrl });
+      await axios.post(`${API}/config/excel`, { excel_url: excelUrl }, { headers: authHeaders });
 
       const params = { date_filter: dateFilter };
       // Use currentPeriod for the API call (handles refresh case)
@@ -394,8 +394,12 @@ function MainDashboard({ token, user, onLogout }) {
       if (periodToUse && periodToUse !== "all") {
         params.pay_period = periodToUse;
       }
+      // Admin filtering by salesperson
+      if (isAdmin && filterSalespersonId) {
+        params.salesperson_id = filterSalespersonId;
+      }
       
-      const response = await axios.get(`${API}/dashboard/kpis`, { params });
+      const response = await axios.get(`${API}/dashboard/kpis`, { params, headers: authHeaders });
       setKpiData(response.data);
       
       if (showToast) {
@@ -413,7 +417,7 @@ function MainDashboard({ token, user, onLogout }) {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [dateFilter, payPeriod, excelUrl]);
+  }, [dateFilter, payPeriod, excelUrl, filterSalespersonId]);
 
   useEffect(() => {
     fetchDashboardData();
