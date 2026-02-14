@@ -2,14 +2,32 @@ import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import {
-  DollarSign, Target, Percent, BarChart3, Users, TrendingDown, PieChart as PieIcon,
+  DollarSign, Target, Percent, BarChart3, Users, TrendingDown, PieChart as PieIcon, Settings, Package,
 } from "lucide-react";
 import axios from "axios";
 import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis,
 } from "recharts";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+const EQUIP_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B6D4'];
+const ACCESSORY_LABELS = {
+  apco_x: 'APCO X',
+  samsung: 'Samsung',
+  mitsubishi: 'Mitsubishi',
+  surge_protector: 'Surge Protector',
+  duct_cleaning: 'Duct Cleaning',
+  self_gen_mits: 'Self Gen Mits',
+};
+const ACCESSORY_COLORS = {
+  apco_x: '#C62828',
+  samsung: '#1E3A5F',
+  mitsubishi: '#4CAF50',
+  surge_protector: '#FF9800',
+  duct_cleaning: '#9C27B0',
+  self_gen_mits: '#00838F',
+};
 
 export default function AdminOverview({ token, payPeriod, dateFilter }) {
   const [data, setData] = useState(null);
@@ -42,6 +60,15 @@ export default function AdminOverview({ token, payPeriod, dateFilter }) {
     { name: 'Pending', value: totalPending > 0 ? totalPending : 0, color: '#F59E0B' },
     { name: 'Lost', value: totals.lost_deals || 0, color: '#EF4444' },
   ].filter(s => s.value > 0);
+
+  // Equipment chart data
+  const equipData = Object.entries(totals.equipment_types || {})
+    .map(([name, d]) => ({ name, count: d.count, revenue: d.revenue }))
+    .sort((a, b) => b.revenue - a.revenue);
+
+  // Accessories data
+  const accessories = totals.accessories || {};
+  const totalAccessories = Object.values(accessories).reduce((sum, a) => sum + a.count, 0);
 
   return (
     <div className="space-y-6">
@@ -79,9 +106,8 @@ export default function AdminOverview({ token, payPeriod, dateFilter }) {
         </div>
       </div>
 
-      {/* Company Rates + Status Breakdown */}
+      {/* Key Rates + Lead Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Key Rates */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {[
             { label: "R%", value: `${totals.closing_rate || 0}%`, sub: "Closing Rate", color: '#8B5CF6' },
@@ -101,7 +127,6 @@ export default function AdminOverview({ token, payPeriod, dateFilter }) {
           ))}
         </div>
 
-        {/* Lead Status Pie */}
         {statusPie.length > 0 && (
           <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
             <CardContent className="p-4 sm:p-5">
@@ -134,6 +159,95 @@ export default function AdminOverview({ token, payPeriod, dateFilter }) {
           </Card>
         )}
       </div>
+
+      {/* Equipment Types + Revenue */}
+      {equipData.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Equipment Revenue Chart */}
+          <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
+            <CardContent className="p-4 sm:p-5">
+              <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <Settings className="w-4 h-4 text-blue-500" /> Equipment Revenue
+              </h3>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={equipData} layout="vertical">
+                  <XAxis type="number" tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 10 }} />
+                  <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11 }} />
+                  <Tooltip formatter={(v) => `$${v.toLocaleString()}`} />
+                  <Bar dataKey="revenue" fill="#3B82F6" radius={[0, 4, 4, 0]}>
+                    {equipData.map((_, i) => <Cell key={i} fill={EQUIP_COLORS[i % EQUIP_COLORS.length]} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Equipment Breakdown Table */}
+          <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
+            <CardContent className="p-4 sm:p-5">
+              <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <Settings className="w-4 h-4 text-blue-500" /> Equipment Breakdown
+              </h3>
+              <div className="space-y-2">
+                {equipData.map((eq, i) => {
+                  const pct = totals.closed_deals > 0 ? Math.round(eq.count / totals.closed_deals * 100) : 0;
+                  return (
+                    <div key={eq.name} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors" data-testid={`equip-${i}`}>
+                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: EQUIP_COLORS[i % EQUIP_COLORS.length] }} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-800 truncate">{eq.name}</p>
+                      </div>
+                      <div className="text-right flex-shrink-0 flex items-center gap-4">
+                        <div>
+                          <p className="text-xs text-gray-400">Qty</p>
+                          <p className="text-sm font-mono font-bold text-gray-900">{eq.count}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Revenue</p>
+                          <p className="text-sm font-mono font-bold text-blue-700">${eq.revenue.toLocaleString('en-US', {maximumFractionDigits: 0})}</p>
+                        </div>
+                        <span className="text-[10px] font-mono bg-gray-200 px-1.5 py-0.5 rounded-full text-gray-600">{pct}%</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Accessories Sold */}
+      {totalAccessories > 0 && (
+        <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                <Package className="w-4 h-4 text-amber-500" /> Accessories Sold
+              </h3>
+              <span className="text-xs font-mono bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-bold" data-testid="total-accessories">
+                {totalAccessories} total
+              </span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {Object.entries(accessories).map(([key, data]) => (
+                <div key={key}
+                  className="rounded-xl p-3 border transition-all hover:shadow-md"
+                  style={{ borderColor: data.count > 0 ? ACCESSORY_COLORS[key] + '44' : '#e5e7eb', backgroundColor: data.count > 0 ? ACCESSORY_COLORS[key] + '08' : '#fafafa' }}
+                  data-testid={`accessory-${key}`}
+                >
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: ACCESSORY_COLORS[key] }} />
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500">{ACCESSORY_LABELS[key]}</p>
+                  </div>
+                  <p className="text-2xl font-mono font-bold" style={{ color: data.count > 0 ? ACCESSORY_COLORS[key] : '#d1d5db' }}>{data.count}</p>
+                  <p className="text-[10px] font-mono text-gray-400 mt-0.5">${data.value.toLocaleString('en-US', {maximumFractionDigits: 0})} SPIFF</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
