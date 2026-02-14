@@ -1074,6 +1074,29 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         "pm_pct": round((len(all_pm) / len(all_sales) * 100) if all_sales else 0, 1),
         "gp_pct": round((sum(l.get("commission_percent", 0) for l in all_sales) / len(all_sales)) if all_sales else 0, 1),
     }
+
+    # Equipment type breakdown (from SALE leads)
+    equipment_types = {}
+    for l in all_sales:
+        ut = l.get("unit_type", "") or "Other"
+        if ut not in equipment_types:
+            equipment_types[ut] = {"count": 0, "revenue": 0}
+        equipment_types[ut]["count"] += 1
+        equipment_types[ut]["revenue"] += l.get("ticket_value", 0)
+    # Round revenue
+    for v in equipment_types.values():
+        v["revenue"] = round(v["revenue"], 2)
+    totals["equipment_types"] = equipment_types
+
+    # Accessories count (SPIFF > 0 = 1 unit)
+    spiff_fields = ["apco_x", "samsung", "mitsubishi", "surge_protector", "duct_cleaning", "self_gen_mits"]
+    accessories = {}
+    for field in spiff_fields:
+        count = sum(1 for l in all_sales if (l.get(field, 0) or 0) > 0)
+        total_val = sum(l.get(field, 0) or 0 for l in all_sales)
+        accessories[field] = {"count": count, "value": round(total_val, 2)}
+    totals["accessories"] = accessories
+
     return {"comparison": comparison, "totals": totals}
 
 # === XLS IMPORT PER USER ===
