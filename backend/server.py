@@ -14,7 +14,7 @@ from io import BytesIO
 # Local imports
 from database import db, client
 from auth import get_current_user, get_optional_user
-from models import LeadCreate, LeadUpdate, ExcelConfigCreate, KPIResponse
+from models import LeadCreate, LeadUpdate, ExcelConfigCreate
 from routers.auth_routes import router as auth_router
 from routers.admin import router as admin_router, PAY_PERIODS, filter_leads_by_period
 from routers.pipeline import router as pipeline_router, generate_pipeline_schedule
