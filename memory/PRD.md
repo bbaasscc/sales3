@@ -15,8 +15,8 @@
 
 ## Admin Experience
 - **Tabs**: Overview | Salespeople | All Data
-- **Overview**: Company-level KPIs, Revenue/Commission charts, Leads/Conversions charts, Salesperson Performance ranking table
-- **Salespeople**: User management, role changes
+- **Overview**: Company-level KPIs (Revenue, Commission, Closed, Total Leads, Lost), Key Rates (R%, Access %, Avg Ticket, GP%, PM Jobs, PM%), Lead Status pie chart
+- **Salespeople**: Full ranking table with columns: Overall Rank, Salesperson, R% + Rank, Access % + Rank, Sales + Rank, Avg Ticket + Rank, Net Value + Rank, Total Jobs + Rank, PM Jobs, GP % + Rank, PM % + Rank. User Management section.
 - **All Data**: All leads with "Salesperson" column, full search/filter/CRUD
 - Can click salesperson name -> see their specific dashboard
 
@@ -26,39 +26,42 @@
 - **Follow-ups**: Pipeline with 7 steps, email/SMS templates, priority/overdue
 - **Data**: Their own leads, search/filter, New Lead, Import XLS
 
-## Data
-- Benjamin: 53 leads (22 SALE, 20 PENDING, 11 LOST) - $216,906 revenue
-- Franco: 0 leads (new)
+## Key Metrics
+- **R%** = Closing Rate (closed/total * 100)
+- **Access %** = Non-lost leads rate ((total - lost) / total * 100)
+- **GP %** = Average commission percentage across sales
+- **PM** = Price Margin = Under Book Price = 5% commission jobs
+- **PM %** = PM jobs / total sales * 100
+- **Overall Rank** = Average of all individual metric ranks
 
-## Frontend Component Architecture (Refactored Feb 14, 2026)
+## Frontend Component Architecture
 ```
 src/
   App.js               (~580 lines) Auth wrapper + MainDashboard orchestrator
-  lib/
-    constants.js        Brand colors, pipeline steps, pay periods, helpers
+  lib/constants.js      Brand colors, pipeline steps, pay periods, helpers
   components/
     shared.js           SummaryCard, ChartCard, SectionHeader, SpiffBrandCard
-    DashboardTab.jsx    Salesperson dashboard (Blocks 1-4: Money, Earn, Selling, Sales)
-    FollowupsTab.jsx    Follow-ups pipeline (Action Required + Pipeline Complete)
+    DashboardTab.jsx    Salesperson dashboard (Blocks 1-4)
+    FollowupsTab.jsx    Follow-ups pipeline
     DataTab.jsx         Data table with search/filter/CRUD/import
-    Modals.jsx          PipelineModal, NewLeadModal, DeleteConfirmModal,
-                        ClientDetailModal, SaleDetailModal, InstallationsModal, EditLeadModal
+    Modals.jsx          All modal components (7 modals)
   pages/
     LoginPage.js        Login/Register
-    AdminPanel.js       Admin Salespeople tab
-    AdminOverview.js    Admin Overview tab
+    AdminPanel.js       Admin Salespeople ranking + User Management
+    AdminOverview.js    Admin Overview (company totals + key rates + pie)
 ```
 
 ## Completed
 - [x] JWT auth with role-based access
-- [x] Admin overview with company KPIs + comparison charts
+- [x] Admin overview with company KPIs + key rates + lead status
+- [x] Salesperson ranking table with all metrics + rank badges
 - [x] Separate admin/salesperson experiences
 - [x] Data isolation (salespeople see only their leads)
 - [x] XLS import per user
-- [x] Auth on destructive endpoints (PUT/DELETE leads)
-- [x] All leads assigned to correct salesperson
-- [x] Removed obsolete Data Source settings modal (Feb 14, 2026)
+- [x] Auth on destructive endpoints
+- [x] Removed obsolete Data Source modal (Feb 14, 2026)
 - [x] Frontend refactored: App.js from ~2160 to ~580 lines (Feb 14, 2026)
+- [x] Admin panel redesigned: no duplicated info, full ranking table (Feb 14, 2026)
 
 ## P1 TODO
 - [ ] Refactor server.py into modules (routers, models, services)
