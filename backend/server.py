@@ -1006,11 +1006,16 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter)
         total_leads = len(leads)
         sales = [l for l in leads if l.get("status") == "SALE"]
+        lost = [l for l in leads if l.get("status") == "LOST"]
+        closed_deals = len(sales)
         total_revenue = sum(l.get("ticket_value", 0) for l in sales)
         total_commission = sum(l.get("commission_value", 0) for l in sales)
-        closed_deals = len(sales)
         closing_rate = (closed_deals / total_leads * 100) if total_leads > 0 else 0
-        lost = [l for l in leads if l.get("status") == "LOST"]
+        avg_ticket = (total_revenue / closed_deals) if closed_deals > 0 else 0
+        access_pct = ((total_leads - len(lost)) / total_leads * 100) if total_leads > 0 else 0
+        pm_jobs = len([l for l in sales if l.get("commission_percent", 0) <= 5])
+        pm_pct = (pm_jobs / closed_deals * 100) if closed_deals > 0 else 0
+        avg_gp = (sum(l.get("commission_percent", 0) for l in sales) / closed_deals) if closed_deals > 0 else 0
         comparison.append({
             "user_id": sp["user_id"],
             "name": sp["name"],
@@ -1021,19 +1026,53 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
             "total_revenue": round(total_revenue, 2),
             "total_commission": round(total_commission, 2),
             "closing_rate": round(closing_rate, 1),
+            "avg_ticket": round(avg_ticket, 2),
+            "access_pct": round(access_pct, 1),
+            "pm_jobs": pm_jobs,
+            "pm_pct": round(pm_pct, 1),
+            "gp_pct": round(avg_gp, 1),
         })
+
+    # Compute rankings (higher is better for all metrics except pm_pct)
+    rank_fields = [
+        ("closing_rate", True), ("access_pct", True), ("closed_deals", True),
+        ("avg_ticket", True), ("total_revenue", True), ("total_leads", True),
+        ("gp_pct", True), ("pm_pct", False),
+    ]
+    for field, higher_better in rank_fields:
+        sorted_sp = sorted(comparison, key=lambda x: x[field], reverse=higher_better)
+        for i, sp in enumerate(sorted_sp):
+            sp[f"{field}_rank"] = i + 1
+
+    # Overall rank = average of all ranks (lower is better)
+    for sp in comparison:
+        ranks = [sp.get(f"{f}_rank", 99) for f, _ in rank_fields]
+        sp["overall_rank"] = round(sum(ranks) / len(ranks), 1)
+    # Sort by overall rank
+    comparison.sort(key=lambda x: x["overall_rank"])
+    for i, sp in enumerate(comparison):
+        sp["overall_position"] = i + 1
+
     # Global totals
     all_leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
     all_leads_filtered = filter_leads_by_period(all_leads, pay_period, date_filter)
     all_sales = [l for l in all_leads_filtered if l.get("status") == "SALE"]
     all_lost = [l for l in all_leads_filtered if l.get("status") == "LOST"]
+    all_pm = [l for l in all_sales if l.get("commission_percent", 0) <= 5]
+    total_rev = sum(l.get("ticket_value", 0) for l in all_sales)
+    total_comm = sum(l.get("commission_value", 0) for l in all_sales)
     totals = {
         "total_leads": len(all_leads_filtered),
         "closed_deals": len(all_sales),
         "lost_deals": len(all_lost),
-        "total_revenue": round(sum(l.get("ticket_value", 0) for l in all_sales), 2),
-        "total_commission": round(sum(l.get("commission_value", 0) for l in all_sales), 2),
+        "total_revenue": round(total_rev, 2),
+        "total_commission": round(total_comm, 2),
         "closing_rate": round((len(all_sales) / len(all_leads_filtered) * 100) if all_leads_filtered else 0, 1),
+        "avg_ticket": round((total_rev / len(all_sales)) if all_sales else 0, 2),
+        "access_pct": round(((len(all_leads_filtered) - len(all_lost)) / len(all_leads_filtered) * 100) if all_leads_filtered else 0, 1),
+        "pm_jobs": len(all_pm),
+        "pm_pct": round((len(all_pm) / len(all_sales) * 100) if all_sales else 0, 1),
+        "gp_pct": round((sum(l.get("commission_percent", 0) for l in all_sales) / len(all_sales)) if all_sales else 0, 1),
     }
     return {"comparison": comparison, "totals": totals}
 
