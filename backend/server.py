@@ -170,6 +170,7 @@ class LeadCreate(BaseModel):
     mitsubishi: float = 0
     surge_protector: float = 0
     self_gen_mits: float = 0
+    salesperson_id: str = ""
 
 class LeadUpdate(BaseModel):
     model_config = ConfigDict(extra="ignore")
