@@ -56,15 +56,18 @@ export default function LoginPage({ onLogin }) {
           setLoading(false);
           return;
         }
+        const loginEmail = form.email.trim();
+        const loginPass = form.password;
         const res = await axios.post(`${API}/auth/login`, {
-          email: form.email,
-          password: form.password,
+          email: loginEmail,
+          password: loginPass,
         });
         toast.success(`Welcome, ${res.data.user.name}`);
         onLogin(res.data.token, res.data.user);
       }
     } catch (err) {
-      toast.error(err.response?.data?.detail || "Error");
+      const detail = err.response?.data?.detail || err.message || "Connection error";
+      toast.error(detail, { duration: 5000 });
     } finally {
       setLoading(false);
     }
