@@ -132,14 +132,14 @@ export default function LoginPage({ onLogin }) {
                   </div>
                   <div>
                     <Label className="text-xs font-bold uppercase text-gray-500 flex items-center gap-1.5 mb-1.5">
-                      <Hash className="w-3.5 h-3.5" /> Customer Number
+                      <Hash className="w-3.5 h-3.5" /> Sales Number
                     </Label>
                     <Input
-                      value={form.customer_number}
-                      onChange={(e) => set("customer_number", e.target.value)}
-                      placeholder="10068"
+                      value={form.sales_number}
+                      onChange={(e) => set("sales_number", e.target.value)}
+                      placeholder="10149"
                       className="h-11"
-                      data-testid="register-customer-number"
+                      data-testid="register-sales-number"
                     />
                   </div>
                 </>
