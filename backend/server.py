@@ -612,8 +612,22 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def seed_database():
-    """Seed database with initial data if empty (for fresh deployments)."""
+    """Seed database with initial data if empty, and clean orphan leads."""
     import json
+
+    # Clean orphan leads (from old imports without salesperson_id)
+    orphan_filter = {"$or": [
+        {"salesperson_id": {"$exists": False}},
+        {"salesperson_id": None},
+        {"salesperson_id": ""},
+        {"salesperson_id": "NONE"},
+    ]}
+    orphan_count = await db.leads.count_documents(orphan_filter)
+    if orphan_count > 0:
+        await db.leads.delete_many(orphan_filter)
+        logger.info(f"Cleaned {orphan_count} orphan leads (no salesperson_id).")
+
+    # Seed only if DB has no users
     seed_file = ROOT_DIR / "seed_data.json"
     if not seed_file.exists():
         logger.info("No seed_data.json found, skipping seed.")
