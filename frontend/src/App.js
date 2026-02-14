@@ -523,7 +523,7 @@ function MainDashboard({ token, user, onLogout }) {
   // Parse email and open form
   const handleParseEmail = async () => {
     try {
-      const res = await axios.post(`${API}/leads/parse-email`, { text: newLeadText });
+      const res = await axios.post(`${API}/leads/parse-email`, { text: newLeadText }, { headers: authHeaders });
       setNewLeadForm({
         customer_number: res.data.customer_number || '', name: res.data.name || '', address: res.data.address || '', city: res.data.city || '',
         email: res.data.email || '', phone: res.data.phone || '',
