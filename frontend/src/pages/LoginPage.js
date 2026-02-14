@@ -183,7 +183,7 @@ export default function LoginPage({ onLogin }) {
 
             {mode === "register" && (
               <p className="text-[11px] text-gray-400 text-center mt-4">
-                Only <strong>@fshac.com</strong> emails are accepted
+                Only <strong>@fshac.com</strong> and <strong>@gmail.com</strong> emails are accepted
               </p>
             )}
           </CardContent>
