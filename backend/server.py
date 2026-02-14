@@ -1117,6 +1117,13 @@ async def get_dashboard_kpis(date_filter: str = "all", pay_period: Optional[str]
     
     leads = await db.leads.find(lead_filter, query).to_list(10000)
     
+    # Fallback: if user filter returned 0 but DB has leads, return all
+    if not leads and user:
+        all_count = await db.leads.count_documents({})
+        if all_count > 0:
+            logger.warning(f"User {user.get('email')} has 0 assigned leads for KPIs. Returning all {all_count}.")
+            leads = await db.leads.find({}, query).to_list(10000)
+    
     if leads:
         df = pd.DataFrame(leads)
         kpis = process_sales_data(df, date_filter, pay_period, from_db=True)
