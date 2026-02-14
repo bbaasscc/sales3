@@ -452,7 +452,7 @@ function App() {
     try {
       const res = await axios.post(`${API}/leads/parse-email`, { text: newLeadText });
       setNewLeadForm({
-        name: res.data.name || '', address: res.data.address || '', city: res.data.city || '',
+        customer_number: res.data.customer_number || '', name: res.data.name || '', address: res.data.address || '', city: res.data.city || '',
         email: res.data.email || '', phone: res.data.phone || '',
         unit_type: '', ticket_value: 0, commission_percent: 0, commission_value: 0,
         spif_total: 0, status: 'PENDING', visit_date: new Date().toISOString().split('T')[0],
