@@ -539,7 +539,7 @@ function MainDashboard({ token, user, onLogout }) {
   const handleCreateLead = async () => {
     if (!newLeadForm.name) { toast.error("Name is required"); return; }
     try {
-      await axios.post(`${API}/leads`, newLeadForm);
+      await axios.post(`${API}/leads`, newLeadForm, { headers: authHeaders });
       toast.success(`Lead ${getFirstName(newLeadForm.name)} created`);
       setNewLeadOpen(false); setNewLeadStep('paste'); setNewLeadText('');
       fetchDashboardData();
