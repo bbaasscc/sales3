@@ -548,7 +548,7 @@ function MainDashboard({ token, user, onLogout }) {
 
   const handleUpdateLead = async (leadId, updates) => {
     try {
-      await axios.put(`${API}/leads/${leadId}`, updates);
+      await axios.put(`${API}/leads/${leadId}`, updates, { headers: authHeaders });
       toast.success("Lead updated");
       fetchDashboardData();
     } catch { toast.error("Error updating lead"); }
