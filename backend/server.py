@@ -18,7 +18,6 @@ from models import LeadCreate, LeadUpdate, ExcelConfigCreate
 from routers.auth_routes import router as auth_router
 from routers.admin import router as admin_router, PAY_PERIODS, filter_leads_by_period
 from routers.pipeline import router as pipeline_router, generate_pipeline_schedule
-from routers.goals import router as goals_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -592,7 +591,6 @@ async def get_excel_config():
 app.include_router(auth_router)
 app.include_router(admin_router)
 app.include_router(pipeline_router)
-app.include_router(goals_router)
 app.include_router(api_router)
 
 app.add_middleware(
