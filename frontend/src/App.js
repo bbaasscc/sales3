@@ -278,6 +278,68 @@ const ChartCard = ({ title, description, children, icon: Icon }) => (
 
 // Main Dashboard Component
 function App() {
+  // Auth state
+  const [authToken, setAuthToken] = useState(() => localStorage.getItem('auth_token'));
+  const [currentUser, setCurrentUser] = useState(() => {
+    const u = localStorage.getItem('auth_user');
+    return u ? JSON.parse(u) : null;
+  });
+
+  const handleLogin = (token, user) => {
+    localStorage.setItem('auth_token', token);
+    localStorage.setItem('auth_user', JSON.stringify(user));
+    setAuthToken(token);
+    setCurrentUser(user);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
+    setAuthToken(null);
+    setCurrentUser(null);
+  };
+
+  // Verify token on mount
+  useEffect(() => {
+    if (authToken) {
+      axios.get(`${API}/auth/me`, { headers: { Authorization: `Bearer ${authToken}` } })
+        .then(res => setCurrentUser(res.data))
+        .catch(() => handleLogout());
+    }
+  }, [authToken]);
+
+  if (!authToken || !currentUser) {
+    return (
+      <>
+        <Toaster position="top-center" />
+        <LoginPage onLogin={handleLogin} />
+      </>
+    );
+  }
+
+  return <MainDashboard token={authToken} user={currentUser} onLogout={handleLogout} />;
+}
+
+// Main Dashboard (authenticated)
+function MainDashboard({ token, user, onLogout }) {
+  const authHeaders = { Authorization: `Bearer ${token}` };
+  const isAdmin = user.role === 'admin';
+  
+  // Admin filter state
+  const [filterSalespersonId, setFilterSalespersonId] = useState(null);
+  const [filterSalespersonName, setFilterSalespersonName] = useState(null);
+
+  const handleFilterSalesperson = (spId, spName) => {
+    setFilterSalespersonId(spId);
+    setFilterSalespersonName(spName);
+    setActiveTab('dashboard');
+  };
+
+  const clearSalespersonFilter = () => {
+    setFilterSalespersonId(null);
+    setFilterSalespersonName(null);
+  };
+
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [dateFilter, setDateFilter] = useState("all");
