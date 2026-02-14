@@ -1189,7 +1189,7 @@ async def create_lead(lead: LeadCreate, user=Depends(get_optional_user)):
     return {"message": "Lead created", "lead": doc}
 
 @api_router.put("/leads/{lead_id}")
-async def update_lead(lead_id: str, updates: LeadUpdate):
+async def update_lead(lead_id: str, updates: LeadUpdate, user=Depends(get_optional_user)):
     """Update a lead"""
     update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
     if 'status' in update_data:
@@ -1201,8 +1201,8 @@ async def update_lead(lead_id: str, updates: LeadUpdate):
     return {"message": "Lead updated"}
 
 @api_router.delete("/leads/{lead_id}")
-async def delete_lead(lead_id: str):
-    """Delete a lead"""
+async def delete_lead(lead_id: str, user=Depends(get_current_user)):
+    """Delete a lead - requires auth"""
     result = await db.leads.delete_one({"lead_id": lead_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Lead not found")
