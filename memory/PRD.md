@@ -54,9 +54,9 @@ src/
 - **All Data**: All leads with Salesperson column
 
 ## Data
-- 53 leads total: 23 SALE, 19 PENDING, 11 LOST
-- Benjamin S. Cardarelli: all leads
-- Franco Barbagallo: 0 leads
+- Benjamin S. Cardarelli: 53 leads (23 SALE, 19 PENDING, 11 LOST)
+- Franco Barbagallo: 63 leads (all PENDING - new appointments)
+- 116 leads total, 0 orphans
 
 ## Completed
 - [x] JWT auth with role-based access
