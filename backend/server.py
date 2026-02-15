@@ -629,35 +629,40 @@ async def seed_database():
         await db.leads.delete_many(orphan_filter)
         logger.info(f"Cleaned {orphan_count} orphan leads (no salesperson_id).")
 
-    # Seed only if DB has no users
+    # Seed: insert missing users and leads from seed_data.json
     seed_file = ROOT_DIR / "seed_data.json"
     if not seed_file.exists():
         logger.info("No seed_data.json found, skipping seed.")
         return
-    user_count = await db.users.count_documents({})
-    if user_count > 0:
-        logger.info(f"Database already has {user_count} users, skipping seed.")
-        return
-    logger.info("Empty database detected — seeding initial data...")
     with open(seed_file) as f:
         data = json.load(f)
+    # Seed missing users
     if data.get("users"):
-        await db.users.insert_many(data["users"])
-        logger.info(f"Seeded {len(data['users'])} users.")
+        existing_emails = {u["email"] async for u in db.users.find({}, {"email": 1, "_id": 0})}
+        new_users = [u for u in data["users"] if u["email"] not in existing_emails]
+        if new_users:
+            await db.users.insert_many(new_users)
+            logger.info(f"Seeded {len(new_users)} new users.")
+        else:
+            logger.info(f"All {len(data['users'])} users already exist.")
+    # Seed missing leads
     if data.get("leads"):
-        await db.leads.insert_many(data["leads"])
-        logger.info(f"Seeded {len(data['leads'])} leads.")
+        existing_ids = {l["lead_id"] async for l in db.leads.find({}, {"lead_id": 1, "_id": 0})}
+        new_leads = [l for l in data["leads"] if l["lead_id"] not in existing_ids]
+        if new_leads:
+            await db.leads.insert_many(new_leads)
+            logger.info(f"Seeded {len(new_leads)} new leads.")
+        else:
+            logger.info(f"All {len(data['leads'])} leads already exist.")
     if data.get("excel_config"):
         for cfg in data["excel_config"]:
             await db.excel_config.update_one({}, {"$set": cfg}, upsert=True)
-        logger.info(f"Seeded excel config.")
     if data.get("pipeline_schedules"):
         for ps in data["pipeline_schedules"]:
             await db.pipeline_schedules.update_one(
                 {"client_name": ps.get("client_name")}, {"$set": ps}, upsert=True
             )
-        logger.info(f"Seeded {len(data['pipeline_schedules'])} pipeline schedules.")
-    logger.info("Database seed complete.")
+    logger.info("Seed check complete.")
 
 
 @app.on_event("shutdown")
