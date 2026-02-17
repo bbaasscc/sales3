@@ -42,14 +42,14 @@ PAY_PERIODS = [
 ]
 
 
-def filter_leads_by_period(leads, pay_period=None, date_filter=None):
+def filter_leads_by_period(leads, pay_period=None, date_filter=None, date_field="visit_date"):
     if pay_period and pay_period != "all":
         period = next((p for p in PAY_PERIODS if p[0] == pay_period), None)
         if period:
             start, end = period[1], period[2]
             filtered = []
             for l in leads:
-                vd = l.get("visit_date", "")
+                vd = l.get(date_field, "")
                 if vd:
                     try:
                         d = datetime.strptime(str(vd)[:10], "%Y-%m-%d")
@@ -64,7 +64,7 @@ def filter_leads_by_period(leads, pay_period=None, date_filter=None):
         cutoff = datetime.now(timezone.utc) - timedelta(days=days)
         filtered = []
         for l in leads:
-            vd = l.get("visit_date", "")
+            vd = l.get(date_field, "")
             if vd:
                 try:
                     d = datetime.strptime(str(vd)[:10], "%Y-%m-%d")
