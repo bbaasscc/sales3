@@ -203,17 +203,15 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     if start_date and en:
         leads_df = df[df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en)]
         total_visits = len(leads_df)
-        leads_converted = len(leads_df[leads_df['status'] == 'SALE'])
     else:
         leads_df = df[df['visit_date'].notna()]
         total_visits = len(leads_df)
-        leads_converted = len(leads_df[leads_df['status'] == 'SALE'])
 
     if total_visits == 0:
         total_visits = len(df_close)
-        leads_converted = len(closed_df)
 
-    closed_deals = leads_converted
+    # closed_deals and revenue both come from close_date filter (consistent)
+    closed_deals = len(closed_df)
     closing_rate = (closed_deals / total_visits * 100) if total_visits > 0 else 0
     total_revenue = closed_df['ticket_value'].sum()
     total_commission = closed_df['commission_value'].sum()
