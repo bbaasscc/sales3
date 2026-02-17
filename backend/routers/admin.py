@@ -130,14 +130,15 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
     for i, sp in enumerate(comparison):
         sp["overall_position"] = i + 1
 
-    # Global totals
+    # Global totals (use close_date for sales metrics, visit_date for lead counts)
     all_leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
     all_leads_filtered = filter_leads_by_period(all_leads, pay_period, date_filter)
-    all_sales = [l for l in all_leads_filtered if l.get("status") == "SALE"]
+    all_sales_filtered = filter_leads_by_period(all_leads, pay_period, date_filter, date_field="close_date")
+    all_sales = [l for l in all_sales_filtered if l.get("status") == "SALE"]
     all_lost = [l for l in all_leads_filtered if l.get("status") == "LOST"]
-    all_pm = [l for l in all_sales if l.get("commission_percent", 0) <= 5]
-    total_rev = sum(l.get("ticket_value", 0) for l in all_sales)
-    total_comm = sum(l.get("commission_value", 0) for l in all_sales)
+    all_pm = [l for l in all_sales if (l.get("commission_percent", 0) or 0) <= 5]
+    total_rev = sum((l.get("ticket_value", 0) or 0) for l in all_sales)
+    total_comm = sum((l.get("commission_value", 0) or 0) for l in all_sales)
     totals = {
         "total_leads": len(all_leads_filtered), "closed_deals": len(all_sales), "lost_deals": len(all_lost),
         "total_revenue": round(total_rev, 2), "total_commission": round(total_comm, 2),
