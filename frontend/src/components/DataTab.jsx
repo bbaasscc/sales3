@@ -259,7 +259,8 @@ export default function DataTab({
                     <EditableCell value={lead.install_date} field="install_date" lead={lead} onSave={handleInlineSave} type="date" />
                   </TableCell>
                 </TableRow>
-              ))}
+                );
+              })}
             </TableBody>
           </Table>
         </div>
