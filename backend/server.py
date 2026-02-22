@@ -369,7 +369,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
 
     return {
         "total_revenue": round(total_revenue, 2), "total_commission": round(total_commission, 2),
-        "closed_deals": closed_deals, "closing_rate": round(closing_rate, 1),
+        "closed_deals": closed_deals, "gross_closed": gross_closed, "closing_rate": round(closing_rate, 1),
         "total_visits": total_visits, "average_ticket": round(average_ticket, 2),
         "commission_payment_count": cp_count, "commission_payment_revenue": round(cp_rev, 2),
         "commission_payment_amount": round(cp_amount, 2), "commission_payment_spiff": round(cp_spiff, 2),
