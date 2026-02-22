@@ -40,29 +40,26 @@ export const SectionHeader = ({ title, description, icon: Icon }) => (
   </div>
 );
 
-export const SpiffBrandCard = ({ brand, data, color }) => (
-  <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all">
-    <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2">
-      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-        <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: color }}></div>
-        <span className="font-semibold text-gray-700 text-sm sm:text-base truncate">{brand}</span>
+export const SpiffBrandCard = ({ brand, data, color }) => {
+  const [showComm, setShowComm] = useState(false);
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all cursor-pointer" onClick={() => setShowComm(!showComm)}>
+      <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: color }}></div>
+          <span className="font-semibold text-gray-700 text-sm sm:text-base truncate">{brand}</span>
+        </div>
+        <span className="text-[10px] sm:text-xs font-mono bg-gray-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-gray-600 flex-shrink-0">
+          {data.percent_of_sales}%
+        </span>
       </div>
-      <span className="text-[10px] sm:text-xs font-mono bg-gray-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-gray-600 flex-shrink-0">
-        {data.percent_of_sales}%
-      </span>
+      <p className="text-base sm:text-lg font-mono font-semibold text-gray-900">{data.count} sales</p>
+      {showComm && (
+        <p className="text-xs font-mono mt-1" style={{ color: BRAND_COLORS.primary }}>${data.commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+      )}
     </div>
-    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-      <div>
-        <p className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">Sales</p>
-        <p className="text-base sm:text-lg font-mono font-semibold text-gray-900">{data.count}</p>
-      </div>
-      <div>
-        <p className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">Commission</p>
-        <p className="text-base sm:text-lg font-mono font-semibold" style={{ color: BRAND_COLORS.primary }}>${data.commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-      </div>
-    </div>
-  </div>
-);
+  );
+};
 
 export const ChartCard = ({ title, description, children, icon: Icon }) => (
   <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
