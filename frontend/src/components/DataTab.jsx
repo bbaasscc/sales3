@@ -226,8 +226,10 @@ export default function DataTab({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredLeads.map((lead, i) => (
-                <TableRow key={lead.lead_id || i} className="border-b border-gray-100 hover:bg-blue-50/30 transition-colors" data-testid={`data-row-${i}`}>
+              {filteredLeads.map((lead, i) => {
+                const isInactive = INACTIVE_STATUSES.has(lead.status);
+                return (
+                <TableRow key={lead.lead_id || i} className={`border-b border-gray-100 transition-colors ${isInactive ? 'opacity-50 bg-gray-50/50' : 'hover:bg-blue-50/30'}`} data-testid={`data-row-${i}`}>
                   <TableCell className="py-1.5 px-2 sm:px-3 text-xs sm:text-sm font-medium text-gray-800">
                     <EditableCell value={lead.name} field="name" lead={lead} onSave={handleInlineSave} />
                   </TableCell>
