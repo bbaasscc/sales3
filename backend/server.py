@@ -79,17 +79,34 @@ async def sync_all_sp_collections():
                 l.pop("_id", None)
         logger.info(f"Synced collection '{col_name}': {len(sp_leads)} leads")
 # ═══════════════════════════════════════════════
+# STATUS CONSTANTS
+# ═══════════════════════════════════════════════
+VALID_STATUSES = ["PENDING", "SALE", "LOST", "CANCEL_APPOINTMENT", "RESCHEDULED", "CREDIT_REJECT"]
+# Statuses that count in metrics (visits, closing rate)
+METRIC_STATUSES = {"SALE", "LOST", "PENDING", "CREDIT_REJECT"}
+# Statuses that count as closed deals
+CLOSED_STATUSES = {"SALE"}
+# Credit Reject counts only in gross closing
+GROSS_CLOSED_STATUSES = {"SALE", "CREDIT_REJECT"}
+# Statuses excluded from metrics entirely
+EXCLUDED_STATUSES = {"CANCEL_APPOINTMENT", "RESCHEDULED"}
 
 def normalize_status(status: str) -> str:
     if pd.isna(status):
         return "UNKNOWN"
     status = str(status).strip().upper()
-    if status in ["SALE", "SALES"]:
+    if status in ["SALE", "SALES", "SOLD"]:
         return "SALE"
     if status in ["LOST", "LOSS"]:
         return "LOST"
     if status in ["PENDING"]:
         return "PENDING"
+    if status in ["CANCEL", "CANCEL APPOINTMENT", "CANCEL_APPOINTMENT", "CANCELLED"]:
+        return "CANCEL_APPOINTMENT"
+    if status in ["RESCHEDULE", "RESCHEDULED", "RESCHEDULED APPOINTMENT", "RESCHEDULED_APPOINTMENT"]:
+        return "RESCHEDULED"
+    if status in ["CREDIT REJECT", "CREDIT_REJECT", "CREDIT REJECT SALE"]:
+        return "CREDIT_REJECT"
     return status
 
 def safe_float(value, default=0.0) -> float:
