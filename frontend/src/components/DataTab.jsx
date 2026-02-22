@@ -64,6 +64,7 @@ function EditableCell({ value, field, lead, onSave, type = "text" }) {
       value={val} autoFocus step={type === "number" ? "0.01" : undefined}
       onChange={(e) => setVal(e.target.value)}
       onBlur={handleSave} onKeyDown={handleKeyDown}
+      onFocus={(e) => { if (type === "number") e.target.select(); }}
       className="w-full px-1 py-0.5 text-xs border rounded focus:outline-none focus:ring-1 focus:ring-blue-400"
       data-testid={`edit-${field}-${lead.lead_id}`}
       onClick={(e) => e.stopPropagation()}
