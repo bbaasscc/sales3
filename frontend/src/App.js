@@ -395,10 +395,10 @@ function MainDashboard({ token, user, onLogout }) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Time</SelectItem>
-                      <SelectItem value="week">Week</SelectItem>
-                      <SelectItem value="2weeks">2 Weeks</SelectItem>
-                      <SelectItem value="month">Month</SelectItem>
-                      <SelectItem value="year">Year</SelectItem>
+                      <SelectItem value="week">Last Week</SelectItem>
+                      <SelectItem value="2weeks">Last 2 Weeks</SelectItem>
+                      <SelectItem value="current_year">Current Year</SelectItem>
+                      <SelectItem value="last_year">Last Year</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -456,10 +456,10 @@ function MainDashboard({ token, user, onLogout }) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Time</SelectItem>
-                    <SelectItem value="week">Week</SelectItem>
-                    <SelectItem value="2weeks">2 Weeks</SelectItem>
-                    <SelectItem value="month">Month</SelectItem>
-                    <SelectItem value="year">Year</SelectItem>
+                    <SelectItem value="week">Last Week</SelectItem>
+                    <SelectItem value="2weeks">Last 2 Weeks</SelectItem>
+                    <SelectItem value="current_year">Current Year</SelectItem>
+                    <SelectItem value="last_year">Last Year</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
