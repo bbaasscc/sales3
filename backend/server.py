@@ -536,6 +536,10 @@ async def update_lead(lead_id: str, updates: LeadUpdate, user=Depends(get_curren
     result = await db.leads.update_one({"lead_id": lead_id}, {"$set": update_data})
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Lead not found")
+    # Sync to per-salesperson collection
+    updated_lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
+    if updated_lead:
+        await sync_lead_to_sp_collection(updated_lead)
     return {"message": "Lead updated"}
 
 
