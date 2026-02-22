@@ -241,8 +241,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         start_date = datetime(now.year - 1, 1, 1)
         end_date = datetime(now.year - 1, 12, 31)
 
-    # Exclude CANCEL_APPOINTMENT and RESCHEDULED from metric calculations
-    df_metric = df[~df['status'].isin(['CANCEL_APPOINTMENT', 'RESCHEDULED'])]
+    # All statuses count in visits/leads. Only SALE counts for net revenue.
+    # CANCEL_APPOINTMENT and RESCHEDULED count in visits but not in sales.
+    # CREDIT_REJECT counts in Gross Closing only.
 
     if start_date:
         sn = start_date.replace(tzinfo=None) if hasattr(start_date, 'tzinfo') and start_date.tzinfo else start_date
