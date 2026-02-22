@@ -150,11 +150,12 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
     all_sales_filtered = filter_leads_by_period(all_leads, pay_period, date_filter, date_field="close_date")
     all_sales = [l for l in all_sales_filtered if l.get("status") == "SALE"]
     all_lost = [l for l in all_leads_filtered if l.get("status") == "LOST"]
+    all_credit_rejects = [l for l in all_sales_filtered if l.get("status") == "CREDIT_REJECT"]
     all_pm = [l for l in all_sales if (l.get("commission_percent", 0) or 0) <= 5]
     total_rev = sum((l.get("ticket_value", 0) or 0) for l in all_sales)
     total_comm = sum((l.get("commission_value", 0) or 0) for l in all_sales)
     totals = {
-        "total_leads": len(all_leads_filtered), "closed_deals": len(all_sales), "lost_deals": len(all_lost),
+        "total_leads": len(all_leads_filtered), "closed_deals": len(all_sales), "gross_closed": len(all_sales) + len(all_credit_rejects), "lost_deals": len(all_lost),
         "total_revenue": round(total_rev, 2), "total_commission": round(total_comm, 2),
         "closing_rate": round((len(all_sales) / len(all_leads_filtered) * 100) if all_leads_filtered else 0, 1),
         "avg_ticket": round((total_rev / len(all_sales)) if all_sales else 0, 2),
