@@ -92,14 +92,17 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
     comparison = []
     for sp in salespeople:
         all_sp_leads = await db.leads.find({"salesperson_id": sp["user_id"]}, {"_id": 0}).to_list(10000)
-        # Total leads filtered by visit_date
-        leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter)
+        EXCLUDED = {"CANCEL_APPOINTMENT", "RESCHEDULED"}
+        # Total leads filtered by visit_date (exclude cancelled/rescheduled)
+        leads = [l for l in filter_leads_by_period(all_sp_leads, pay_period, date_filter) if l.get("status") not in EXCLUDED]
         total_leads = len(leads)
         # Sales/revenue filtered by close_date (consistent with KPIs dashboard)
         sales_leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter, date_field="close_date")
         sales = [l for l in sales_leads if l.get("status") == "SALE"]
+        credit_rejects = [l for l in sales_leads if l.get("status") == "CREDIT_REJECT"]
         lost = [l for l in leads if l.get("status") == "LOST"]
         closed_deals = len(sales)
+        gross_closed = closed_deals + len(credit_rejects)
         total_revenue = sum(l.get("ticket_value", 0) or 0 for l in sales)
         total_commission = sum(l.get("commission_value", 0) or 0 for l in sales)
         closing_rate = (closed_deals / total_leads * 100) if total_leads > 0 else 0
@@ -109,7 +112,7 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         avg_gp = (sum((l.get("commission_percent", 0) or 0) for l in sales) / closed_deals) if closed_deals > 0 else 0
         comparison.append({
             "user_id": sp["user_id"], "name": sp["name"], "email": sp["email"],
-            "total_leads": total_leads, "closed_deals": closed_deals, "lost_deals": len(lost),
+            "total_leads": total_leads, "closed_deals": closed_deals, "gross_closed": gross_closed, "lost_deals": len(lost),
             "total_revenue": round(total_revenue, 2), "total_commission": round(total_commission, 2),
             "closing_rate": round(closing_rate, 1), "avg_ticket": round(avg_ticket, 2),
             "pm_jobs": pm_jobs, "pm_pct": round(pm_pct, 1), "gp_pct": round(avg_gp, 1),
