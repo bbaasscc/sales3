@@ -87,10 +87,16 @@ export default function DataTab({
         }
       } else if (dateFilter && dateFilter !== 'all') {
         const now = new Date();
-        const days = dateFilter === 'week' ? 7 : dateFilter === '2weeks' ? 14 : dateFilter === 'month' ? 30 : dateFilter === 'year' ? 365 : 0;
-        if (days > 0) {
+        let startDt, endDt;
+        if (dateFilter === 'current_year') { startDt = new Date(now.getFullYear(), 0, 1); endDt = new Date(now.getFullYear(), 11, 31); }
+        else if (dateFilter === 'last_year') { startDt = new Date(now.getFullYear()-1, 0, 1); endDt = new Date(now.getFullYear()-1, 11, 31); }
+        else {
+          const days = dateFilter === 'week' ? 7 : dateFilter === '2weeks' ? 14 : 0;
+          if (days > 0) startDt = new Date(now - days * 86400000);
+        }
+        if (startDt) {
           const vd = l.visit_date ? new Date(l.visit_date + 'T00:00:00') : null;
-          if (!vd || vd < new Date(now - days * 86400000)) return false;
+          if (!vd || vd < startDt || (endDt && vd > endDt)) return false;
         }
       }
       return true;
@@ -100,6 +106,11 @@ export default function DataTab({
       if (!searchTerm) return true;
       const s = searchTerm.toLowerCase();
       return (l.name || '').toLowerCase().includes(s) || (l.city || '').toLowerCase().includes(s) || (l.email || '').toLowerCase().includes(s);
+    })
+    .sort((a, b) => {
+      const da = a.visit_date || '';
+      const db = b.visit_date || '';
+      return db.localeCompare(da);
     });
 
   const handleInlineSave = useCallback(async (leadId, field, value) => {
