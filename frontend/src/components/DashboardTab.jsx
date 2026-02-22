@@ -97,10 +97,18 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
             <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ color: '#B45309' }}>
               Under Book Price <span className="font-normal text-amber-500">(5% Commission)</span>
             </p>
-            <span className="text-[10px] sm:text-xs font-mono bg-gray-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-gray-600">
-              {kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count / kpiData.closed_deals) * 100).toFixed(1) : 0}%
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] sm:text-xs font-mono bg-gray-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-gray-600">
+                {kpiData.price_margin_sales_count} sales &mdash; {kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count / kpiData.closed_deals) * 100).toFixed(1) : 0}%
+              </span>
+              <button onClick={() => setShowUnderBookDetails(!showUnderBookDetails)}
+                className="text-[10px] px-2 py-1 bg-amber-100 text-amber-700 rounded-full font-bold hover:bg-amber-200 flex items-center gap-1">
+                {showUnderBookDetails ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                Details
+              </button>
+            </div>
           </div>
+          {showUnderBookDetails && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mb-5">
             <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 shadow-sm border border-amber-100">
               <div className="flex items-center gap-1.5 mb-2">
