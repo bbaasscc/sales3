@@ -52,7 +52,6 @@ export const SpiffBrandCard = ({ brand, data, color }) => (
       </span>
     </div>
     <p className="text-base sm:text-lg font-mono font-semibold text-gray-900">{data.count} sales</p>
-    <p className="text-xs font-mono mt-1" style={{ color: BRAND_COLORS.primary }}>${data.commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
   </div>
 );
 
