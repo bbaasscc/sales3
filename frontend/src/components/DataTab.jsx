@@ -28,6 +28,7 @@ function EditableCell({ value, field, lead, onSave, type = "text" }) {
   };
 
   if (field === "status") {
+    const sc = STATUS_COLORS[value] || STATUS_COLORS.PENDING;
     return editing ? (
       <select value={val} autoFocus
         onChange={(e) => { setVal(e.target.value); }}
@@ -38,14 +39,12 @@ function EditableCell({ value, field, lead, onSave, type = "text" }) {
         className="w-full px-1 py-0.5 text-xs border rounded focus:outline-none focus:ring-1 focus:ring-blue-400"
         data-testid={`edit-status-${lead.lead_id}`}
       >
-        {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+        {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>)}
       </select>
     ) : (
       <span onClick={(e) => { e.stopPropagation(); setEditing(true); setVal(value ?? ""); }}
-        className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold cursor-pointer hover:ring-2 hover:ring-blue-300 ${
-          value === 'SALE' ? 'bg-green-100 text-green-700' :
-          value === 'LOST' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
-        }`} data-testid={`cell-status-${lead.lead_id}`}>{value}</span>
+        className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold cursor-pointer hover:ring-2 hover:ring-blue-300 ${sc.bg} ${sc.text}`}
+        data-testid={`cell-status-${lead.lead_id}`}>{STATUS_LABELS[value] || value}</span>
     );
   }
 
