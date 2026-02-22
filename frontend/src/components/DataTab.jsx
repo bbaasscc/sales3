@@ -169,14 +169,17 @@ export default function DataTab({
             data-testid="data-search" />
           <Target className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
         </div>
-        <div className="flex gap-1">
-          {['all', 'SALE', 'PENDING', 'LOST'].map(s => (
-            <button key={s} onClick={() => setStatusFilter(s)}
-              className={`px-3 py-2 rounded-lg text-xs font-bold transition-all ${statusFilter === s ? 'text-white shadow-sm' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
-              style={statusFilter === s ? { backgroundColor: s === 'SALE' ? '#22C55E' : s === 'LOST' ? '#EF4444' : s === 'PENDING' ? '#F59E0B' : BRAND_COLORS.primary } : {}}>
-              {s === 'all' ? 'All' : s}
-            </button>
-          ))}
+        <div className="flex gap-1 flex-wrap">
+          {FILTER_STATUS_OPTIONS.map(s => {
+            const sc = STATUS_COLORS[s] || {};
+            return (
+              <button key={s} onClick={() => setStatusFilter(s)}
+                className={`px-2 py-1.5 rounded-lg text-[10px] font-bold transition-all ${statusFilter === s ? 'text-white shadow-sm' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
+                style={statusFilter === s ? { backgroundColor: sc.solid || BRAND_COLORS.primary } : {}}>
+                {s === 'all' ? 'All' : (STATUS_LABELS[s] || s)}
+              </button>
+            );
+          })}
         </div>
         <button onClick={() => { setNewLeadOpen(true); setNewLeadStep('paste'); setNewLeadText(''); }}
           className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors"
