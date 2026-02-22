@@ -545,9 +545,15 @@ async def update_lead(lead_id: str, updates: LeadUpdate, user=Depends(get_curren
 
 @api_router.delete("/leads/{lead_id}")
 async def delete_lead(lead_id: str, user=Depends(get_current_user)):
+    lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
     result = await db.leads.delete_one({"lead_id": lead_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Lead not found")
+    # Remove from per-salesperson collection
+    if lead and lead.get("salesperson_id"):
+        sp_col = await get_sp_collection_name(lead["salesperson_id"])
+        if sp_col:
+            await db[sp_col].delete_one({"lead_id": lead_id})
     return {"message": "Lead deleted"}
 
 
