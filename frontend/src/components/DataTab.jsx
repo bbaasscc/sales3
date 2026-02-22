@@ -6,9 +6,9 @@ import {
 } from "@/components/ui/table";
 import { Target, Plus, Upload, Check, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
-import { BRAND_COLORS, PAY_PERIODS_DATA, API } from "@/lib/constants";
+import { BRAND_COLORS, PAY_PERIODS_DATA, API, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS } from "@/lib/constants";
 
-const STATUS_OPTIONS = ["PENDING", "SALE", "LOST"];
+const FILTER_STATUS_OPTIONS = ['all', ...STATUS_OPTIONS];
 
 function EditableCell({ value, field, lead, onSave, type = "text" }) {
   const [editing, setEditing] = useState(false);
