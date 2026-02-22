@@ -522,9 +522,12 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
     if (window.confirm("Close without saving? Unsaved changes will be lost.")) setEditingLead(null);
   };
   const handleNumFocus = (e) => e.target.select();
+  const sameDaySale = () => {
+    if (editingLead.visit_date) setEditingLead(p => ({...p, close_date: p.visit_date}));
+  };
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onMouseDown={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onMouseDown={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
           <div><h3 className="text-base font-bold">Edit Lead</h3><p className="text-xs text-white/80">{editingLead.name} {editingLead.customer_number && <span className="font-mono bg-white/20 px-1 rounded">#{editingLead.customer_number}</span>}</p></div>
           <button onClick={handleClose} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
