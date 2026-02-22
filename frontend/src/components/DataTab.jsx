@@ -213,16 +213,16 @@ export default function DataTab({
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-50">
-                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3">Name</TableHead>
+                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 cursor-pointer select-none" onClick={() => toggleSort('name')}>Name <SortIcon field="name" /></TableHead>
                 {isAdmin && <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden sm:table-cell">Salesperson</TableHead>}
-                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden sm:table-cell">City</TableHead>
-                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3">Status</TableHead>
+                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden sm:table-cell cursor-pointer select-none" onClick={() => toggleSort('city')}>City <SortIcon field="city" /></TableHead>
+                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 cursor-pointer select-none" onClick={() => toggleSort('status')}>Status <SortIcon field="status" /></TableHead>
                 <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3">Unit</TableHead>
-                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3">Value</TableHead>
+                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 cursor-pointer select-none" onClick={() => toggleSort('ticket_value')}>Value <SortIcon field="ticket_value" /></TableHead>
                 <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden md:table-cell">Commission</TableHead>
-                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden lg:table-cell">Visit</TableHead>
-                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden lg:table-cell">Close</TableHead>
-                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden xl:table-cell">Install</TableHead>
+                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden lg:table-cell cursor-pointer select-none" onClick={() => toggleSort('visit_date')}>Visit <SortIcon field="visit_date" /></TableHead>
+                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden lg:table-cell cursor-pointer select-none" onClick={() => toggleSort('close_date')}>Close <SortIcon field="close_date" /></TableHead>
+                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden xl:table-cell cursor-pointer select-none" onClick={() => toggleSort('install_date')}>Install <SortIcon field="install_date" /></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
