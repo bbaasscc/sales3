@@ -4,11 +4,12 @@ import { Card } from "@/components/ui/card";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { Target, Plus, Upload, Check, X, Pencil } from "lucide-react";
+import { Target, Plus, Upload, Pencil, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import { BRAND_COLORS, PAY_PERIODS_DATA, API, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS } from "@/lib/constants";
 
 const FILTER_STATUS_OPTIONS = ['all', ...STATUS_OPTIONS];
+const INACTIVE_STATUSES = new Set(['CANCEL_APPOINTMENT', 'RESCHEDULED']);
 
 function EditableCell({ value, field, lead, onSave, type = "text" }) {
   const [editing, setEditing] = useState(false);
