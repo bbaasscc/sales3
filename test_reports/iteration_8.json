@@ -48,5 +48,5 @@
   "seed_data_creation": "Actions recorded during testing: EDITH RODRIGUEZ email#1, ROBERTO RODRIGUEZ sms#1",
   "retest_needed": false,
   "should_main_agent_self_test": true,
-  "context_for_next_testing_agent": "Iteration 8 added testing for the new Email/SMS action buttons feature. Actions are tracked in MongoDB collection 'followup_actions'. The clipboard API will show errors in headless browser testing - this is expected. All other features from previous iterations remain working. Dashboard URL: https://sales-mgmt-app.preview.emergentagent.com"
+  "context_for_next_testing_agent": "Iteration 8 added testing for the new Email/SMS action buttons feature. Actions are tracked in MongoDB collection 'followup_actions'. The clipboard API will show errors in headless browser testing - this is expected. All other features from previous iterations remain working. Dashboard URL: https://lead-tracker-dev.preview.emergentagent.com"
 }
