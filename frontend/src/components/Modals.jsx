@@ -353,7 +353,7 @@ export function ClientDetailModal({
 export function SaleDetailModal({ selectedSale, setSelectedSale }) {
   if (!selectedSale) return null;
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedSale(null)}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
       <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-green-600 text-white px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-xl">
           <div>
