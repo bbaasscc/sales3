@@ -712,6 +712,9 @@ async def seed_database():
             )
     logger.info("Seed check complete.")
 
+    # Sync per-salesperson collections
+    await sync_all_sp_collections()
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
