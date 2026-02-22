@@ -518,12 +518,16 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
   const spiffSum = (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
   const baseComm = (editingLead.ticket_value || 0) * (editingLead.commission_percent || 0) / 100;
   const totalComm = baseComm + spiffSum;
+  const handleClose = () => {
+    if (window.confirm("Close without saving? Unsaved changes will be lost.")) setEditingLead(null);
+  };
+  const handleNumFocus = (e) => e.target.select();
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setEditingLead(null)}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
           <div><h3 className="text-base font-bold">Edit Lead</h3><p className="text-xs text-white/80">{editingLead.name} {editingLead.customer_number && <span className="font-mono bg-white/20 px-1 rounded">#{editingLead.customer_number}</span>}</p></div>
-          <button onClick={() => setEditingLead(null)} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
+          <button onClick={handleClose} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
         </div>
         <div className="p-4 space-y-3">
           <div className="grid grid-cols-2 gap-2">
@@ -538,18 +542,18 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
               <label className="text-[10px] font-bold uppercase text-gray-500">Status</label>
               <select value={editingLead.status || 'PENDING'} onChange={(e) => setEditingLead(p => ({...p, status: e.target.value}))}
                 className="w-full px-2 py-1.5 text-sm border rounded-lg">
-                <option>PENDING</option><option>SALE</option><option>LOST</option>
+                {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>)}
               </select>
             </div>
             <div>
               <label className="text-[10px] font-bold uppercase text-gray-500">Ticket Value</label>
-              <input type="number" step="0.01" value={editingLead.ticket_value ?? ''} 
+              <input type="number" step="0.01" value={editingLead.ticket_value ?? ''} onFocus={handleNumFocus}
                 onChange={(e) => setEditingLead(p => ({...p, ticket_value: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
                 className="w-full px-2 py-1.5 text-sm border rounded-lg" />
             </div>
             <div>
               <label className="text-[10px] font-bold uppercase text-gray-500">Commission %</label>
-              <input type="number" step="0.01" value={editingLead.commission_percent ?? ''} 
+              <input type="number" step="0.01" value={editingLead.commission_percent ?? ''} onFocus={handleNumFocus}
                 onChange={(e) => setEditingLead(p => ({...p, commission_percent: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
                 className="w-full px-2 py-1.5 text-sm border rounded-lg" />
             </div>
@@ -577,7 +581,7 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
           <div className="grid grid-cols-3 gap-2">
             {[['apco_x','APCO X'],['samsung','Samsung'],['mitsubishi','Mitsubishi'],['surge_protector','Surge Prot.'],['duct_cleaning','Duct Clean.'],['self_gen_mits','Self Gen Mits']].map(([k,l]) => (
               <div key={k}><label className="text-[10px] font-bold uppercase text-gray-400">{l}</label>
-                <input type="number" step="0.01" value={editingLead[k] ?? ''} 
+                <input type="number" step="0.01" value={editingLead[k] ?? ''} onFocus={handleNumFocus}
                   onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
                   className="w-full px-2 py-1 text-xs border rounded-lg" /></div>
             ))}
@@ -592,7 +596,7 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
             <Button onClick={() => setDeleteConfirm(editingLead)} variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
               <Trash2 className="w-4 h-4" />
             </Button>
-            <Button onClick={() => setEditingLead(null)} variant="outline">Cancel</Button>
+            <Button onClick={handleClose} variant="outline">Cancel</Button>
           </div>
         </div>
       </div>
