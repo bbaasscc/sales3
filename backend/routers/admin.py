@@ -128,6 +128,7 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         comparison.append({
             "user_id": sp["user_id"], "name": sp["name"], "email": sp["email"],
             "total_leads": total_leads, "closed_deals": closed_deals, "gross_closed": gross_closed, "lost_deals": len(lost),
+            "cancel_count": cancel_count, "rescheduled_count": rescheduled_count, "credit_reject_count": len(credit_rejects),
             "total_revenue": round(total_revenue, 2), "total_commission": round(total_commission, 2),
             "closing_rate": round(closing_rate, 1), "avg_ticket": round(avg_ticket, 2),
             "pm_jobs": pm_jobs, "pm_pct": round(pm_pct, 1), "gp_pct": round(avg_gp, 1),
