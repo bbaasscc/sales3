@@ -751,6 +751,28 @@ async def seed_database():
     # Sync per-salesperson collections
     await sync_all_sp_collections()
 
+    # Start auto-save background task (every 5 minutes)
+    asyncio.create_task(auto_save_seed())
+
+
+async def auto_save_seed():
+    """Periodically save leads data to seed_data.json every 5 minutes."""
+    import json
+    while True:
+        await asyncio.sleep(300)  # 5 minutes
+        try:
+            users = await db.users.find({}, {"_id": 0}).to_list(100)
+            leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
+            configs = await db.excel_config.find({}, {"_id": 0}).to_list(10)
+            pipelines = await db.pipeline_schedules.find({}, {"_id": 0}).to_list(10000)
+            seed_file = ROOT_DIR / "seed_data.json"
+            with open(seed_file, "w") as f:
+                json.dump({"users": users, "leads": leads, "excel_config": configs, "pipeline_schedules": pipelines}, f, default=str)
+            await sync_all_sp_collections()
+            logger.info(f"Auto-save: {len(leads)} leads saved to seed.")
+        except Exception as e:
+            logger.error(f"Auto-save failed: {e}")
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
