@@ -54,9 +54,10 @@ src/
 - **All Data**: All leads with Salesperson column
 
 ## Data
-- Benjamin S. Cardarelli: 53 leads (23 SALE, 19 PENDING, 11 LOST)
-- Franco Barbagallo: 63 leads (all PENDING - new appointments)
-- 116 leads total, 0 orphans
+- Benjamin S. Cardarelli: 62 leads
+- Franco Barbagallo: 67 leads
+- 129 leads total, 0 orphans
+- Per-salesperson MongoDB collections: `leads_benjamin_s_cardarelli`, `leads_franco_barbagallo`
 
 ## Completed
 - [x] JWT auth with role-based access
