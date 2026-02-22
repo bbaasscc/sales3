@@ -185,6 +185,8 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
               </ChartCard>
             </div>
           )}
+          </>
+          )}
         </div>
       </div>
 
