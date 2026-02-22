@@ -104,9 +104,13 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
     comparison = []
     for sp in salespeople:
         all_sp_leads = await db.leads.find({"salesperson_id": sp["user_id"]}, {"_id": 0}).to_list(10000)
-        # All statuses count in leads/visits
-        leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter)
+        EXCLUDED_FROM_VISITS = {"CANCEL_APPOINTMENT", "RESCHEDULED"}
+        # Total leads excludes Cancel and Rescheduled
+        all_period_leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter)
+        leads = [l for l in all_period_leads if l.get("status") not in EXCLUDED_FROM_VISITS]
         total_leads = len(leads)
+        cancel_count = len([l for l in all_period_leads if l.get("status") == "CANCEL_APPOINTMENT"])
+        rescheduled_count = len([l for l in all_period_leads if l.get("status") == "RESCHEDULED"])
         # Sales/revenue filtered by close_date (consistent with KPIs dashboard)
         sales_leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter, date_field="close_date")
         sales = [l for l in sales_leads if l.get("status") == "SALE"]
