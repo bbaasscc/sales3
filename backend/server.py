@@ -234,8 +234,12 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
                 break
     elif date_filter == "week": start_date = now - timedelta(days=7)
     elif date_filter == "2weeks": start_date = now - timedelta(days=14)
-    elif date_filter == "month": start_date = now - timedelta(days=30)
-    elif date_filter == "year": start_date = now - timedelta(days=365)
+    elif date_filter == "current_year":
+        start_date = datetime(now.year, 1, 1)
+        end_date = datetime(now.year, 12, 31)
+    elif date_filter == "last_year":
+        start_date = datetime(now.year - 1, 1, 1)
+        end_date = datetime(now.year - 1, 12, 31)
 
     # Exclude CANCEL_APPOINTMENT and RESCHEDULED from metric calculations
     df_metric = df[~df['status'].isin(['CANCEL_APPOINTMENT', 'RESCHEDULED'])]
