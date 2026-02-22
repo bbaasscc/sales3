@@ -237,29 +237,33 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     elif date_filter == "month": start_date = now - timedelta(days=30)
     elif date_filter == "year": start_date = now - timedelta(days=365)
 
+    # Exclude CANCEL_APPOINTMENT and RESCHEDULED from metric calculations
+    df_metric = df[~df['status'].isin(['CANCEL_APPOINTMENT', 'RESCHEDULED'])]
+
     if start_date:
         sn = start_date.replace(tzinfo=None) if hasattr(start_date, 'tzinfo') and start_date.tzinfo else start_date
         en = end_date if end_date else None
         if en:
-            df_close = df[df['close_date'].notna() & (df['close_date'] >= sn) & (df['close_date'] <= en)]
-            df_install = df[df['install_date'].notna() & (df['install_date'] >= sn) & (df['install_date'] <= en)]
+            df_close = df_metric[df_metric['close_date'].notna() & (df_metric['close_date'] >= sn) & (df_metric['close_date'] <= en)]
+            df_install = df_metric[df_metric['install_date'].notna() & (df_metric['install_date'] >= sn) & (df_metric['install_date'] <= en)]
         else:
-            df_close = df[df['close_date'].notna() & (df['close_date'] >= sn)]
-            df_install = df[df['install_date'].notna() & (df['install_date'] >= sn)]
+            df_close = df_metric[df_metric['close_date'].notna() & (df_metric['close_date'] >= sn)]
+            df_install = df_metric[df_metric['install_date'].notna() & (df_metric['install_date'] >= sn)]
     else:
-        df_close, df_install = df, df
+        df_close, df_install = df_metric, df_metric
         sn, en = None, None
 
     closed_df = df_close[df_close['status'] == 'SALE']
     lost_df = df_close[df_close['status'] == 'LOST']
     pending_df = df_close[df_close['status'] == 'PENDING']
+    credit_reject_df = df_close[df_close['status'] == 'CREDIT_REJECT']
     installed_df = df_install[df_install['status'] == 'SALE']
 
     if start_date and en:
-        leads_df = df[df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en)]
+        leads_df = df_metric[df_metric['visit_date'].notna() & (df_metric['visit_date'] >= sn) & (df_metric['visit_date'] <= en)]
         total_visits = len(leads_df)
     else:
-        leads_df = df[df['visit_date'].notna()]
+        leads_df = df_metric[df_metric['visit_date'].notna()]
         total_visits = len(leads_df)
 
     if total_visits == 0:
@@ -267,6 +271,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
 
     # closed_deals and revenue both come from close_date filter (consistent)
     closed_deals = len(closed_df)
+    gross_closed = closed_deals + len(credit_reject_df)
     closing_rate = (closed_deals / total_visits * 100) if total_visits > 0 else 0
     total_revenue = closed_df['ticket_value'].sum()
     total_commission = closed_df['commission_value'].sum()
