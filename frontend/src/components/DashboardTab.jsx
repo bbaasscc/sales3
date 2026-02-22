@@ -7,12 +7,14 @@ import {
 } from "recharts";
 import {
   DollarSign, Percent, Target, TrendingUp, Users, PieChart as PieIcon, BarChart3,
-  Gift, Calendar, ShoppingCart, BadgeDollarSign,
+  Gift, Calendar, ShoppingCart, BadgeDollarSign, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { SummaryCard, SpiffBrandCard, ChartCard } from "@/components/shared";
 import { BRAND_COLORS, CHART_COLORS, SPIFF_COLORS } from "@/lib/constants";
 
 export default function DashboardTab({ kpiData, setSelectedSale, setInstallationsOpen }) {
+  const [showSpiffDetails, setShowSpiffDetails] = useState(false);
+  const [showUnderBookDetails, setShowUnderBookDetails] = useState(false);
   const unitTypeData = kpiData?.unit_type_count 
     ? Object.entries(kpiData.unit_type_count).map(([name, value]) => ({
         name: name || 'Unknown', value, revenue: kpiData.unit_type_revenue?.[name] || 0
