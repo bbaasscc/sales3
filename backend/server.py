@@ -37,9 +37,47 @@ async def health_check():
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+import re
 
 # ═══════════════════════════════════════════════
-# UTILITY FUNCTIONS
+# PER-SALESPERSON COLLECTION HELPERS
+# ═══════════════════════════════════════════════
+
+def slugify(name: str) -> str:
+    return re.sub(r'[^a-z0-9]+', '_', name.lower()).strip('_')
+
+async def get_sp_collection_name(salesperson_id: str) -> Optional[str]:
+    user = await db.users.find_one({"user_id": salesperson_id}, {"_id": 0, "name": 1})
+    if not user:
+        return None
+    return f"leads_{slugify(user['name'])}"
+
+async def sync_lead_to_sp_collection(lead: dict):
+    sp_id = lead.get("salesperson_id")
+    if not sp_id:
+        return
+    col_name = await get_sp_collection_name(sp_id)
+    if not col_name:
+        return
+    clean = {k: v for k, v in lead.items() if k != "_id"}
+    await db[col_name].update_one(
+        {"lead_id": clean["lead_id"]},
+        {"$set": clean},
+        upsert=True
+    )
+
+async def sync_all_sp_collections():
+    """Full sync: rebuild per-salesperson collections from leads."""
+    salespeople = await db.users.find({"role": "salesperson"}, {"_id": 0}).to_list(100)
+    for sp in salespeople:
+        col_name = f"leads_{slugify(sp['name'])}"
+        sp_leads = await db.leads.find({"salesperson_id": sp["user_id"]}, {"_id": 0}).to_list(10000)
+        await db[col_name].delete_many({})
+        if sp_leads:
+            await db[col_name].insert_many(sp_leads)
+            for l in sp_leads:
+                l.pop("_id", None)
+        logger.info(f"Synced collection '{col_name}': {len(sp_leads)} leads")
 # ═══════════════════════════════════════════════
 
 def normalize_status(status: str) -> str:
