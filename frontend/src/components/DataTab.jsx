@@ -4,72 +4,36 @@ import { Card } from "@/components/ui/card";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { Target, Plus, Upload, Pencil, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Target, Plus, Upload, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import { BRAND_COLORS, PAY_PERIODS_DATA, API, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS } from "@/lib/constants";
 
 const FILTER_STATUS_OPTIONS = ['all', ...STATUS_OPTIONS];
 const INACTIVE_STATUSES = new Set(['CANCEL_APPOINTMENT', 'RESCHEDULED']);
 
-function EditableCell({ value, field, lead, onSave, type = "text" }) {
+function InlineStatus({ lead, onSave }) {
   const [editing, setEditing] = useState(false);
-  const [val, setVal] = useState(value ?? "");
+  const sc = STATUS_COLORS[lead.status] || STATUS_COLORS.PENDING;
 
-  const handleSave = () => {
-    const newVal = type === "number" ? parseFloat(val) || 0 : val;
-    if (String(newVal) !== String(value ?? "")) {
-      onSave(lead.lead_id, field, newVal);
-    }
-    setEditing(false);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSave();
-    if (e.key === "Escape") { setVal(value ?? ""); setEditing(false); }
-  };
-
-  if (field === "status") {
-    const sc = STATUS_COLORS[value] || STATUS_COLORS.PENDING;
-    return editing ? (
-      <select value={val} autoFocus
-        onChange={(e) => { setVal(e.target.value); }}
-        onBlur={() => {
-          if (val !== (value ?? "")) onSave(lead.lead_id, "status", val);
-          setEditing(false);
-        }}
+  if (editing) {
+    return (
+      <select value={lead.status} autoFocus
+        onChange={(e) => { onSave(lead.lead_id, "status", e.target.value); setEditing(false); }}
+        onBlur={() => setEditing(false)}
+        onClick={(e) => e.stopPropagation()}
         className="w-full px-1 py-0.5 text-xs border rounded focus:outline-none focus:ring-1 focus:ring-blue-400"
         data-testid={`edit-status-${lead.lead_id}`}
       >
         {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>)}
       </select>
-    ) : (
-      <span onClick={(e) => { e.stopPropagation(); setEditing(true); setVal(value ?? ""); }}
-        className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold cursor-pointer hover:ring-2 hover:ring-blue-300 ${sc.bg} ${sc.text}`}
-        data-testid={`cell-status-${lead.lead_id}`}>{STATUS_LABELS[value] || value}</span>
-    );
-  }
-
-  if (!editing) {
-    const display = type === "number" ? `$${(value || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}` :
-      type === "date" ? (value || "\u2014") : (value || "\u2014");
-    return (
-      <span onClick={(e) => { e.stopPropagation(); setEditing(true); setVal(value ?? ""); }}
-        className="cursor-pointer hover:bg-blue-50 hover:ring-1 hover:ring-blue-200 rounded px-1 py-0.5 transition-all inline-block min-w-[30px]"
-        data-testid={`cell-${field}-${lead.lead_id}`}
-      >{display}</span>
     );
   }
 
   return (
-    <input type={type === "date" ? "date" : type === "number" ? "number" : "text"}
-      value={val} autoFocus step={type === "number" ? "0.01" : undefined}
-      onChange={(e) => setVal(e.target.value)}
-      onBlur={handleSave} onKeyDown={handleKeyDown}
-      onFocus={(e) => { if (type === "number") e.target.select(); }}
-      className="w-full px-1 py-0.5 text-xs border rounded focus:outline-none focus:ring-1 focus:ring-blue-400"
-      data-testid={`edit-${field}-${lead.lead_id}`}
-      onClick={(e) => e.stopPropagation()}
-    />
+    <span onClick={(e) => { e.stopPropagation(); setEditing(true); }}
+      className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold cursor-pointer hover:ring-2 hover:ring-blue-300 ${sc.bg} ${sc.text}`}
+      data-testid={`cell-status-${lead.lead_id}`}
+    >{STATUS_LABELS[lead.status] || lead.status}</span>
   );
 }
 
@@ -128,10 +92,10 @@ export default function DataTab({
       return sortDir === 'desc' ? -cmp : cmp;
     });
 
-  const handleInlineSave = useCallback(async (leadId, field, value) => {
+  const handleStatusSave = useCallback(async (leadId, field, value) => {
     try {
       await axios.put(`${API}/leads/${leadId}`, { [field]: value }, { headers: authHeaders });
-      toast.success(`Updated ${field}`);
+      toast.success(`Status updated`);
       fetchAllLeads();
       fetchDashboardData();
     } catch (err) {
@@ -171,10 +135,6 @@ export default function DataTab({
           <button onClick={() => setDateFilter('all')} className="text-blue-500 hover:text-blue-700 font-bold">Show All</button>
         </div>
       )}
-
-      <div className="mb-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg text-[10px] text-emerald-700 flex items-center gap-2">
-        <Pencil className="w-3 h-3" /> Click any cell to edit inline. Changes save automatically.
-      </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex-1 relative">
@@ -229,35 +189,24 @@ export default function DataTab({
               {filteredLeads.map((lead, i) => {
                 const isInactive = INACTIVE_STATUSES.has(lead.status);
                 return (
-                <TableRow key={lead.lead_id || i} className={`border-b border-gray-100 transition-colors ${isInactive ? 'opacity-50 bg-gray-50/50' : 'hover:bg-blue-50/30'}`} data-testid={`data-row-${i}`}>
-                  <TableCell className="py-1.5 px-2 sm:px-3 text-xs sm:text-sm font-medium text-gray-800">
-                    <EditableCell value={lead.name} field="name" lead={lead} onSave={handleInlineSave} />
+                <TableRow key={lead.lead_id || i}
+                  className={`border-b border-gray-100 cursor-pointer transition-colors ${isInactive ? 'opacity-50 bg-gray-50/50 hover:opacity-75' : 'hover:bg-blue-50/50'}`}
+                  onClick={() => setEditingLead({...lead})}
+                  data-testid={`data-row-${i}`}>
+                  <TableCell className="py-2 px-2 sm:px-3 text-xs sm:text-sm font-medium text-gray-800">
+                    <span className="line-clamp-1">{lead.name}</span>
                   </TableCell>
-                  {isAdmin && <TableCell className="py-1.5 px-2 sm:px-3 text-[10px] sm:text-xs text-blue-600 hidden sm:table-cell">{lead.salesperson_name || '\u2014'}</TableCell>}
-                  <TableCell className="py-1.5 px-2 sm:px-3 text-xs text-gray-600 hidden sm:table-cell">
-                    <EditableCell value={lead.city} field="city" lead={lead} onSave={handleInlineSave} />
+                  {isAdmin && <TableCell className="py-2 px-2 sm:px-3 text-[10px] sm:text-xs text-blue-600 hidden sm:table-cell">{lead.salesperson_name || '\u2014'}</TableCell>}
+                  <TableCell className="py-2 px-2 sm:px-3 text-xs text-gray-600 hidden sm:table-cell">{lead.city}</TableCell>
+                  <TableCell className="py-2 px-2 sm:px-3">
+                    <InlineStatus lead={lead} onSave={handleStatusSave} />
                   </TableCell>
-                  <TableCell className="py-1.5 px-2 sm:px-3">
-                    <EditableCell value={lead.status} field="status" lead={lead} onSave={handleInlineSave} />
-                  </TableCell>
-                  <TableCell className="py-1.5 px-2 sm:px-3 text-[10px] sm:text-xs text-gray-600">
-                    <EditableCell value={lead.unit_type} field="unit_type" lead={lead} onSave={handleInlineSave} />
-                  </TableCell>
-                  <TableCell className="py-1.5 px-2 sm:px-3 font-mono text-xs font-semibold text-gray-800">
-                    <EditableCell value={lead.ticket_value} field="ticket_value" lead={lead} onSave={handleInlineSave} type="number" />
-                  </TableCell>
-                  <TableCell className="py-1.5 px-2 sm:px-3 font-mono text-xs text-green-700 hidden md:table-cell">
-                    <EditableCell value={lead.commission_value} field="commission_value" lead={lead} onSave={handleInlineSave} type="number" />
-                  </TableCell>
-                  <TableCell className="py-1.5 px-2 sm:px-3 font-mono text-[10px] text-gray-500 hidden lg:table-cell">
-                    <EditableCell value={lead.visit_date} field="visit_date" lead={lead} onSave={handleInlineSave} type="date" />
-                  </TableCell>
-                  <TableCell className="py-1.5 px-2 sm:px-3 font-mono text-[10px] text-gray-500 hidden lg:table-cell">
-                    <EditableCell value={lead.close_date} field="close_date" lead={lead} onSave={handleInlineSave} type="date" />
-                  </TableCell>
-                  <TableCell className="py-1.5 px-2 sm:px-3 font-mono text-[10px] text-gray-500 hidden xl:table-cell">
-                    <EditableCell value={lead.install_date} field="install_date" lead={lead} onSave={handleInlineSave} type="date" />
-                  </TableCell>
+                  <TableCell className="py-2 px-2 sm:px-3 text-[10px] sm:text-xs text-gray-600">{lead.unit_type}</TableCell>
+                  <TableCell className="py-2 px-2 sm:px-3 font-mono text-xs font-semibold text-gray-800">${(lead.ticket_value || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</TableCell>
+                  <TableCell className="py-2 px-2 sm:px-3 font-mono text-xs text-green-700 hidden md:table-cell">${(lead.commission_value || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</TableCell>
+                  <TableCell className="py-2 px-2 sm:px-3 font-mono text-[10px] text-gray-500 hidden lg:table-cell">{lead.visit_date || '\u2014'}</TableCell>
+                  <TableCell className="py-2 px-2 sm:px-3 font-mono text-[10px] text-gray-500 hidden lg:table-cell">{lead.close_date || '\u2014'}</TableCell>
+                  <TableCell className="py-2 px-2 sm:px-3 font-mono text-[10px] text-gray-500 hidden xl:table-cell">{lead.install_date || '\u2014'}</TableCell>
                 </TableRow>
                 );
               })}
