@@ -78,6 +78,19 @@ export default function DataTab({
   statusFilter, setStatusFilter, setNewLeadOpen, setNewLeadStep, setNewLeadText,
   setEditingLead, setPayPeriod, setDateFilter, authHeaders, fetchAllLeads, fetchDashboardData,
 }) {
+  const [sortField, setSortField] = useState('visit_date');
+  const [sortDir, setSortDir] = useState('desc');
+
+  const toggleSort = (field) => {
+    if (sortField === field) setSortDir(d => d === 'desc' ? 'asc' : 'desc');
+    else { setSortField(field); setSortDir('desc'); }
+  };
+
+  const SortIcon = ({ field }) => {
+    if (sortField !== field) return <ArrowUpDown className="w-3 h-3 ml-0.5 text-gray-300 inline" />;
+    return sortDir === 'desc' ? <ArrowDown className="w-3 h-3 ml-0.5 text-blue-500 inline" /> : <ArrowUp className="w-3 h-3 ml-0.5 text-blue-500 inline" />;
+  };
+
   const filteredLeads = allLeads
     .filter(l => {
       if (payPeriod && payPeriod !== 'all') {
