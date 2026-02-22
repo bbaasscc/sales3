@@ -241,9 +241,10 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         start_date = datetime(now.year - 1, 1, 1)
         end_date = datetime(now.year - 1, 12, 31)
 
-    # All statuses count in visits/leads. Only SALE counts for net revenue.
-    # CANCEL_APPOINTMENT and RESCHEDULED count in visits but not in sales.
-    # CREDIT_REJECT counts in Gross Closing only.
+    # CANCEL_APPOINTMENT and RESCHEDULED do NOT count in total visits/leads.
+    # CREDIT_REJECT counts in total visits AND in Gross Closing.
+    # Only SALE counts for net revenue.
+    EXCLUDED_FROM_VISITS = {'CANCEL_APPOINTMENT', 'RESCHEDULED'}
 
     if start_date:
         sn = start_date.replace(tzinfo=None) if hasattr(start_date, 'tzinfo') and start_date.tzinfo else start_date
@@ -266,11 +267,12 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     rescheduled_df = df[df['status'] == 'RESCHEDULED']
     installed_df = df_install[df_install['status'] == 'SALE']
 
+    # Total visits excludes Cancel and Rescheduled
     if start_date and en:
-        leads_df = df[df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en)]
+        leads_df = df[df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en) & ~df['status'].isin(EXCLUDED_FROM_VISITS)]
         total_visits = len(leads_df)
     else:
-        leads_df = df[df['visit_date'].notna()]
+        leads_df = df[df['visit_date'].notna() & ~df['status'].isin(EXCLUDED_FROM_VISITS)]
         total_visits = len(leads_df)
 
     if total_visits == 0:
