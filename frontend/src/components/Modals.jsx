@@ -575,9 +575,26 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
               </div>
             </div>
             {[['visit_date','Visit Date'],['close_date','Close Date'],['install_date','Install Date'],['follow_up_date','Follow-up Date']].map(([k,l]) => (
-              <div key={k}><label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
-                <input type="date" value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
-                  className="w-full px-2 py-1.5 text-sm border rounded-lg" /></div>
+              <div key={k}>
+                <label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
+                <div className="flex gap-1 items-center">
+                  <input type="date" value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
+                    className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                  {k === 'close_date' && (
+                    <button type="button" onClick={sameDaySale} title="Same Day Sale" className="px-2 py-1.5 text-[9px] font-bold bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 whitespace-nowrap">
+                      Same Day
+                    </button>
+                  )}
+                  {k === 'install_date' && (
+                    <button type="button" onClick={() => setEditingLead(p => ({...p, install_date: 'PENDING'}))} title="Mark as Pending" className="px-2 py-1.5 text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-300 rounded-lg hover:bg-amber-200 whitespace-nowrap">
+                      Pending
+                    </button>
+                  )}
+                </div>
+                {k === 'install_date' && editingLead.install_date === 'PENDING' && (
+                  <p className="text-[9px] text-amber-600 mt-0.5 font-semibold">Install date pending — remember to update when scheduled</p>
+                )}
+              </div>
             ))}
           </div>
           <p className="text-[10px] font-bold uppercase text-gray-400 pt-2">SPIFF Details</p>
