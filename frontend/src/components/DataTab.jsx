@@ -122,9 +122,10 @@ export default function DataTab({
       return (l.name || '').toLowerCase().includes(s) || (l.city || '').toLowerCase().includes(s) || (l.email || '').toLowerCase().includes(s);
     })
     .sort((a, b) => {
-      const da = a.visit_date || '';
-      const db = b.visit_date || '';
-      return db.localeCompare(da);
+      const va = a[sortField] ?? '';
+      const vb = b[sortField] ?? '';
+      const cmp = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb));
+      return sortDir === 'desc' ? -cmp : cmp;
     });
 
   const handleInlineSave = useCallback(async (leadId, field, value) => {
