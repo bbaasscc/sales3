@@ -393,6 +393,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         "unit_type_count": ut_count, "unit_type_revenue": ut_rev,
         "monthly_data": monthly_data, "status_distribution": status_dist,
         "records": records, "pay_periods": pp_data, "selected_pay_period": pay_period,
+        "cancel_count": len(cancel_df), "rescheduled_count": len(rescheduled_df), "credit_reject_count": len(credit_reject_df),
     }
 
 
