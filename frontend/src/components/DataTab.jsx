@@ -139,7 +139,7 @@ export default function DataTab({
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex-1 relative">
           <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by name or city..."
+            placeholder="Search by name, city or client #..."
             className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             data-testid="data-search" />
           <Target className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
