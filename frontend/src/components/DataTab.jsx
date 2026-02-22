@@ -194,6 +194,7 @@ export default function DataTab({
                   className={`border-b border-gray-100 cursor-pointer transition-colors ${isInactive ? 'opacity-50 bg-gray-50/50 hover:opacity-75' : 'hover:bg-blue-50/50'}`}
                   onClick={() => setEditingLead({...lead})}
                   data-testid={`data-row-${i}`}>
+                  <TableCell className="py-2 px-2 sm:px-3 font-mono text-[10px] text-gray-400">{lead.customer_number || '\u2014'}</TableCell>
                   <TableCell className="py-2 px-2 sm:px-3 text-xs sm:text-sm font-medium text-gray-800">
                     <span className="line-clamp-1">{lead.name}</span>
                   </TableCell>
