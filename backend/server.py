@@ -329,7 +329,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         ut_count[u] = ut_count.get(u, 0) + 1
         ut_rev[u] = ut_rev.get(u, 0) + safe_float(r.get('ticket_value', 0))
 
-    status_dist = {'SALE': len(closed_df), 'LOST': len(lost_df), 'PENDING': len(pending_df)}
+    status_dist = {'SALE': len(closed_df), 'LOST': len(lost_df), 'PENDING': len(pending_df), 'CREDIT_REJECT': len(credit_reject_df)}
 
     monthly = {}
     for _, r in closed_df.iterrows():
