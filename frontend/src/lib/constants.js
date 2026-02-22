@@ -100,3 +100,27 @@ export const getCurrentPayPeriod = () => {
 
 export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
+
+// Lead statuses
+export const STATUS_OPTIONS = ["PENDING", "SALE", "LOST", "CANCEL_APPOINTMENT", "RESCHEDULED", "CREDIT_REJECT"];
+export const STATUS_LABELS = {
+  PENDING: "Pending", SALE: "Sold", LOST: "Lost",
+  CANCEL_APPOINTMENT: "Cancel Appt", RESCHEDULED: "Rescheduled", CREDIT_REJECT: "Credit Reject",
+};
+export const STATUS_COLORS = {
+  SALE: { bg: 'bg-green-100', text: 'text-green-700', solid: '#22C55E' },
+  LOST: { bg: 'bg-red-100', text: 'text-red-700', solid: '#EF4444' },
+  PENDING: { bg: 'bg-amber-100', text: 'text-amber-700', solid: '#F59E0B' },
+  CANCEL_APPOINTMENT: { bg: 'bg-gray-100', text: 'text-gray-500', solid: '#6B7280' },
+  RESCHEDULED: { bg: 'bg-blue-100', text: 'text-blue-700', solid: '#3B82F6' },
+  CREDIT_REJECT: { bg: 'bg-purple-100', text: 'text-purple-700', solid: '#8B5CF6' },
+};
+
+// Quick Filter options
+export const QUICK_FILTERS = [
+  { value: 'all', label: 'All Time' },
+  { value: 'week', label: 'Last Week' },
+  { value: '2weeks', label: 'Last 2 Weeks' },
+  { value: 'current_year', label: 'Current Year' },
+  { value: 'last_year', label: 'Last Year' },
+];
