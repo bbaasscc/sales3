@@ -3,7 +3,7 @@ import {
   X, Mail, MessageSquare, Check, MapPin, FileText, AlertTriangle, User,
   Settings, Save, Plus, Trash2, ClipboardPaste, Copy, Send,
 } from "lucide-react";
-import { BRAND_COLORS, PIPELINE_STEPS, ALL_PIPELINE_ACTIONS } from "@/lib/constants";
+import { BRAND_COLORS, PIPELINE_STEPS, ALL_PIPELINE_ACTIONS, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS } from "@/lib/constants";
 
 export function PipelineModal({
   actionMenu, setActionMenu, pipelineSchedule, setPipelineSchedule,
