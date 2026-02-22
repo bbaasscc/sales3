@@ -83,7 +83,7 @@ export default function DataTab({
     .filter(l => {
       if (!searchTerm) return true;
       const s = searchTerm.toLowerCase();
-      return (l.name || '').toLowerCase().includes(s) || (l.city || '').toLowerCase().includes(s) || (l.email || '').toLowerCase().includes(s);
+      return (l.name || '').toLowerCase().includes(s) || (l.city || '').toLowerCase().includes(s) || (l.email || '').toLowerCase().includes(s) || (l.customer_number || '').toLowerCase().includes(s);
     })
     .sort((a, b) => {
       const va = a[sortField] ?? '';
