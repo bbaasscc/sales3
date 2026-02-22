@@ -132,11 +132,26 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
               <p className="text-2xl sm:text-3xl font-mono font-bold text-amber-800">${kpiData.price_margin_commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
           </div>
+          )}
 
           <div className="border-t border-amber-200/60 my-5 sm:my-6"></div>
 
-          <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#B45309' }}>SPIFF Breakdown</p>
-          
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ color: '#B45309' }}>SPIFF Breakdown</p>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono font-bold text-amber-700">
+                {Object.values(kpiData.spiff_breakdown || {}).reduce((s, d) => s + d.count, 0)} sales &mdash; ${kpiData.spiff_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+              <button onClick={() => setShowSpiffDetails(!showSpiffDetails)}
+                className="text-[10px] px-2 py-1 bg-amber-100 text-amber-700 rounded-full font-bold hover:bg-amber-200 flex items-center gap-1">
+                {showSpiffDetails ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                Details
+              </button>
+            </div>
+          </div>
+
+          {showSpiffDetails && (
+          <>
           <div className="rounded-xl p-4 sm:p-5 mb-4" style={{ background: 'linear-gradient(135deg, #92400E, #D97706)' }}>
             <div className="flex items-center justify-between">
               <div>
