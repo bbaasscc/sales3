@@ -262,6 +262,8 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     lost_df = df_close[df_close['status'] == 'LOST']
     pending_df = df_close[df_close['status'] == 'PENDING']
     credit_reject_df = df_close[df_close['status'] == 'CREDIT_REJECT']
+    cancel_df = df[df['status'] == 'CANCEL_APPOINTMENT']
+    rescheduled_df = df[df['status'] == 'RESCHEDULED']
     installed_df = df_install[df_install['status'] == 'SALE']
 
     if start_date and en:
