@@ -50,11 +50,31 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
             <SummaryCard title="Total Revenue" value={kpiData.total_revenue} prefix="$" icon={DollarSign} description="Closed deals revenue" highlight />
             <SummaryCard title="Commission" value={kpiData.total_commission} prefix="$" icon={BadgeDollarSign} description="Total commission earned" highlight />
             <SummaryCard title="Closed Deals" value={kpiData.closed_deals} icon={Target} description="SALE status deals" />
-            <SummaryCard title="Leads" value={kpiData.total_visits} icon={Users} description="Total visits" />
+            <SummaryCard title="Leads" value={kpiData.total_visits} icon={Users} description="Excl. Cancel/Resched" />
             <SummaryCard title="Closing Rate" value={kpiData.closing_rate} suffix="%" icon={Percent} description="Net close rate" />
             <SummaryCard title="Gross Close" value={kpiData.total_visits > 0 ? ((kpiData.gross_closed || kpiData.closed_deals) / kpiData.total_visits * 100).toFixed(1) : '0.0'} suffix="%" icon={Percent} description="Incl. Credit Reject" />
             <SummaryCard title="Avg Ticket" value={kpiData.average_ticket} prefix="$" icon={ShoppingCart} description="Per deal average" />
           </div>
+
+          {(kpiData.credit_reject_count > 0 || kpiData.cancel_count > 0 || kpiData.rescheduled_count > 0) && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {kpiData.credit_reject_count > 0 && (
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700">
+                  Credit Reject: {kpiData.credit_reject_count}
+                </span>
+              )}
+              {kpiData.cancel_count > 0 && (
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-200 text-gray-600">
+                  Cancelled: {kpiData.cancel_count}
+                </span>
+              )}
+              {kpiData.rescheduled_count > 0 && (
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700">
+                  Rescheduled: {kpiData.rescheduled_count}
+                </span>
+              )}
+            </div>
+          )}
 
           <div className="border-t border-emerald-200/60 my-5 sm:my-6"></div>
 
