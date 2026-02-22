@@ -519,6 +519,8 @@ async def create_lead(lead: LeadCreate, user=Depends(get_current_user)):
         except ValueError: pass
     await db.leads.insert_one(doc)
     doc.pop('_id', None)
+    # Sync to per-salesperson collection
+    await sync_lead_to_sp_collection(doc)
     if doc.get('visit_date'):
         schedule = generate_pipeline_schedule(doc['visit_date'])
         await db.pipeline_schedules.update_one({"client_name": doc['name']}, {"$set": {"client_name": doc['name'], "steps": schedule, "is_custom": False}}, upsert=True)
