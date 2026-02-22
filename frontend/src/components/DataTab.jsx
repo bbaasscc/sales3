@@ -173,6 +173,7 @@ export default function DataTab({
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-50">
+                <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 cursor-pointer select-none" onClick={() => toggleSort('customer_number')}># <SortIcon field="customer_number" /></TableHead>
                 <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 cursor-pointer select-none" onClick={() => toggleSort('name')}>Name <SortIcon field="name" /></TableHead>
                 {isAdmin && <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden sm:table-cell">Salesperson</TableHead>}
                 <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 px-2 sm:px-3 hidden sm:table-cell cursor-pointer select-none" onClick={() => toggleSort('city')}>City <SortIcon field="city" /></TableHead>
