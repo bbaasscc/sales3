@@ -158,21 +158,22 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
 
           <div className="flex items-center justify-between mb-3">
             <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ color: '#B45309' }}>SPIFF Breakdown</p>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold text-amber-700">
-                {Object.values(kpiData.spiff_breakdown || {}).reduce((s, d) => s + d.count, 0)} sales &mdash; ${kpiData.spiff_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
-              <button onClick={() => setShowSpiffDetails(!showSpiffDetails)}
-                className="text-[10px] px-2 py-1 bg-amber-100 text-amber-700 rounded-full font-bold hover:bg-amber-200 flex items-center gap-1">
-                {showSpiffDetails ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                Details
-              </button>
-            </div>
+            <button onClick={() => setShowSpiffDetails(!showSpiffDetails)}
+              className="text-[10px] px-2 py-1 bg-amber-100 text-amber-700 rounded-full font-bold hover:bg-amber-200 flex items-center gap-1">
+              {showSpiffDetails ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              More Details
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+            {Object.entries(kpiData.spiff_breakdown || {}).map(([brand, data]) => (
+              <SpiffBrandCard key={brand} brand={brand} data={data} color={SPIFF_COLORS[brand] || '#94A3B8'} />
+            ))}
           </div>
 
           {showSpiffDetails && (
           <>
-          <div className="rounded-xl p-4 sm:p-5 mb-4" style={{ background: 'linear-gradient(135deg, #92400E, #D97706)' }}>
+          <div className="rounded-xl p-4 sm:p-5 mt-4" style={{ background: 'linear-gradient(135deg, #92400E, #D97706)' }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white/80 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1">Total SPIFF</p>
@@ -180,12 +181,6 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
               </div>
               <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-white/30" />
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-            {Object.entries(kpiData.spiff_breakdown || {}).map(([brand, data]) => (
-              <SpiffBrandCard key={brand} brand={brand} data={data} color={SPIFF_COLORS[brand] || '#94A3B8'} />
-            ))}
           </div>
 
           {spiffChartData.length > 0 && (
