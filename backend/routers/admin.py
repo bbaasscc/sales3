@@ -59,16 +59,28 @@ def filter_leads_by_period(leads, pay_period=None, date_filter=None, date_field=
                         pass
             return filtered
     if date_filter and date_filter != "all":
-        days_map = {"week": 7, "2weeks": 14, "month": 30, "year": 365}
-        days = days_map.get(date_filter, 365)
-        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
+        if date_filter == "current_year":
+            start_dt = datetime(now.year, 1, 1)
+            end_dt = datetime(now.year, 12, 31)
+        elif date_filter == "last_year":
+            start_dt = datetime(now.year - 1, 1, 1)
+            end_dt = datetime(now.year - 1, 12, 31)
+        else:
+            days_map = {"week": 7, "2weeks": 14}
+            days = days_map.get(date_filter, 365)
+            start_dt = now - timedelta(days=days)
+            end_dt = None
         filtered = []
         for l in leads:
             vd = l.get(date_field, "")
             if vd:
                 try:
                     d = datetime.strptime(str(vd)[:10], "%Y-%m-%d")
-                    if d >= cutoff.replace(tzinfo=None):
+                    if end_dt:
+                        if start_dt <= d <= end_dt:
+                            filtered.append(l)
+                    elif d >= start_dt:
                         filtered.append(l)
                 except (ValueError, TypeError):
                     pass
