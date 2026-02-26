@@ -254,10 +254,10 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         sn = start_date.replace(tzinfo=None) if hasattr(start_date, 'tzinfo') and start_date.tzinfo else start_date
         en = end_date if end_date else None
         if en:
-            df_close = df[df['close_date'].notna() & (df['close_date'] >= sn) & (df['close_date'] <= en)]
+            df_close = df[df['effective_close_date'].notna() & (df['effective_close_date'] >= sn) & (df['effective_close_date'] <= en)]
             df_install = df[df['install_date'].notna() & (df['install_date'] >= sn) & (df['install_date'] <= en)]
         else:
-            df_close = df[df['close_date'].notna() & (df['close_date'] >= sn)]
+            df_close = df[df['effective_close_date'].notna() & (df['effective_close_date'] >= sn)]
             df_install = df[df['install_date'].notna() & (df['install_date'] >= sn)]
     else:
         df_close, df_install = df, df
