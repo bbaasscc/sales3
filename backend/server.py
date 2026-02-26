@@ -760,6 +760,16 @@ async def seed_database():
             await db.pipeline_schedules.update_one(
                 {"client_name": ps.get("client_name")}, {"$set": ps}, upsert=True
             )
+    if data.get("followup_actions"):
+        existing_actions = await db.followup_actions.count_documents({})
+        if existing_actions == 0:
+            await db.followup_actions.insert_many(data["followup_actions"])
+            logger.info(f"Seeded {len(data['followup_actions'])} followup actions.")
+    if data.get("client_notes"):
+        existing_notes = await db.client_notes.count_documents({})
+        if existing_notes == 0:
+            await db.client_notes.insert_many(data["client_notes"])
+            logger.info(f"Seeded {len(data['client_notes'])} client notes.")
     logger.info("Seed check complete.")
 
     # Sync per-salesperson collections
