@@ -128,7 +128,9 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         total_revenue = sum(l.get("ticket_value", 0) or 0 for l in sales)
         total_commission = sum(l.get("commission_value", 0) or 0 for l in sales)
         closing_rate = (closed_deals / total_leads * 100) if total_leads > 0 else 0
-        avg_ticket = (total_revenue / closed_deals) if closed_deals > 0 else 0
+        # Avg ticket excludes $0 value sales (sales with pending financial data)
+        deals_with_value = [l for l in sales if (l.get("ticket_value", 0) or 0) > 0]
+        avg_ticket = (total_revenue / len(deals_with_value)) if deals_with_value else 0
         pm_jobs = len([l for l in sales if (l.get("commission_percent", 0) or 0) <= 5])
         pm_pct = (pm_jobs / closed_deals * 100) if closed_deals > 0 else 0
         avg_gp = (sum((l.get("commission_percent", 0) or 0) for l in sales) / closed_deals) if closed_deals > 0 else 0
