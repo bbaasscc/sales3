@@ -106,7 +106,7 @@ function MainDashboard({ token, user, onLogout }) {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [dateFilter, setDateFilter] = useState("all");
-  const [payPeriod, setPayPeriod] = useState(() => getCurrentPayPeriod());
+  const [payPeriod, setPayPeriod] = useState("all");
   const [kpiData, setKpiData] = useState(null);
   const [error, setError] = useState(null);
   const [filtersOpen, setFiltersOpen] = useState(false);

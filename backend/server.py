@@ -269,8 +269,11 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     installed_df = df_install[df_install['status'] == 'SALE']
 
     # Total visits excludes Cancel and Rescheduled
-    if start_date and en:
-        leads_df = df[df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en) & ~df['status'].isin(EXCLUDED_FROM_VISITS)]
+    if start_date:
+        if en:
+            leads_df = df[df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en) & ~df['status'].isin(EXCLUDED_FROM_VISITS)]
+        else:
+            leads_df = df[df['visit_date'].notna() & (df['visit_date'] >= sn) & ~df['status'].isin(EXCLUDED_FROM_VISITS)]
         total_visits = len(leads_df)
     else:
         leads_df = df[df['visit_date'].notna() & ~df['status'].isin(EXCLUDED_FROM_VISITS)]
