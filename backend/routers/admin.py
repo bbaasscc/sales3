@@ -172,7 +172,7 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         "total_leads": len(all_leads_filtered), "closed_deals": len(all_sales), "gross_closed": len(all_sales) + len(all_credit_rejects), "lost_deals": len(all_lost),
         "total_revenue": round(total_rev, 2), "total_commission": round(total_comm, 2),
         "closing_rate": round((len(all_sales) / len(all_leads_filtered) * 100) if all_leads_filtered else 0, 1),
-        "avg_ticket": round((total_rev / len(all_sales)) if all_sales else 0, 2),
+        "avg_ticket": round((total_rev / len([l for l in all_sales if (l.get("ticket_value", 0) or 0) > 0])) if [l for l in all_sales if (l.get("ticket_value", 0) or 0) > 0] else 0, 2),
         "pm_jobs": len(all_pm), "pm_pct": round((len(all_pm) / len(all_sales) * 100) if all_sales else 0, 1),
         "gp_pct": round((sum(l.get("commission_percent", 0) for l in all_sales) / len(all_sales)) if all_sales else 0, 1),
     }
