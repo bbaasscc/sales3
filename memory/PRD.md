@@ -1,80 +1,47 @@
-# Sales Dashboard PRD - Four Seasons Heating & Cooling
+# Sales Dashboard PRD
+
+## Original Problem Statement
+Sales dashboard application for a company with "Admin" and "Salesperson" roles, featuring role-based dashboards, lead management, and data tracking.
 
 ## Architecture
-- **Frontend**: React, Recharts, Shadcn UI, Tailwind CSS
-- **Backend**: FastAPI (modular), PyJWT, Pandas
-- **Database**: MongoDB
-- **Auth**: JWT + bcrypt
+- **Frontend**: React, Tailwind CSS, Recharts, Shadcn/UI
+- **Backend**: Python FastAPI, Pymongo, pandas
+- **Database**: MongoDB Atlas
+- **Sync**: Periodic auto-sync (5min) from production to preview seed file
 
-## Backend Structure
-```
-backend/
-  server.py          (606 lines) Entry point + leads/dashboard/import routes
-  database.py        (11 lines) MongoDB connection
-  auth.py            (55 lines) JWT utilities + user dependencies
-  models.py          (96 lines) All Pydantic models
-  routers/
-    auth_routes.py   (53 lines) Register, login, me, role update
-    admin.py         (166 lines) Salespeople list, comparison + ranking
-    pipeline.py      (81 lines) Follow-up actions, client notes, schedules
-```
+## What's Implemented
+- Multi-user auth (Admin, Salesperson roles)
+- Salesperson dashboard with KPIs, charts, financial summaries
+- Admin overview with company-wide aggregates
+- Admin comparison table for salespeople ranking
+- Data table with sorting, search, inline status editing
+- Follow-ups tab with pipeline management
+- Lead CRUD (create, edit, delete, import XLS)
+- New statuses: Cancel Appt, Rescheduled, Credit Reject
+- Auto data seeding and periodic sync
+- Health endpoint for Kubernetes
 
-## Frontend Structure
-```
-src/
-  App.js              (580 lines) Auth wrapper + MainDashboard orchestrator
-  lib/constants.js     Brand colors, pipeline steps, pay periods
-  components/
-    shared.js          SummaryCard, ChartCard, SectionHeader, SpiffBrandCard
-    DashboardTab.jsx   Salesperson dashboard (Blocks 1-4)
-    FollowupsTab.jsx   Follow-ups pipeline
-    DataTab.jsx        Data table with CRUD
-    Modals.jsx         All modal components (7 modals)
-  pages/
-    LoginPage.js       Login/Register
-    AdminPanel.js      Admin Salespeople ranking + User Management
-    AdminOverview.js   Admin Overview + equipment + accessories
-```
+## Bug Fixes Applied (Feb 26, 2026)
+- **Default filter to "All Periods"**: Changed `payPeriod` init from `getCurrentPayPeriod()` to `"all"`
+- **Quick filter logic fix**: Fixed `total_visits` not being filtered for "week"/"2weeks" filters due to `end_date` being None causing the condition to fall through to unfiltered branch
+- **Cancel/Rescheduled date filtering**: Now also filtered by date range when a quick filter is active
 
-## Users
-| Email | Role | Pass |
-|---|---|---|
-| bsanchezcar@gmail.com | admin | Benja123 |
-| bcardarelli@fshac.com | salesperson | Benja123 |
-| fbarbagallo@fshac.com | salesperson | Franco123 |
+## Pending Tasks
+### P0
+- Follow-up management (add/remove leads from follow-up list)
 
-## Salesperson (3 tabs): Dashboard | Follow-ups | Data
-- **Dashboard**: My Money KPIs, Payments, SPIFF Breakdown, What Am I Selling (charts), Closed Sales table
-- **Follow-ups**: Action Required pipeline, Pipeline Complete, Client Detail modal with notes
-- **Data**: Search, status filters, New Lead, Import XLS, Edit Lead modal
+### P1
+- Add Accessories/Promo Codes fields to lead modal
+- "Pending" Installation Date option with reminders
 
-## Admin (3 tabs): Overview | Salespeople | All Data
-- **Overview**: Company Totals, Key Rates (R%, Avg Ticket, GP%, PM Jobs, PM%), Lead Status pie, Equipment Revenue + Breakdown, Accessories Sold
-- **Salespeople**: Full ranking table (Overall, R%, Sales, Avg Ticket, Net Value, Total Jobs, PM Jobs, GP%, PM%), User Management
-- **All Data**: All leads with Salesperson column
+### P2
+- Follow-up for sold clients (upselling)
+- Commission Calculator
+- Notifications
+- Export to CSV/Excel
+- Gamification
 
-## Data
-- Benjamin S. Cardarelli: 62 leads
-- Franco Barbagallo: 67 leads
-- 129 leads total, 0 orphans
-- Per-salesperson MongoDB collections: `leads_benjamin_s_cardarelli`, `leads_franco_barbagallo`
-
-## Completed
-- [x] JWT auth with role-based access
-- [x] Admin/salesperson separate experiences
-- [x] Data isolation per salesperson
-- [x] Frontend refactored (App.js 2160→580 lines)
-- [x] Backend refactored into modules (server.py 1435→606 lines)
-- [x] Admin ranking with all metrics + rank badges
-- [x] Admin equipment types + accessories
-- [x] Comprehensive testing: 100% pass (28 backend + full frontend)
-- [x] Added /health endpoint for Kubernetes deployment (Feb 2026)
-- [x] Auto-seed on startup: seed_data.json populates empty Atlas DB on deploy (Feb 2026)
-
-## P1 TODO
-- [ ] Commission Calculator
-- [ ] Export CSV/PDF
-
-## P2 BACKLOG
-- [ ] Notifications/reminders
-- [ ] Gamification (badges/leaderboards)
+## Credentials
+- Admin: Bsanchezcar@gmail.com / Benja123
+- Salesperson 1: Bcardarelli@fshac.com / Benja123
+- Salesperson 2: Fbarbagallo@fshac.com / Franco123
