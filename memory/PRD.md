@@ -25,6 +25,7 @@ Sales dashboard application for a company with "Admin" and "Salesperson" roles, 
 - **Default filter to "All Periods"**: Changed `payPeriod` init from `getCurrentPayPeriod()` to `"all"`
 - **Quick filter logic fix**: Fixed `total_visits` not being filtered for "week"/"2weeks" filters due to `end_date` being None causing the condition to fall through to unfiltered branch
 - **Cancel/Rescheduled date filtering**: Now also filtered by date range when a quick filter is active
+- **Incomplete sales data fix**: When filtering by close_date, leads without close_date now fallback to visit_date. This was causing Franco's sales count to drop from 14 to 11 in "Current Year" filter. Fixed in both `admin.py` (filter_leads_by_period) and `server.py` (process_sales_data via effective_close_date column)
 
 ## Pending Tasks
 ### P0
