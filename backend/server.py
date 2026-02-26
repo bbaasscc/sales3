@@ -789,9 +789,11 @@ async def auto_save_seed():
             leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
             configs = await db.excel_config.find({}, {"_id": 0}).to_list(10)
             pipelines = await db.pipeline_schedules.find({}, {"_id": 0}).to_list(10000)
+            followup_actions = await db.followup_actions.find({}, {"_id": 0}).to_list(10000)
+            client_notes = await db.client_notes.find({}, {"_id": 0}).to_list(10000)
             seed_file = ROOT_DIR / "seed_data.json"
             with open(seed_file, "w") as f:
-                json.dump({"users": users, "leads": leads, "excel_config": configs, "pipeline_schedules": pipelines}, f, default=str)
+                json.dump({"users": users, "leads": leads, "excel_config": configs, "pipeline_schedules": pipelines, "followup_actions": followup_actions, "client_notes": client_notes}, f, default=str)
             await sync_all_sp_collections()
             logger.info(f"Auto-save: {len(leads)} leads saved to seed.")
         except Exception as e:
