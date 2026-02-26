@@ -42,6 +42,13 @@ PAY_PERIODS = [
 ]
 
 
+def _get_lead_date(lead, date_field):
+    """Get date value with fallback: if date_field is missing, use visit_date."""
+    val = lead.get(date_field, "")
+    if not val and date_field != "visit_date":
+        val = lead.get("visit_date", "")
+    return val
+
 def filter_leads_by_period(leads, pay_period=None, date_filter=None, date_field="visit_date"):
     if pay_period and pay_period != "all":
         period = next((p for p in PAY_PERIODS if p[0] == pay_period), None)
@@ -49,7 +56,7 @@ def filter_leads_by_period(leads, pay_period=None, date_filter=None, date_field=
             start, end = period[1], period[2]
             filtered = []
             for l in leads:
-                vd = l.get(date_field, "")
+                vd = _get_lead_date(l, date_field)
                 if vd:
                     try:
                         d = datetime.strptime(str(vd)[:10], "%Y-%m-%d")
@@ -73,7 +80,7 @@ def filter_leads_by_period(leads, pay_period=None, date_filter=None, date_field=
             end_dt = None
         filtered = []
         for l in leads:
-            vd = l.get(date_field, "")
+            vd = _get_lead_date(l, date_field)
             if vd:
                 try:
                     d = datetime.strptime(str(vd)[:10], "%Y-%m-%d")
