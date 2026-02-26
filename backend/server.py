@@ -264,8 +264,16 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     lost_df = df_close[df_close['status'] == 'LOST']
     pending_df = df_close[df_close['status'] == 'PENDING']
     credit_reject_df = df_close[df_close['status'] == 'CREDIT_REJECT']
-    cancel_df = df[df['status'] == 'CANCEL_APPOINTMENT']
-    rescheduled_df = df[df['status'] == 'RESCHEDULED']
+    if start_date:
+        if en:
+            cancel_df = df[df['status'].eq('CANCEL_APPOINTMENT') & df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en)]
+            rescheduled_df = df[df['status'].eq('RESCHEDULED') & df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en)]
+        else:
+            cancel_df = df[df['status'].eq('CANCEL_APPOINTMENT') & df['visit_date'].notna() & (df['visit_date'] >= sn)]
+            rescheduled_df = df[df['status'].eq('RESCHEDULED') & df['visit_date'].notna() & (df['visit_date'] >= sn)]
+    else:
+        cancel_df = df[df['status'] == 'CANCEL_APPOINTMENT']
+        rescheduled_df = df[df['status'] == 'RESCHEDULED']
     installed_df = df_install[df_install['status'] == 'SALE']
 
     # Total visits excludes Cancel and Rescheduled
