@@ -18,14 +18,21 @@ Sales dashboard application for a company with "Admin" and "Salesperson" roles, 
 - Follow-ups tab with pipeline management
 - Lead CRUD (create, edit, delete, import XLS)
 - New statuses: Cancel Appt, Rescheduled, Credit Reject
-- Auto data seeding and periodic sync
+- Auto data seeding and periodic sync (includes followup_actions and client_notes)
 - Health endpoint for Kubernetes
 
 ## Bug Fixes Applied (Feb 26, 2026)
 - **Default filter to "All Periods"**: Changed `payPeriod` init from `getCurrentPayPeriod()` to `"all"`
 - **Quick filter logic fix**: Fixed `total_visits` not being filtered for "week"/"2weeks" filters due to `end_date` being None causing the condition to fall through to unfiltered branch
 - **Cancel/Rescheduled date filtering**: Now also filtered by date range when a quick filter is active
-- **Incomplete sales data fix**: When filtering by close_date, leads without close_date now fallback to visit_date. This was causing Franco's sales count to drop from 14 to 11 in "Current Year" filter. Fixed in both `admin.py` (filter_leads_by_period) and `server.py` (process_sales_data via effective_close_date column)
+- **Incomplete sales data fix**: When filtering by close_date, leads without close_date now fallback to visit_date. Fixed in both `admin.py` and `server.py`
+- **Production data sync**: Pulled all data from deployed app (ben-cardarelli-sales.emergent.host). Added 5 missing Benjamin leads, updated 128 leads with latest statuses from production
+- **Avg ticket fix**: Now excludes $0 value sales from avg ticket calculation (sales with pending financial data still count as sales)
+
+## Current Data State (Feb 26, 2026)
+- Benjamin: 66 leads (25 SALE, 13 LOST, 24 PENDING, 3 CREDIT_REJECT, 1 CANCEL_APPT)
+- Franco: 67 leads (21 SALE [5 pending values], 1 LOST, 29 PENDING, 16 CANCEL_APPT)
+- Total: 133 leads
 
 ## Pending Tasks
 ### P0
