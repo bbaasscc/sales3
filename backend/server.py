@@ -226,6 +226,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     for dc in ['visit_date', 'close_date', 'install_date', 'follow_up_date']:
         df[dc] = df[dc].apply(safe_date)
 
+    # Create effective close_date: fallback to visit_date when close_date is missing
+    df['effective_close_date'] = df['close_date'].combine_first(df['visit_date'])
+
     now = datetime.now(timezone.utc)
     start_date, end_date = None, None
     if pay_period and pay_period != "all":
