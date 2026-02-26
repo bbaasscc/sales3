@@ -299,7 +299,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     closing_rate = (closed_deals / total_visits * 100) if total_visits > 0 else 0
     total_revenue = closed_df['ticket_value'].sum()
     total_commission = closed_df['commission_value'].sum()
-    average_ticket = total_revenue / closed_deals if closed_deals > 0 else 0
+    # Avg ticket excludes $0 value sales (sales with pending financial data)
+    deals_with_value = closed_df[closed_df['ticket_value'] > 0]
+    average_ticket = total_revenue / len(deals_with_value) if len(deals_with_value) > 0 else 0
     valid_cp = closed_df[closed_df['commission_percent'] > 0]['commission_percent']
     avg_cp = valid_cp.mean() if len(valid_cp) > 0 else 5.0
 
