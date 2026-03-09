@@ -329,6 +329,39 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         spiff_breakdown['Mitsubishi'] = {'count': mits_count, 'commission': round(mits_total, 2), 'percent_of_sales': round((mits_count / closed_deals * 100), 1) if closed_deals > 0 else 0}
         spiff_total += mits_total
 
+    # Build spiff_records: list of sales per SPIFF brand
+    spiff_records = {}
+    spiff_col_map = [('APCO X','apco_x'),('Samsung','samsung'),('Surge Protector','surge_protector'),('Duct Cleaning','duct_cleaning')]
+    for label, col in spiff_col_map:
+        brand_df = closed_df[closed_df[col] > 0]
+        if len(brand_df) > 0:
+            recs = []
+            for _, r in brand_df.iterrows():
+                recs.append({
+                    'name': str(r.get('name', '')),
+                    'city': str(r.get('city', '')) if pd.notna(r.get('city')) else '',
+                    'unit_type': str(r.get('unit_type', '')) if pd.notna(r.get('unit_type')) else '',
+                    'ticket_value': safe_float(r.get('ticket_value', 0)),
+                    'spiff_value': safe_float(r.get(col, 0)),
+                    'close_date': r.get('close_date').strftime('%Y-%m-%d') if pd.notna(r.get('close_date')) else '',
+                })
+            spiff_records[label] = recs
+    # Mitsubishi combined
+    mits_df = closed_df[(closed_df['mitsubishi'] > 0) | (closed_df['self_gen_mits'] > 0)]
+    if len(mits_df) > 0:
+        recs = []
+        for _, r in mits_df.iterrows():
+            mv = safe_float(r.get('mitsubishi', 0)) + safe_float(r.get('self_gen_mits', 0))
+            recs.append({
+                'name': str(r.get('name', '')),
+                'city': str(r.get('city', '')) if pd.notna(r.get('city')) else '',
+                'unit_type': str(r.get('unit_type', '')) if pd.notna(r.get('unit_type')) else '',
+                'ticket_value': safe_float(r.get('ticket_value', 0)),
+                'spiff_value': round(mv, 2),
+                'close_date': r.get('close_date').strftime('%Y-%m-%d') if pd.notna(r.get('close_date')) else '',
+            })
+        spiff_records['Mitsubishi'] = recs
+
     follow_ups = []
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
     if start_date and en:
@@ -413,7 +446,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         "price_margin_total": round(pm_df['ticket_value'].sum(), 2),
         "price_margin_sales_count": len(pm_df),
         "price_margin_commission": round(pm_df['commission_value'].sum(), 2),
-        "spiff_total": round(spiff_total, 2), "spiff_breakdown": spiff_breakdown,
+        "spiff_total": round(spiff_total, 2), "spiff_breakdown": spiff_breakdown, "spiff_records": spiff_records,
         "follow_ups": follow_ups, "avg_commission_percent": round(avg_cp, 2),
         "unit_type_count": ut_count, "unit_type_revenue": ut_rev,
         "monthly_data": monthly_data, "status_distribution": status_dist,

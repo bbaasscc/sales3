@@ -8,7 +8,7 @@ import {
 } from "recharts";
 import {
   DollarSign, Percent, Target, TrendingUp, Users, PieChart as PieIcon, BarChart3,
-  Gift, Calendar, ShoppingCart, BadgeDollarSign, ChevronDown, ChevronUp,
+  Gift, Calendar, ShoppingCart, BadgeDollarSign, ChevronDown, ChevronUp, X,
 } from "lucide-react";
 import { SummaryCard, SpiffBrandCard, ChartCard } from "@/components/shared";
 import { BRAND_COLORS, CHART_COLORS, SPIFF_COLORS } from "@/lib/constants";
@@ -16,6 +16,7 @@ import { BRAND_COLORS, CHART_COLORS, SPIFF_COLORS } from "@/lib/constants";
 export default function DashboardTab({ kpiData, setSelectedSale, setInstallationsOpen }) {
   const [showSpiffDetails, setShowSpiffDetails] = useState(false);
   const [showUnderBookDetails, setShowUnderBookDetails] = useState(false);
+  const [spiffModal, setSpiffModal] = useState(null); // { brand, records }
   const unitTypeData = kpiData?.unit_type_count 
     ? Object.entries(kpiData.unit_type_count).map(([name, value]) => ({
         name: name || 'Unknown', value, revenue: kpiData.unit_type_revenue?.[name] || 0
@@ -163,7 +164,11 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
             {Object.entries(kpiData.spiff_breakdown || {}).map(([brand, data]) => (
-              <SpiffBrandCard key={brand} brand={brand} data={data} color={SPIFF_COLORS[brand] || '#94A3B8'} />
+              <SpiffBrandCard key={brand} brand={brand} data={data} color={SPIFF_COLORS[brand] || '#94A3B8'}
+                onClick={(b) => {
+                  const recs = kpiData.spiff_records?.[b] || [];
+                  setSpiffModal({ brand: b, records: recs, data });
+                }} />
             ))}
           </div>
 
@@ -338,6 +343,59 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
           </Card>
         </div>
       </div>
+
+      {/* SPIFF Sales Modal */}
+      {spiffModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSpiffModal(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()} data-testid="spiff-modal">
+            <div className="p-4 border-b border-gray-100 flex items-center justify-between"
+              style={{ backgroundColor: SPIFF_COLORS[spiffModal.brand] || '#94A3B8' }}>
+              <div>
+                <h3 className="text-base font-bold text-white">{spiffModal.brand}</h3>
+                <p className="text-xs text-white/80">
+                  {spiffModal.data.count} sales &mdash; ${spiffModal.data.commission.toLocaleString('en-US', {minimumFractionDigits: 2})} SPIFF
+                </p>
+              </div>
+              <button onClick={() => setSpiffModal(null)} className="text-white/80 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-[60vh]">
+              {spiffModal.records.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gray-50">
+                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3">Name</TableHead>
+                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3">Unit</TableHead>
+                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3 text-right">Value</TableHead>
+                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3 text-right">SPIFF</TableHead>
+                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3">Close</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {spiffModal.records.map((rec, i) => (
+                      <TableRow key={i} className="border-b border-gray-50 hover:bg-gray-50/50">
+                        <TableCell className="py-2 px-3 text-xs font-medium text-gray-800">{rec.name}</TableCell>
+                        <TableCell className="py-2 px-3 text-[10px] text-gray-500">{rec.unit_type}</TableCell>
+                        <TableCell className="py-2 px-3 text-xs font-mono text-gray-700 text-right">
+                          ${rec.ticket_value.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                        </TableCell>
+                        <TableCell className="py-2 px-3 text-xs font-mono font-semibold text-right"
+                          style={{ color: SPIFF_COLORS[spiffModal.brand] || '#94A3B8' }}>
+                          ${rec.spiff_value.toLocaleString('en-US', {minimumFractionDigits: 2})}
+                        </TableCell>
+                        <TableCell className="py-2 px-3 text-[10px] font-mono text-gray-500">{rec.close_date || '\u2014'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="p-8 text-center text-gray-400 text-sm">No records found</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -40,8 +40,9 @@ export const SectionHeader = ({ title, description, icon: Icon }) => (
   </div>
 );
 
-export const SpiffBrandCard = ({ brand, data, color }) => (
-  <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all">
+export const SpiffBrandCard = ({ brand, data, color, onClick }) => (
+  <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all cursor-pointer"
+    onClick={onClick ? () => onClick(brand) : undefined}>
     <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2">
       <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
         <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: color }}></div>
@@ -52,6 +53,7 @@ export const SpiffBrandCard = ({ brand, data, color }) => (
       </span>
     </div>
     <p className="text-base sm:text-lg font-mono font-semibold text-gray-900">{data.count} sales</p>
+    <p className="text-[10px] text-gray-400 mt-1">Click for details</p>
   </div>
 );
 
