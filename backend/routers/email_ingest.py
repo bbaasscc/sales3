@@ -40,7 +40,8 @@ def fix_phone(phone: str) -> str:
 # ═══════════════════════════════════════════════
 
 def parse_lead_from_email(text: str) -> dict:
-    """Parse a lead assignment email into structured data."""
+    """Parse a lead assignment email into structured data.
+    Handles forwarded emails with signatures and extra text."""
     data = {
         "salesman_number": "",
         "customer_number": "",
@@ -56,7 +57,17 @@ def parse_lead_from_email(text: str) -> dict:
         "comments": "",
     }
 
-    lines = text.strip().split('\n')
+    # Extract only the lead portion: find "Salesman #" as the start marker
+    text_lower = text.lower()
+    start_idx = text_lower.find("salesman #")
+    if start_idx == -1:
+        start_idx = text_lower.find("salesman number")
+    if start_idx == -1:
+        return data  # No lead data found
+
+    lead_text = text[start_idx:]
+
+    lines = lead_text.strip().split('\n')
     notes_lines = []
     misc_info = ""
     in_notes = False
@@ -66,8 +77,14 @@ def parse_lead_from_email(text: str) -> dict:
         if not line:
             continue
 
+        # Stop parsing if we hit a forwarding/signature boundary after the lead data
+        line_lower = line.lower()
+        if any(marker in line_lower for marker in ['from:', '________________________________', 'sent:', '[signatureimage]']):
+            if data.get("name"):  # Only stop if we already have lead data
+                break
+
         # Check for Notes section (multi-line)
-        if line.lower().startswith('notes:'):
+        if line_lower.startswith('notes:'):
             in_notes = True
             note_content = line.split(':', 1)[1].strip() if ':' in line else ''
             if note_content and note_content != '-':
@@ -75,10 +92,9 @@ def parse_lead_from_email(text: str) -> dict:
             continue
 
         if in_notes:
-            # Notes can span multiple lines, often prefixed with -
             cleaned = line.strip('-').strip()
-            if cleaned and ' - ' in line and any(k in line.lower() for k in ['salesman', 'customer', 'address', 'city', 'phone', 'email', 'item', 'start date', 'end date', 'misc']):
-                in_notes = False  # New field found, stop collecting notes
+            if cleaned and ' - ' in line and any(k in line_lower for k in ['salesman', 'customer', 'address', 'city', 'phone', 'email', 'item', 'start date', 'end date', 'misc']):
+                in_notes = False
             else:
                 if cleaned:
                     notes_lines.append(cleaned)
@@ -135,13 +151,19 @@ def parse_lead_from_email(text: str) -> dict:
         elif 'misc info' in key:
             misc_info = val
 
-    # Build comments from Misc Info + Notes
+    # Build comments from Misc Info + Notes, strip confidentiality notices
     comment_parts = []
     if misc_info:
         comment_parts.append(misc_info)
     if notes_lines:
         comment_parts.append(' '.join(notes_lines))
-    data["comments"] = '\n'.join(comment_parts) if comment_parts else ""
+    comments = '\n'.join(comment_parts) if comment_parts else ""
+    # Remove common email footers
+    for marker in ['CONFIDENTIALITY NOTICE', '________________________________', 'This e-mail or the documents']:
+        idx = comments.find(marker)
+        if idx > 0:
+            comments = comments[:idx].strip()
+    data["comments"] = comments
 
     return data
 
