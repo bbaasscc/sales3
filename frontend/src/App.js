@@ -16,6 +16,7 @@ import AdminOverview from "@/pages/AdminOverview";
 import DashboardTab from "@/components/DashboardTab.jsx";
 import FollowupsTab from "@/components/FollowupsTab";
 import DataTab from "@/components/DataTab";
+import EmailIngestConfig from "@/components/EmailIngestConfig";
 import {
   PipelineModal, NewLeadModal, DeleteConfirmModal,
   ClientDetailModal, SaleDetailModal, InstallationsModal, EditLeadModal,
@@ -490,6 +491,7 @@ function MainDashboard({ token, user, onLogout }) {
                 { id: 'dashboard', label: 'Overview' },
                 { id: 'admin', label: 'Salespeople' },
                 { id: 'data', label: 'All Data' },
+                { id: 'email', label: 'Email Ingest' },
               ] : [
                 { id: 'dashboard', label: 'Dashboard' },
                 { id: 'followups', label: 'Follow-ups' },
@@ -549,6 +551,11 @@ function MainDashboard({ token, user, onLogout }) {
                 setEditingLead={setEditingLead} setPayPeriod={setPayPeriod} setDateFilter={setDateFilter}
                 authHeaders={authHeaders} fetchAllLeads={fetchAllLeads} fetchDashboardData={fetchDashboardData}
               />
+            )}
+
+            {/* Email Ingest Tab (Admin only) */}
+            {activeTab === 'email' && isAdmin && (
+              <EmailIngestConfig token={token} />
             )}
           </>
         ) : null}

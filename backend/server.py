@@ -19,6 +19,7 @@ from models import LeadCreate, LeadUpdate, ExcelConfigCreate
 from routers.auth_routes import router as auth_router
 from routers.admin import router as admin_router, PAY_PERIODS, filter_leads_by_period
 from routers.pipeline import router as pipeline_router, generate_pipeline_schedule
+from routers.email_ingest import router as email_ingest_router, check_email_inbox as run_email_check
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -702,6 +703,7 @@ async def get_excel_config():
 app.include_router(auth_router)
 app.include_router(admin_router)
 app.include_router(pipeline_router)
+app.include_router(email_ingest_router)
 app.include_router(api_router)
 
 app.add_middleware(
@@ -780,6 +782,9 @@ async def seed_database():
     # Start auto-save background task (every 5 minutes)
     asyncio.create_task(auto_save_seed())
 
+    # Start email ingestion background task
+    asyncio.create_task(auto_email_ingest())
+
 
 async def auto_save_seed():
     """Periodically save leads data to seed_data.json every 5 minutes."""
@@ -800,6 +805,25 @@ async def auto_save_seed():
             logger.info(f"Auto-save: {len(leads)} leads saved to seed.")
         except Exception as e:
             logger.error(f"Auto-save failed: {e}")
+
+
+async def auto_email_ingest():
+    """Periodically check Gmail inbox for new lead emails."""
+    await asyncio.sleep(30)  # Wait 30s after startup
+    while True:
+        try:
+            config = await db.email_ingest_config.find_one({}, {"_id": 0})
+            if config and config.get("enabled"):
+                interval = config.get("check_interval_minutes", 5)
+                result = await run_email_check()
+                if result.get("created", 0) > 0:
+                    logger.info(f"Email ingest: created {result['created']} leads")
+                await asyncio.sleep(interval * 60)
+            else:
+                await asyncio.sleep(60)  # Check config every minute when disabled
+        except Exception as e:
+            logger.error(f"Email ingest task error: {e}")
+            await asyncio.sleep(120)  # Wait 2 min on error
 
 
 @app.on_event("shutdown")
