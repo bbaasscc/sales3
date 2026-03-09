@@ -157,9 +157,11 @@ async def get_email_config():
 
 
 async def fetch_new_emails(config: dict) -> list:
-    """Connect to Gmail via IMAP and fetch unread emails."""
+    """Connect to Gmail via IMAP and fetch unread emails from salesrequest."""
     gmail_user = config["gmail_address"]
     gmail_pass = config["gmail_app_password"]
+    # Only process emails that contain 'salesrequest' in from/subject (forwarded leads)
+    sender_filter = config.get("sender_filter", "salesrequest")
 
     try:
         mail = imaplib.IMAP4_SSL("imap.gmail.com")
@@ -191,6 +193,9 @@ async def fetch_new_emails(config: dict) -> list:
                 except Exception:
                     pass
 
+            # Get from address
+            from_addr = msg.get("From", "").lower()
+
             # Get subject
             subject = ""
             raw_subject = msg.get("Subject", "")
@@ -199,6 +204,16 @@ async def fetch_new_emails(config: dict) -> list:
                 subject = decoded[0][0]
                 if isinstance(subject, bytes):
                     subject = subject.decode(decoded[0][1] or "utf-8", errors="replace")
+
+            # Filter: only process emails related to salesrequest
+            # Check from, subject, and forwarded-from headers
+            is_sales_email = False
+            if sender_filter:
+                check_text = f"{from_addr} {subject.lower()} {msg.get('X-Forwarded-To', '').lower()} {msg.get('Reply-To', '').lower()}"
+                if sender_filter.lower() in check_text:
+                    is_sales_email = True
+            else:
+                is_sales_email = True
 
             # Get body
             body = ""
@@ -216,11 +231,26 @@ async def fetch_new_emails(config: dict) -> list:
                     charset = msg.get_content_charset() or "utf-8"
                     body = payload.decode(charset, errors="replace")
 
+            # Also check body for salesrequest keyword if not found in headers
+            if not is_sales_email and sender_filter:
+                if sender_filter.lower() in body.lower():
+                    is_sales_email = True
+                # Also check if body contains typical lead format (Salesman # and Customer Name)
+                if "salesman #" in body.lower() and "customer name" in body.lower():
+                    is_sales_email = True
+
+            if not is_sales_email:
+                # Mark as read but skip processing
+                mail.store(eid, "+FLAGS", "\\Seen")
+                logger.info(f"Skipped non-sales email: {subject[:50]}")
+                continue
+
             results.append({
                 "email_id": eid.decode(),
                 "subject": subject,
                 "date": email_date,
                 "body": body,
+                "from": from_addr,
             })
 
             # Mark as read
@@ -397,6 +427,7 @@ async def save_config(body: dict, user=Depends(get_current_user)):
     gmail_app_password = body.get("gmail_app_password", "").strip()
     enabled = body.get("enabled", False)
     check_interval_minutes = body.get("check_interval_minutes", 5)
+    sender_filter = body.get("sender_filter", "salesrequest").strip()
 
     if not gmail_address or not gmail_app_password:
         raise HTTPException(status_code=400, detail="Gmail address and app password are required")
@@ -406,6 +437,7 @@ async def save_config(body: dict, user=Depends(get_current_user)):
         "gmail_app_password": gmail_app_password,
         "enabled": enabled,
         "check_interval_minutes": max(1, min(60, check_interval_minutes)),
+        "sender_filter": sender_filter,
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "updated_by": user["user_id"],
     }

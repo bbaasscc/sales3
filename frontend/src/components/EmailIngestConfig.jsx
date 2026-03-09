@@ -11,7 +11,7 @@ import { API } from "@/lib/constants";
 export default function EmailIngestConfig({ token }) {
   const headers = { Authorization: `Bearer ${token}` };
   const [config, setConfig] = useState(null);
-  const [form, setForm] = useState({ gmail_address: "", gmail_app_password: "", enabled: false, check_interval_minutes: 5 });
+  const [form, setForm] = useState({ gmail_address: "", gmail_app_password: "", enabled: false, check_interval_minutes: 5, sender_filter: "salesrequest" });
   const [salespeople, setSalespeople] = useState([]);
   const [editingSp, setEditingSp] = useState(null);
   const [spNumber, setSpNumber] = useState("");
@@ -33,7 +33,7 @@ export default function EmailIngestConfig({ token }) {
       const cfg = cfgRes.data.config;
       if (cfg) {
         setConfig(cfg);
-        setForm({ gmail_address: cfg.gmail_address || "", gmail_app_password: "", enabled: cfg.enabled || false, check_interval_minutes: cfg.check_interval_minutes || 5 });
+        setForm({ gmail_address: cfg.gmail_address || "", gmail_app_password: "", enabled: cfg.enabled || false, check_interval_minutes: cfg.check_interval_minutes || 5, sender_filter: cfg.sender_filter || "salesrequest" });
       }
       setSalespeople(spRes.data.salespeople || []);
       setLogs(logRes.data.logs || []);
@@ -120,6 +120,11 @@ export default function EmailIngestConfig({ token }) {
           </div>
 
           <div className="flex items-center gap-4 mb-5">
+            <div className="flex items-center gap-2">
+              <Label className="text-xs text-gray-500">Filter emails from</Label>
+              <Input value={form.sender_filter} onChange={e => setForm(f => ({...f, sender_filter: e.target.value}))}
+                placeholder="salesrequest" className="w-32 text-sm" />
+            </div>
             <div className="flex items-center gap-2">
               <Label className="text-xs text-gray-500">Check every</Label>
               <Input type="number" min={1} max={60} value={form.check_interval_minutes}

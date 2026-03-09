@@ -8,6 +8,7 @@ Sales dashboard application for a company with "Admin" and "Salesperson" roles, 
 - **Backend**: Python FastAPI, Pymongo, pandas
 - **Database**: MongoDB Atlas
 - **Sync**: Periodic auto-sync (5min) from production to preview seed file
+- **Email Ingest**: Gmail IMAP integration for automatic lead creation
 
 ## What's Implemented
 - Multi-user auth (Admin, Salesperson roles)
@@ -20,19 +21,27 @@ Sales dashboard application for a company with "Admin" and "Salesperson" roles, 
 - New statuses: Cancel Appt, Rescheduled, Credit Reject
 - Auto data seeding and periodic sync (includes followup_actions and client_notes)
 - Health endpoint for Kubernetes
+- **Email Auto-Ingest**: Gmail IMAP polling, automatic lead creation from forwarded salesrequest emails, phone number correction, salesman# to salesperson mapping
 
 ## Bug Fixes Applied (Feb 26, 2026)
-- **Default filter to "All Periods"**: Changed `payPeriod` init from `getCurrentPayPeriod()` to `"all"`
-- **Quick filter logic fix**: Fixed `total_visits` not being filtered for "week"/"2weeks" filters due to `end_date` being None causing the condition to fall through to unfiltered branch
-- **Cancel/Rescheduled date filtering**: Now also filtered by date range when a quick filter is active
-- **Incomplete sales data fix**: When filtering by close_date, leads without close_date now fallback to visit_date. Fixed in both `admin.py` and `server.py`
-- **Production data sync**: Pulled all data from deployed app (ben-cardarelli-sales.emergent.host). Added 5 missing Benjamin leads, updated 128 leads with latest statuses from production
-- **Avg ticket fix**: Now excludes $0 value sales from avg ticket calculation (sales with pending financial data still count as sales)
+- Default filter to "All Periods"
+- Quick filter logic fix (total_visits for week/2weeks)
+- Cancel/Rescheduled date filtering
+- Incomplete sales data fix (close_date fallback to visit_date)
+- Production data sync from deployed app
+- Avg ticket excludes $0 value sales
 
-## Current Data State (Feb 26, 2026)
-- Benjamin: 66 leads (25 SALE, 13 LOST, 24 PENDING, 3 CREDIT_REJECT, 1 CANCEL_APPT)
-- Franco: 67 leads (21 SALE [5 pending values], 1 LOST, 29 PENDING, 16 CANCEL_APPT)
-- Total: 133 leads
+## Current Data State (Mar 9, 2026)
+- Benjamin: 79 leads (28 SALE), Salesman #10149
+- Franco: 79 leads (25 SALE), Salesman #10068
+- Total: 158 leads
+- Email config: uploadinglead@gmail.com, filter: salesrequest, 5min interval, ACTIVE
+
+## Credentials
+- Admin: Bsanchezcar@gmail.com / Benja123
+- Salesperson 1: Bcardarelli@fshac.com / Benja123 (#10149)
+- Salesperson 2: Fbarbagallo@fshac.com / Franco123 (#10068)
+- Email Ingest: uploadinglead@gmail.com
 
 ## Pending Tasks
 ### P0
@@ -48,8 +57,3 @@ Sales dashboard application for a company with "Admin" and "Salesperson" roles, 
 - Notifications
 - Export to CSV/Excel
 - Gamification
-
-## Credentials
-- Admin: Bsanchezcar@gmail.com / Benja123
-- Salesperson 1: Bcardarelli@fshac.com / Benja123
-- Salesperson 2: Fbarbagallo@fshac.com / Franco123
