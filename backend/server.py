@@ -170,10 +170,10 @@ def parse_lead_email(text: str) -> dict:
             key, val = line.split(' - ', 1)
             key = key.strip().lower()
             val = val.strip()
-            if 'customer name' in key: data['name'] = val
+            if 'customer name' in key: data['name'] = val.upper()
             elif 'customer #' in key or 'customer number' in key: data['customer_number'] = val
-            elif key == 'address 1': data['address'] = val
-            elif key == 'city': data['city'] = val
+            elif key == 'address 1': data['address'] = val.upper()
+            elif key == 'city': data['city'] = val.upper()
             elif 'email' in key: data['email'] = val
             elif ('customer phone' in key or 'caller phone' in key) and not data.get('phone') and val:
                 data['phone'] = val
@@ -595,8 +595,8 @@ async def import_xls_file(file: UploadFile = File(...), user=Depends(get_current
         name = str(row.get('name', '')).strip() if pd.notna(row.get('name')) else ''
         if not name: continue
         lead = {'lead_id': str(uuid.uuid4()), 'customer_number': str(row.get('customer_number', '')) if pd.notna(row.get('customer_number')) else '',
-                'name': name, 'address': str(row.get('address', '')) if pd.notna(row.get('address')) else '',
-                'city': str(row.get('city', '')) if pd.notna(row.get('city')) else '', 'email': str(row.get('email', '')) if pd.notna(row.get('email')) else '',
+                'name': name.upper(), 'address': (str(row.get('address', '')) if pd.notna(row.get('address')) else '').upper(),
+                'city': (str(row.get('city', '')) if pd.notna(row.get('city')) else '').upper(), 'email': str(row.get('email', '')) if pd.notna(row.get('email')) else '',
                 'phone': str(row.get('phone', '')) if pd.notna(row.get('phone')) else '',
                 'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
                 'status': normalize_status(row.get('status', 'PENDING')),
@@ -635,6 +635,10 @@ async def parse_email_to_lead(body: dict):
 @api_router.post("/leads")
 async def create_lead(lead: LeadCreate, user=Depends(get_current_user)):
     doc = lead.model_dump()
+    # Force uppercase on name, address, city
+    for field in ['name', 'address', 'city']:
+        if doc.get(field):
+            doc[field] = doc[field].upper()
     if doc.get('status'):
         doc['status'] = normalize_status(doc['status'])
     doc['lead_id'] = str(uuid.uuid4())

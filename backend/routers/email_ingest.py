@@ -113,13 +113,13 @@ def parse_lead_from_email(text: str) -> dict:
         if 'salesman #' in key or 'salesman number' in key:
             data["salesman_number"] = val
         elif 'customer name' in key:
-            data["name"] = val.title() if val == val.upper() else val
+            data["name"] = val.upper()
         elif 'customer #' in key or 'customer number' in key:
             data["customer_number"] = val
         elif key == 'address 1':
-            data["address"] = val
+            data["address"] = val.upper()
         elif key == 'city':
-            data["city"] = val
+            data["city"] = val.upper()
         elif key == 'state':
             data["state"] = val
         elif key == 'zip':
