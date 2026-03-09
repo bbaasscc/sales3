@@ -18,7 +18,6 @@ const ACCESSORY_LABELS = {
   mitsubishi: 'Mitsubishi',
   surge_protector: 'Surge Protector',
   duct_cleaning: 'Duct Cleaning',
-  self_gen_mits: 'Self Gen Mits',
 };
 const ACCESSORY_COLORS = {
   apco_x: '#C62828',
@@ -26,7 +25,6 @@ const ACCESSORY_COLORS = {
   mitsubishi: '#4CAF50',
   surge_protector: '#FF9800',
   duct_cleaning: '#9C27B0',
-  self_gen_mits: '#00838F',
 };
 
 export default function AdminOverview({ token, payPeriod, dateFilter }) {

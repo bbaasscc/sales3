@@ -315,12 +315,19 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
 
     spiff_breakdown = {}
     spiff_total = 0.0
-    for label, col in [('APCO X','apco_x'),('Samsung','samsung'),('Mitsubishi','mitsubishi'),('Surge Protector','surge_protector'),('Duct Cleaning','duct_cleaning')]:
+    for label, col in [('APCO X','apco_x'),('Samsung','samsung'),('Surge Protector','surge_protector'),('Duct Cleaning','duct_cleaning')]:
         t = closed_df[col].sum()
         c = len(closed_df[closed_df[col] > 0])
         if t > 0 or c > 0:
             spiff_breakdown[label] = {'count': c, 'commission': round(t, 2), 'percent_of_sales': round((c / closed_deals * 100), 1) if closed_deals > 0 else 0}
             spiff_total += t
+
+    # Mitsubishi + Self Gen Mits combined
+    mits_total = closed_df['mitsubishi'].sum() + closed_df['self_gen_mits'].sum()
+    mits_count = len(closed_df[(closed_df['mitsubishi'] > 0) | (closed_df['self_gen_mits'] > 0)])
+    if mits_total > 0 or mits_count > 0:
+        spiff_breakdown['Mitsubishi'] = {'count': mits_count, 'commission': round(mits_total, 2), 'percent_of_sales': round((mits_count / closed_deals * 100), 1) if closed_deals > 0 else 0}
+        spiff_total += mits_total
 
     follow_ups = []
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)

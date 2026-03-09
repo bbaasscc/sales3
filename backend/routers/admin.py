@@ -188,12 +188,16 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         v["revenue"] = round(v["revenue"], 2)
     totals["equipment_types"] = equipment_types
 
-    spiff_fields = ["apco_x", "samsung", "mitsubishi", "surge_protector", "duct_cleaning", "self_gen_mits"]
+    spiff_fields = ["apco_x", "samsung", "surge_protector", "duct_cleaning"]
     accessories = {}
     for field in spiff_fields:
         count = sum(1 for l in all_sales if (l.get(field, 0) or 0) > 0)
         total_val = sum(l.get(field, 0) or 0 for l in all_sales)
         accessories[field] = {"count": count, "value": round(total_val, 2)}
+    # Mitsubishi + Self Gen Mits combined
+    mits_count = sum(1 for l in all_sales if (l.get("mitsubishi", 0) or 0) > 0 or (l.get("self_gen_mits", 0) or 0) > 0)
+    mits_val = sum((l.get("mitsubishi", 0) or 0) + (l.get("self_gen_mits", 0) or 0) for l in all_sales)
+    accessories["mitsubishi"] = {"count": mits_count, "value": round(mits_val, 2)}
     totals["accessories"] = accessories
 
     return {"comparison": comparison, "totals": totals}
