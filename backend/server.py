@@ -814,6 +814,11 @@ async def seed_database():
         if existing_notes == 0:
             await db.client_notes.insert_many(data["client_notes"])
             logger.info(f"Seeded {len(data['client_notes'])} client notes.")
+    if data.get("email_ingest_config"):
+        existing_email_cfg = await db.email_ingest_config.count_documents({})
+        if existing_email_cfg == 0:
+            await db.email_ingest_config.insert_many(data["email_ingest_config"])
+            logger.info("Seeded email ingest config.")
     logger.info("Seed check complete.")
 
     # Sync per-salesperson collections
@@ -838,9 +843,10 @@ async def auto_save_seed():
             pipelines = await db.pipeline_schedules.find({}, {"_id": 0}).to_list(10000)
             followup_actions = await db.followup_actions.find({}, {"_id": 0}).to_list(10000)
             client_notes = await db.client_notes.find({}, {"_id": 0}).to_list(10000)
+            email_ingest_config = await db.email_ingest_config.find({}, {"_id": 0}).to_list(10)
             seed_file = ROOT_DIR / "seed_data.json"
             with open(seed_file, "w") as f:
-                json.dump({"users": users, "leads": leads, "excel_config": configs, "pipeline_schedules": pipelines, "followup_actions": followup_actions, "client_notes": client_notes}, f, default=str)
+                json.dump({"users": users, "leads": leads, "excel_config": configs, "pipeline_schedules": pipelines, "followup_actions": followup_actions, "client_notes": client_notes, "email_ingest_config": email_ingest_config}, f, default=str)
             await sync_all_sp_collections()
             logger.info(f"Auto-save: {len(leads)} leads saved to seed.")
         except Exception as e:
