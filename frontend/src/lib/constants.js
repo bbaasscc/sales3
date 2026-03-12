@@ -115,6 +115,21 @@ export const STATUS_COLORS = {
   CREDIT_REJECT: { bg: 'bg-purple-100', text: 'text-purple-700', solid: '#8B5CF6' },
 };
 
+// Unit Type standard options
+export const UNIT_TYPE_OPTIONS = [
+  "Furnace",
+  "Furnace + AC",
+  "Furnace + Heat Pump",
+  "AC Only",
+  "Heat Pump Only",
+  "Air Handler + AC",
+  "Air Handler + Heat Pump",
+  "Air Handler Only",
+  "Generator",
+  "Boiler",
+  "Other",
+];
+
 // Quick Filter options
 export const QUICK_FILTERS = [
   { value: 'all', label: 'All Time' },

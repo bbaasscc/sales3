@@ -16,6 +16,21 @@ def slugify(name: str) -> str:
     return re.sub(r'[^a-z0-9]+', '_', name.lower()).strip('_')
 
 
+# Standard unit type mapping
+UNIT_TYPE_MAP = {
+    'FURNACE': 'Furnace', 'COMBO': 'Furnace + AC', 'A/C': 'AC Only', 'AC': 'AC Only',
+    'HEAT PUMP': 'Heat Pump Only', 'HP': 'Heat Pump Only', 'DUCTLESS': 'Heat Pump Only',
+    'BOILER': 'Boiler', 'GENERATOR': 'Generator',
+}
+
+def standardize_unit_type(val: str) -> str:
+    """Map raw unit type to standard options."""
+    if not val:
+        return val
+    v = val.strip()
+    return UNIT_TYPE_MAP.get(v.upper(), UNIT_TYPE_MAP.get(v, v))
+
+
 def normalize_status(status: str) -> str:
     if pd.isna(status):
         return "UNKNOWN"

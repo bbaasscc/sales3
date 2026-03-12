@@ -3,7 +3,7 @@ import {
   X, Mail, MessageSquare, Check, MapPin, FileText, AlertTriangle, User,
   Settings, Save, Plus, Trash2, ClipboardPaste, Copy, Send,
 } from "lucide-react";
-import { BRAND_COLORS, PIPELINE_STEPS, ALL_PIPELINE_ACTIONS, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS } from "@/lib/constants";
+import { BRAND_COLORS, PIPELINE_STEPS, ALL_PIPELINE_ACTIONS, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS, UNIT_TYPE_OPTIONS } from "@/lib/constants";
 
 export function PipelineModal({
   actionMenu, setActionMenu, pipelineSchedule, setPipelineSchedule,
@@ -118,6 +118,13 @@ export function NewLeadModal({
                   <input value={newLeadForm[k] || ''} onChange={(e) => setNewLeadForm(p => ({...p, [k]: e.target.value}))} className="w-full px-2 py-1.5 text-sm border rounded-lg" />
                 </div>
               ))}
+              <div>
+                <label className="text-[10px] font-bold uppercase text-gray-500">Unit Type</label>
+                <select value={newLeadForm.unit_type || ''} onChange={(e) => setNewLeadForm(p => ({...p, unit_type: e.target.value}))} className="w-full px-2 py-1.5 text-sm border rounded-lg">
+                  <option value="">Select...</option>
+                  {UNIT_TYPE_OPTIONS.map(u => <option key={u} value={u}>{u}</option>)}
+                </select>
+              </div>
               <div>
                 <label className="text-[10px] font-bold uppercase text-gray-500">Visit Date</label>
                 <input type="date" value={newLeadForm.visit_date || ''} onChange={(e) => setNewLeadForm(p => ({...p, visit_date: e.target.value}))} className="w-full px-2 py-1.5 text-sm border rounded-lg" />
@@ -557,13 +564,21 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
         </div>
         <div className="p-4 space-y-3">
           <div className="grid grid-cols-2 gap-2">
-            {[['customer_number','Client #'],['name','Name'],['address','Address'],['city','City'],['email','Email'],['phone','Phone'],['unit_type','Unit Type']].map(([k,l]) => (
+            {[['customer_number','Client #'],['name','Name'],['address','Address'],['city','City'],['email','Email'],['phone','Phone']].map(([k,l]) => (
               <div key={k} className={k === 'address' ? 'col-span-2' : ''}>
                 <label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
                 <input value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
                   className="w-full px-2 py-1.5 text-sm border rounded-lg" />
               </div>
             ))}
+            <div>
+              <label className="text-[10px] font-bold uppercase text-gray-500">Unit Type</label>
+              <select value={editingLead.unit_type || ''} onChange={(e) => setEditingLead(p => ({...p, unit_type: e.target.value}))}
+                className="w-full px-2 py-1.5 text-sm border rounded-lg">
+                <option value="">Select...</option>
+                {UNIT_TYPE_OPTIONS.map(u => <option key={u} value={u}>{u}</option>)}
+              </select>
+            </div>
             <div>
               <label className="text-[10px] font-bold uppercase text-gray-500">Status</label>
               <select value={editingLead.status || 'PENDING'} onChange={(e) => setEditingLead(p => ({...p, status: e.target.value}))}

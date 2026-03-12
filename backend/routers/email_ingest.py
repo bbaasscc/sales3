@@ -133,7 +133,8 @@ def parse_lead_from_email(text: str) -> dict:
         elif key == 'email':
             data["email"] = val.strip().upper()
         elif key == 'item':
-            data["unit_type"] = val
+            from utils import standardize_unit_type
+            data["unit_type"] = standardize_unit_type(val)
         elif 'start date' in key:
             # Parse visit date from Start Date/Time
             try:
