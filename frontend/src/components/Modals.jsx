@@ -532,7 +532,8 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
     const fields = ['name','address','city','email','phone','unit_type','status','ticket_value','commission_percent',
       'visit_date','close_date','install_date','follow_up_date','comments','customer_number',
       'apco_x','samsung','mitsubishi','surge_protector','duct_cleaning','self_gen_mits'];
-    return fields.some(f => String(editingLead[f] || '') !== String(originalLead[f] || ''));
+    return fields.some(f => String(editingLead[f] || '') !== String(originalLead[f] || ''))
+      || JSON.stringify(editingLead.additional_phones || []) !== JSON.stringify(originalLead.additional_phones || []);
   };
 
   const handleClose = () => {
@@ -571,6 +572,38 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
                   className="w-full px-2 py-1.5 text-sm border rounded-lg" />
               </div>
             ))}
+            {/* Additional Phones */}
+            <div className="col-span-2">
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-[10px] font-bold uppercase text-gray-500">Additional Phones</label>
+                <button type="button" onClick={() => setEditingLead(p => ({...p, additional_phones: [...(p.additional_phones || []), {label: '', number: ''}]}))}
+                  className="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-600 rounded font-bold hover:bg-blue-100 flex items-center gap-1">
+                  <Plus className="w-3 h-3" /> Add
+                </button>
+              </div>
+              {(editingLead.additional_phones || []).map((ph, idx) => (
+                <div key={idx} className="flex gap-1.5 mb-1">
+                  <input value={ph.label || ''} placeholder="Who (Wife, Work...)"
+                    onChange={(e) => setEditingLead(p => {
+                      const phones = [...(p.additional_phones || [])];
+                      phones[idx] = {...phones[idx], label: e.target.value};
+                      return {...p, additional_phones: phones};
+                    })}
+                    className="w-1/3 px-2 py-1 text-xs border rounded-lg" />
+                  <input value={ph.number || ''} placeholder="Phone number"
+                    onChange={(e) => setEditingLead(p => {
+                      const phones = [...(p.additional_phones || [])];
+                      phones[idx] = {...phones[idx], number: e.target.value};
+                      return {...p, additional_phones: phones};
+                    })}
+                    className="flex-1 px-2 py-1 text-xs border rounded-lg" />
+                  <button type="button" onClick={() => setEditingLead(p => ({...p, additional_phones: (p.additional_phones || []).filter((_, i) => i !== idx)}))}
+                    className="text-red-400 hover:text-red-600 px-1">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
             <div>
               <label className="text-[10px] font-bold uppercase text-gray-500">Unit Type</label>
               <select value={editingLead.unit_type || ''} onChange={(e) => setEditingLead(p => ({...p, unit_type: e.target.value}))}

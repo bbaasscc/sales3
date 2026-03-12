@@ -15,6 +15,7 @@ import AdminPanel from "@/pages/AdminPanel";
 import AdminOverview from "@/pages/AdminOverview";
 import DashboardTab from "@/components/DashboardTab.jsx";
 import FollowupsTab from "@/components/FollowupsTab";
+import StatusTab from "@/components/StatusTab";
 import DataTab from "@/components/DataTab";
 import EarningsTab from "@/components/EarningsTab";
 import EmailIngestConfig from "@/components/EmailIngestConfig";
@@ -188,7 +189,7 @@ function MainDashboard({ token, user, onLogout }) {
     } catch (err) { console.error(err); }
   }, [filterSalespersonId]);
 
-  useEffect(() => { if (activeTab === 'data') fetchAllLeads(); }, [activeTab, fetchAllLeads]);
+  useEffect(() => { if (activeTab === 'data' || activeTab === 'status') fetchAllLeads(); }, [activeTab, fetchAllLeads]);
 
   const fetchAllNotes = useCallback(async () => {
     try {
@@ -199,7 +200,7 @@ function MainDashboard({ token, user, onLogout }) {
     } catch (err) { console.error(err); }
   }, []);
 
-  useEffect(() => { if (activeTab === 'followups') fetchAllNotes(); }, [activeTab, fetchAllNotes]);
+  useEffect(() => { if (activeTab === 'status') fetchAllNotes(); }, [activeTab, fetchAllNotes]);
 
   // === PIPELINE HELPERS ===
   const isStepDone = (clientName, stepId) => followUpActions.some(a => a.client_name === clientName && a.step_id === stepId);
@@ -524,8 +525,7 @@ function MainDashboard({ token, user, onLogout }) {
                 { id: 'email', label: 'Email Ingest' },
               ] : [
                 { id: 'dashboard', label: 'Dashboard' },
-                { id: 'followups', label: 'Follow-ups' },
-                { id: 'data', label: 'Data' },
+                { id: 'status', label: 'Status' },
                 { id: 'earnings', label: 'Earnings' },
               ]).map(tab => (
                 <button
@@ -564,16 +564,22 @@ function MainDashboard({ token, user, onLogout }) {
               <DashboardTab kpiData={kpiData} setSelectedSale={setSelectedSale} setInstallationsOpen={setInstallationsOpen} />
             )}
 
-            {/* Follow-ups Tab */}
-            {activeTab === 'followups' && !isAdmin && (
-              <FollowupsTab
+            {/* Status Tab (combined Follow-ups + Data access) */}
+            {activeTab === 'status' && !isAdmin && (
+              <StatusTab
                 kpiData={kpiData} allClientNotes={allClientNotes} followUpActions={followUpActions}
                 openClientModal={openClientModal} openPipelineMenu={openPipelineMenu}
+                allLeads={allLeads} payPeriod={payPeriod} dateFilter={dateFilter}
+                searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+                statusFilter={statusFilter} setStatusFilter={setStatusFilter}
+                setNewLeadOpen={setNewLeadOpen} setNewLeadStep={setNewLeadStep} setNewLeadText={setNewLeadText}
+                setEditingLead={openEditLead} setPayPeriod={setPayPeriod} setDateFilter={setDateFilter}
+                authHeaders={authHeaders} fetchAllLeads={fetchAllLeads} fetchDashboardData={fetchDashboardData}
               />
             )}
 
-            {/* Data Tab */}
-            {activeTab === 'data' && (
+            {/* Data Tab (admin only now) */}
+            {activeTab === 'data' && isAdmin && (
               <DataTab
                 allLeads={allLeads} isAdmin={isAdmin} payPeriod={payPeriod} dateFilter={dateFilter}
                 searchTerm={searchTerm} setSearchTerm={setSearchTerm}
