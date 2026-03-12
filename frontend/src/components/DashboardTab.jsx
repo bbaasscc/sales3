@@ -8,7 +8,7 @@ import {
 } from "recharts";
 import {
   DollarSign, Percent, Target, TrendingUp, Users, PieChart as PieIcon, BarChart3,
-  Gift, Calendar, ShoppingCart, BadgeDollarSign, ChevronDown, ChevronUp, X,
+  Gift, Calendar, ShoppingCart, BadgeDollarSign, ChevronDown, ChevronUp, X, Plus,
 } from "lucide-react";
 import { SummaryCard, SpiffBrandCard, ChartCard } from "@/components/shared";
 import { BRAND_COLORS, CHART_COLORS, SPIFF_COLORS } from "@/lib/constants";
@@ -16,7 +16,9 @@ import { BRAND_COLORS, CHART_COLORS, SPIFF_COLORS } from "@/lib/constants";
 export default function DashboardTab({ kpiData, setSelectedSale, setInstallationsOpen }) {
   const [showSpiffDetails, setShowSpiffDetails] = useState(false);
   const [showUnderBookDetails, setShowUnderBookDetails] = useState(false);
-  const [spiffModal, setSpiffModal] = useState(null); // { brand, records }
+  const [showEarningsSection, setShowEarningsSection] = useState(false);
+  const [spiffModal, setSpiffModal] = useState(null);
+
   const unitTypeData = kpiData?.unit_type_count 
     ? Object.entries(kpiData.unit_type_count).map(([name, value]) => ({
         name: name || 'Unknown', value, revenue: kpiData.unit_type_revenue?.[name] || 0
@@ -31,182 +33,108 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
       })).filter(item => item.value > 0)
     : [];
 
+  // Calculate DPA (Dollars Per Appointment)
+  const dpa = kpiData.total_visits > 0 ? (kpiData.total_revenue / kpiData.total_visits) : 0;
+
   return (
-    <div className="space-y-8 sm:space-y-10">
-      {/* BLOCK 1 - MY MONEY */}
-      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#ECFDF5', borderLeftColor: '#10B981' }}>
+    <div className="space-y-6">
+      {/* SALES METRICS - Power Rankings */}
+      <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#1E3A5F' }}>
         <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white shadow-sm">
-              <DollarSign className="w-5 h-5" style={{ color: '#10B981' }} />
+            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white/10">
+              <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold" style={{ color: '#065F46' }} data-testid="block-1-title">My Money</h2>
-              <p className="text-xs sm:text-sm text-emerald-600/70">Financial overview for the period</p>
+              <h2 className="text-lg sm:text-xl font-bold text-white" data-testid="block-1-title">Sales Metrics</h2>
+              <p className="text-xs text-white/50">Power Rankings</p>
             </div>
           </div>
 
-          <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4" style={{ color: '#047857' }}>My Performance</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
-            <SummaryCard title="Total Revenue" value={kpiData.total_revenue} prefix="$" icon={DollarSign} description="Closed deals revenue" highlight />
-            <SummaryCard title="Commission" value={kpiData.total_commission} prefix="$" icon={BadgeDollarSign} description="Total commission earned" highlight />
-            <SummaryCard title="Closed Deals" value={kpiData.closed_deals} icon={Target} description="SALE status deals" />
-            <SummaryCard title="Leads" value={kpiData.total_visits} icon={Users} description="Excl. Cancel/Resched" />
-            <SummaryCard title="Closing Rate" value={kpiData.closing_rate} suffix="%" icon={Percent} description="Net close rate" />
-            <SummaryCard title="Gross Close" value={kpiData.total_visits > 0 ? ((kpiData.gross_closed || kpiData.closed_deals) / kpiData.total_visits * 100).toFixed(1) : '0.0'} suffix="%" icon={Percent} description="Incl. Credit Reject" />
-            <SummaryCard title="Credit Reject" value={kpiData.credit_reject_count || 0} icon={Target} description={`${kpiData.total_visits > 0 ? ((kpiData.credit_reject_count || 0) / kpiData.total_visits * 100).toFixed(1) : '0.0'}% of leads`} />
-            <SummaryCard title="Avg Ticket" value={kpiData.average_ticket} prefix="$" icon={ShoppingCart} description="Per deal average" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            {/* Closing Ratio (Net) */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">R% (Net Close)</p>
+              <p className="text-3xl sm:text-4xl font-mono font-bold text-white">{kpiData.closing_rate}%</p>
+              <p className="text-[10px] text-white/40 mt-1">{kpiData.closed_deals} of {kpiData.total_visits} leads</p>
+            </div>
+
+            {/* Gross Closing */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Gross R%</p>
+              <p className="text-3xl sm:text-4xl font-mono font-bold text-white">
+                {kpiData.total_visits > 0 ? ((kpiData.gross_closed || kpiData.closed_deals) / kpiData.total_visits * 100).toFixed(1) : '0.0'}%
+              </p>
+              <p className="text-[10px] text-white/40 mt-1">Incl. Credit Reject</p>
+            </div>
+
+            {/* Total Revenue */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Total Revenue</p>
+              <p className="text-2xl sm:text-3xl font-mono font-bold text-emerald-400">
+                ${kpiData.total_revenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              </p>
+              <p className="text-[10px] text-white/40 mt-1">{kpiData.closed_deals} closed deals</p>
+            </div>
+
+            {/* Total Leads */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Leads</p>
+              <p className="text-3xl sm:text-4xl font-mono font-bold text-white">{kpiData.total_visits}</p>
+              <p className="text-[10px] text-white/40 mt-1">Excl. Cancel/Resched</p>
+            </div>
+
+            {/* Credit Reject */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Credit Reject</p>
+              <p className="text-3xl sm:text-4xl font-mono font-bold text-amber-400">{kpiData.credit_reject_count || 0}</p>
+              <p className="text-[10px] text-white/40 mt-1">{kpiData.total_visits > 0 ? ((kpiData.credit_reject_count || 0) / kpiData.total_visits * 100).toFixed(1) : '0.0'}% of leads</p>
+            </div>
+
+            {/* Average Ticket */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Avg Ticket</p>
+              <p className="text-2xl sm:text-3xl font-mono font-bold text-white">
+                ${kpiData.average_ticket.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              </p>
+              <p className="text-[10px] text-white/40 mt-1">Per closed deal</p>
+            </div>
+
+            {/* DPA - Dollars Per Appointment */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">DPA</p>
+              <p className="text-2xl sm:text-3xl font-mono font-bold text-cyan-400">
+                ${dpa.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              </p>
+              <p className="text-[10px] text-white/40 mt-1">Dollars Per Appt</p>
+            </div>
+
+            {/* Closed Deals */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Closed Deals</p>
+              <p className="text-3xl sm:text-4xl font-mono font-bold text-emerald-400">{kpiData.closed_deals}</p>
+              <p className="text-[10px] text-white/40 mt-1">SALE status</p>
+            </div>
           </div>
 
           {(kpiData.cancel_count > 0 || kpiData.rescheduled_count > 0) && (
-            <div className="flex flex-wrap gap-2 mt-3">
+            <div className="flex flex-wrap gap-2 mt-4">
               {kpiData.cancel_count > 0 && (
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-200 text-gray-600">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 text-white/60">
                   Cancelled: {kpiData.cancel_count}
                 </span>
               )}
               {kpiData.rescheduled_count > 0 && (
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 text-white/60">
                   Rescheduled: {kpiData.rescheduled_count}
                 </span>
               )}
             </div>
           )}
-
-          <div className="border-t border-emerald-200/60 my-5 sm:my-6"></div>
-
-          <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4" style={{ color: '#047857' }}>
-            Payments <span className="font-normal text-emerald-500">(Install Date)</span>
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
-            <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 text-center shadow-sm border border-emerald-100 cursor-pointer hover:shadow-md transition-all"
-              onClick={() => setInstallationsOpen(true)}>
-              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Installations</p>
-              <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-emerald-800">{kpiData.commission_payment_count || 0}</p>
-              <p className="text-[9px] text-emerald-500 mt-1">Click for details</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 text-center shadow-sm border border-emerald-100">
-              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Commission Payable</p>
-              <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-emerald-800">${(kpiData.commission_payment_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 text-center shadow-sm border border-emerald-100">
-              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">SPIFF Included</p>
-              <p className="text-lg sm:text-2xl md:text-3xl font-mono font-bold text-amber-600">${(kpiData.commission_payment_spiff || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* BLOCK 2 - HOW CAN I EARN MORE? */}
-      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#FFFBEB', borderLeftColor: '#F59E0B' }}>
-        <div className="p-4 sm:p-6 md:p-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white shadow-sm">
-              <TrendingUp className="w-5 h-5" style={{ color: '#F59E0B' }} />
-            </div>
-            <div>
-              <h2 className="text-lg sm:text-xl font-bold" style={{ color: '#92400E' }} data-testid="block-2-title">How Can I Earn More?</h2>
-              <p className="text-xs sm:text-sm text-amber-600/70">Opportunities to increase your income</p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ color: '#B45309' }}>
-              Under Book Price <span className="font-normal text-amber-500">(5% Commission)</span>
-            </p>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] sm:text-xs font-mono bg-gray-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-gray-600">
-                {kpiData.price_margin_sales_count} sales &mdash; {kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count / kpiData.closed_deals) * 100).toFixed(1) : 0}%
-              </span>
-              <button onClick={() => setShowUnderBookDetails(!showUnderBookDetails)}
-                className="text-[10px] px-2 py-1 bg-amber-100 text-amber-700 rounded-full font-bold hover:bg-amber-200 flex items-center gap-1">
-                {showUnderBookDetails ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                Details
-              </button>
-            </div>
-          </div>
-          {showUnderBookDetails && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mb-5">
-            <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 shadow-sm border border-amber-100">
-              <div className="flex items-center gap-1.5 mb-2">
-                <ShoppingCart className="w-3.5 h-3.5 text-amber-500" />
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500">Sales at 5%</span>
-              </div>
-              <p className="text-2xl sm:text-3xl font-mono font-bold text-gray-900">{kpiData.price_margin_sales_count}</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 shadow-sm border border-amber-100">
-              <div className="flex items-center gap-1.5 mb-2">
-                <DollarSign className="w-3.5 h-3.5 text-amber-500" />
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500">Revenue</span>
-              </div>
-              <p className="text-2xl sm:text-3xl font-mono font-bold text-gray-900">${kpiData.price_margin_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur rounded-xl p-3 sm:p-4 shadow-sm border border-amber-100" style={{ background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)' }}>
-              <div className="flex items-center gap-1.5 mb-2">
-                <BadgeDollarSign className="w-3.5 h-3.5 text-amber-700" />
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-700">Commission</span>
-              </div>
-              <p className="text-2xl sm:text-3xl font-mono font-bold text-amber-800">${kpiData.price_margin_commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            </div>
-          </div>
-          )}
-
-          <div className="border-t border-amber-200/60 my-5 sm:my-6"></div>
-
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ color: '#B45309' }}>SPIFF Breakdown</p>
-            <button onClick={() => setShowSpiffDetails(!showSpiffDetails)}
-              className="text-[10px] px-2 py-1 bg-amber-100 text-amber-700 rounded-full font-bold hover:bg-amber-200 flex items-center gap-1">
-              {showSpiffDetails ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-              More Details
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-            {Object.entries(kpiData.spiff_breakdown || {}).map(([brand, data]) => (
-              <SpiffBrandCard key={brand} brand={brand} data={data} color={SPIFF_COLORS[brand] || '#94A3B8'}
-                onClick={(b) => {
-                  const recs = kpiData.spiff_records?.[b] || [];
-                  setSpiffModal({ brand: b, records: recs, data });
-                }} />
-            ))}
-          </div>
-
-          {showSpiffDetails && (
-          <>
-          <div className="rounded-xl p-4 sm:p-5 mt-4" style={{ background: 'linear-gradient(135deg, #92400E, #D97706)' }}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-white/80 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1">Total SPIFF</p>
-                <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-white">${kpiData.spiff_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-              </div>
-              <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-white/30" />
-            </div>
-          </div>
-
-          {spiffChartData.length > 0 && (
-            <div className="mt-4 hidden sm:block">
-              <ChartCard title="SPIFF Distribution" icon={PieIcon}>
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie data={spiffChartData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={3} dataKey="value">
-                      {spiffChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={SPIFF_COLORS[entry.name] || CHART_COLORS[index % CHART_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Commission']} />
-                    <Legend wrapperStyle={{ fontSize: '12px' }} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </ChartCard>
-            </div>
-          )}
-          </>
-          )}
-        </div>
-      </div>
-
-      {/* BLOCK 3 - WHAT AM I SELLING? */}
+      {/* WHAT AM I SELLING? - Charts */}
       <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#EFF6FF', borderLeftColor: '#3B82F6' }}>
         <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-3 mb-6">
@@ -277,7 +205,7 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
         </div>
       </div>
 
-      {/* BLOCK 4 - CLOSED SALES */}
+      {/* CLOSED SALES TABLE */}
       <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#F5F3FF', borderLeftColor: '#8B5CF6' }}>
         <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-3 mb-5">
@@ -299,7 +227,6 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
                     <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 hidden lg:table-cell">City</TableHead>
                     <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4 hidden xl:table-cell">Unit</TableHead>
                     <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Value</TableHead>
-                    <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Commission</TableHead>
                     <TableHead className="text-[10px] sm:text-xs font-bold uppercase text-gray-500 py-2 sm:py-3 px-2 sm:px-4">Date</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -322,9 +249,6 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
                         <TableCell className="py-2 px-2 sm:px-4 font-mono text-gray-700 text-xs sm:text-sm font-semibold">
                           ${record.ticket_value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </TableCell>
-                        <TableCell className="py-2 px-2 sm:px-4 font-mono text-xs sm:text-sm font-semibold" style={{ color: '#8B5CF6' }}>
-                          ${record.commission_value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </TableCell>
                         <TableCell className="py-2 px-2 sm:px-4 font-mono text-xs text-gray-600">
                           {record.install_date}
                         </TableCell>
@@ -332,7 +256,7 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={6} className="py-8 text-center text-gray-500">
+                      <TableCell colSpan={5} className="py-8 text-center text-gray-500">
                         No sales in this period
                       </TableCell>
                     </TableRow>
@@ -342,6 +266,88 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
             </div>
           </Card>
         </div>
+      </div>
+
+      {/* EARNINGS & DETAILS - Collapsible */}
+      <div className="rounded-2xl border border-gray-200 overflow-hidden bg-white">
+        <button
+          onClick={() => setShowEarningsSection(!showEarningsSection)}
+          className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+          data-testid="earnings-toggle"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+              <DollarSign className="w-4 h-4 text-emerald-600" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-bold text-gray-700">Earnings & SPIFF Details</p>
+              <p className="text-[10px] text-gray-400">Commissions, payments, SPIFF breakdown</p>
+            </div>
+          </div>
+          {showEarningsSection ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <Plus className="w-5 h-5 text-gray-400" />}
+        </button>
+
+        {showEarningsSection && (
+          <div className="border-t border-gray-100 p-4 sm:p-6 space-y-6">
+            {/* Payments Section */}
+            <div>
+              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-emerald-600 mb-3">
+                Payments <span className="font-normal text-emerald-400">(Install Date)</span>
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
+                <div className="bg-emerald-50 rounded-xl p-3 sm:p-4 text-center border border-emerald-100 cursor-pointer hover:shadow-md transition-all"
+                  onClick={() => setInstallationsOpen(true)}>
+                  <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Installations</p>
+                  <p className="text-lg sm:text-2xl font-mono font-bold text-emerald-800">{kpiData.commission_payment_count || 0}</p>
+                  <p className="text-[9px] text-emerald-500 mt-1">Click for details</p>
+                </div>
+                <div className="bg-emerald-50 rounded-xl p-3 sm:p-4 text-center border border-emerald-100">
+                  <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Commission Payable</p>
+                  <p className="text-lg sm:text-2xl font-mono font-bold text-emerald-800">${(kpiData.commission_payment_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                </div>
+                <div className="bg-amber-50 rounded-xl p-3 sm:p-4 text-center border border-amber-100">
+                  <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">SPIFF Included</p>
+                  <p className="text-lg sm:text-2xl font-mono font-bold text-amber-600">${(kpiData.commission_payment_spiff || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Under Book Price */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-amber-700">
+                  Under Book Price <span className="font-normal text-amber-500">(5% Commission)</span>
+                </p>
+                <span className="text-[10px] sm:text-xs font-mono bg-gray-100 px-2 py-0.5 rounded-full text-gray-600">
+                  {kpiData.price_margin_sales_count} sales &mdash; {kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count / kpiData.closed_deals) * 100).toFixed(1) : 0}%
+                </span>
+              </div>
+            </div>
+
+            {/* SPIFF Breakdown */}
+            <div>
+              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-amber-700 mb-3">SPIFF Breakdown</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+                {Object.entries(kpiData.spiff_breakdown || {}).map(([brand, data]) => (
+                  <SpiffBrandCard key={brand} brand={brand} data={data} color={SPIFF_COLORS[brand] || '#94A3B8'}
+                    onClick={(b) => {
+                      const recs = kpiData.spiff_records?.[b] || [];
+                      setSpiffModal({ brand: b, records: recs, data });
+                    }} />
+                ))}
+              </div>
+              <div className="rounded-xl p-4 mt-3" style={{ background: 'linear-gradient(135deg, #92400E, #D97706)' }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/80 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1">Total SPIFF</p>
+                    <p className="text-2xl sm:text-3xl font-mono font-bold text-white">${kpiData.spiff_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  </div>
+                  <Gift className="w-8 h-8 text-white/30" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* SPIFF Sales Modal */}

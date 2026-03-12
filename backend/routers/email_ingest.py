@@ -131,7 +131,7 @@ def parse_lead_from_email(text: str) -> dict:
         elif 'contact phone' in key and not data["phone"]:
             data["phone"] = fix_phone(val)
         elif key == 'email':
-            data["email"] = val.strip().lower()
+            data["email"] = val.strip().upper()
         elif key == 'item':
             data["unit_type"] = val
         elif 'start date' in key:

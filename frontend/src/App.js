@@ -132,6 +132,12 @@ function MainDashboard({ token, user, onLogout }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [editingLead, setEditingLead] = useState(null);
+  const [originalLead, setOriginalLead] = useState(null);
+  const openEditLead = (lead) => {
+    const copy = lead ? {...lead} : null;
+    setEditingLead(copy);
+    setOriginalLead(copy ? {...copy} : null);
+  };
 
   // New lead state
   const [newLeadOpen, setNewLeadOpen] = useState(false);
@@ -548,7 +554,7 @@ function MainDashboard({ token, user, onLogout }) {
                 searchTerm={searchTerm} setSearchTerm={setSearchTerm}
                 statusFilter={statusFilter} setStatusFilter={setStatusFilter}
                 setNewLeadOpen={setNewLeadOpen} setNewLeadStep={setNewLeadStep} setNewLeadText={setNewLeadText}
-                setEditingLead={setEditingLead} setPayPeriod={setPayPeriod} setDateFilter={setDateFilter}
+                setEditingLead={openEditLead} setPayPeriod={setPayPeriod} setDateFilter={setDateFilter}
                 authHeaders={authHeaders} fetchAllLeads={fetchAllLeads} fetchDashboardData={fetchDashboardData}
               />
             )}
@@ -585,7 +591,7 @@ function MainDashboard({ token, user, onLogout }) {
       />
       <SaleDetailModal selectedSale={selectedSale} setSelectedSale={setSelectedSale} />
       <InstallationsModal installationsOpen={installationsOpen} setInstallationsOpen={setInstallationsOpen} kpiData={kpiData} />
-      <EditLeadModal editingLead={editingLead} setEditingLead={setEditingLead} handleSaveEditLead={handleSaveEditLead} setDeleteConfirm={setDeleteConfirm} />
+      <EditLeadModal editingLead={editingLead} setEditingLead={setEditingLead} handleSaveEditLead={handleSaveEditLead} setDeleteConfirm={setDeleteConfirm} originalLead={originalLead} />
 
       {/* Footer */}
       <footer className="py-3 sm:py-4 mt-6 sm:mt-8 mb-16" style={{ backgroundColor: BRAND_COLORS.secondary }}>

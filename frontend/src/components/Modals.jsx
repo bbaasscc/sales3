@@ -513,17 +513,40 @@ export function InstallationsModal({ installationsOpen, setInstallationsOpen, kp
   );
 }
 
-export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead, setDeleteConfirm }) {
+export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead, setDeleteConfirm, originalLead }) {
   if (!editingLead) return null;
   const spiffSum = (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
   const baseComm = (editingLead.ticket_value || 0) * (editingLead.commission_percent || 0) / 100;
   const totalComm = baseComm + spiffSum;
+
+  // Track if user made changes
+  const hasChanges = () => {
+    if (!originalLead) return true;
+    const fields = ['name','address','city','email','phone','unit_type','status','ticket_value','commission_percent',
+      'visit_date','close_date','install_date','follow_up_date','comments','customer_number',
+      'apco_x','samsung','mitsubishi','surge_protector','duct_cleaning','self_gen_mits'];
+    return fields.some(f => String(editingLead[f] || '') !== String(originalLead[f] || ''));
+  };
+
   const handleClose = () => {
-    if (window.confirm("Close without saving? Unsaved changes will be lost.")) setEditingLead(null);
+    if (hasChanges()) {
+      if (window.confirm("Close without saving? Unsaved changes will be lost.")) setEditingLead(null);
+    } else {
+      setEditingLead(null);
+    }
   };
   const handleNumFocus = (e) => e.target.select();
   const sameDaySale = () => {
     if (editingLead.visit_date) setEditingLead(p => ({...p, close_date: p.visit_date}));
+  };
+  const todayClose = () => {
+    setEditingLead(p => ({...p, close_date: new Date().toISOString().split('T')[0]}));
+  };
+  const handleVisitDateChange = (newDate) => {
+    if (editingLead.visit_date && editingLead.visit_date !== newDate) {
+      if (!window.confirm(`Are you sure you want to change the visit date from ${editingLead.visit_date} to ${newDate}?`)) return;
+    }
+    setEditingLead(p => ({...p, visit_date: newDate}));
   };
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onMouseDown={(e) => e.stopPropagation()}>
@@ -578,21 +601,34 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
               <div key={k}>
                 <label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
                 <div className="flex gap-1 items-center">
-                  <input type="date" value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
-                    className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                  {k === 'visit_date' ? (
+                    <input type="date" value={editingLead[k] || ''} onChange={(e) => handleVisitDateChange(e.target.value)}
+                      className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                  ) : k === 'install_date' && editingLead.install_date === 'PENDING' ? (
+                    <input type="text" value="PENDING" readOnly className="w-full px-2 py-1.5 text-sm border rounded-lg bg-amber-50 text-amber-700 font-bold" />
+                  ) : (
+                    <input type="date" value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
+                      className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                  )}
                   {k === 'close_date' && (
-                    <button type="button" onClick={sameDaySale} title="Same Day Sale" className="px-2 py-1.5 text-[9px] font-bold bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 whitespace-nowrap">
-                      Same Day
-                    </button>
+                    <>
+                      <button type="button" onClick={sameDaySale} title="Same Day Sale" className="px-2 py-1.5 text-[9px] font-bold bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 whitespace-nowrap">
+                        Same Day
+                      </button>
+                      <button type="button" onClick={todayClose} title="Today" className="px-2 py-1.5 text-[9px] font-bold bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 whitespace-nowrap">
+                        Today
+                      </button>
+                    </>
                   )}
                   {k === 'install_date' && (
-                    <button type="button" onClick={() => setEditingLead(p => ({...p, install_date: 'PENDING'}))} title="Mark as Pending" className="px-2 py-1.5 text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-300 rounded-lg hover:bg-amber-200 whitespace-nowrap">
+                    <button type="button" onClick={() => setEditingLead(p => ({...p, install_date: editingLead.install_date === 'PENDING' ? '' : 'PENDING'}))} title="Toggle Pending"
+                      className={`px-2 py-1.5 text-[9px] font-bold border rounded-lg hover:opacity-80 whitespace-nowrap ${editingLead.install_date === 'PENDING' ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-100 text-amber-700 border-amber-300'}`}>
                       Pending
                     </button>
                   )}
                 </div>
                 {k === 'install_date' && editingLead.install_date === 'PENDING' && (
-                  <p className="text-[9px] text-amber-600 mt-0.5 font-semibold">Install date pending — remember to update when scheduled</p>
+                  <p className="text-[9px] text-amber-600 mt-0.5 font-semibold">Install date pending — remember to book installer</p>
                 )}
               </div>
             ))}
