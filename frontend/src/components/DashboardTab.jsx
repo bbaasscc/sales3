@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -7,17 +6,13 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 import {
-  DollarSign, Percent, Target, TrendingUp, Users, PieChart as PieIcon, BarChart3,
-  Gift, Calendar, ShoppingCart, BadgeDollarSign, ChevronDown, ChevronUp, X, Plus,
+  TrendingUp, Users, PieChart as PieIcon, BarChart3, Calendar,
 } from "lucide-react";
-import { SummaryCard, SpiffBrandCard, ChartCard } from "@/components/shared";
-import { BRAND_COLORS, CHART_COLORS, SPIFF_COLORS } from "@/lib/constants";
+import { ChartCard } from "@/components/shared";
+import { CHART_COLORS } from "@/lib/constants";
 
-export default function DashboardTab({ kpiData, setSelectedSale, setInstallationsOpen }) {
-  const [showSpiffDetails, setShowSpiffDetails] = useState(false);
-  const [showUnderBookDetails, setShowUnderBookDetails] = useState(false);
-  const [showEarningsSection, setShowEarningsSection] = useState(false);
-  const [spiffModal, setSpiffModal] = useState(null);
+export default function DashboardTab({ kpiData, setSelectedSale }) {
+  const dpa = kpiData.total_visits > 0 ? (kpiData.total_revenue / kpiData.total_visits) : 0;
 
   const unitTypeData = kpiData?.unit_type_count 
     ? Object.entries(kpiData.unit_type_count).map(([name, value]) => ({
@@ -27,14 +22,7 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
 
   const monthlyData = kpiData?.monthly_data || [];
 
-  const spiffChartData = kpiData?.spiff_breakdown
-    ? Object.entries(kpiData.spiff_breakdown).map(([brand, data]) => ({
-        name: brand, value: data.commission, count: data.count
-      })).filter(item => item.value > 0)
-    : [];
-
   // Calculate DPA (Dollars Per Appointment)
-  const dpa = kpiData.total_visits > 0 ? (kpiData.total_revenue / kpiData.total_visits) : 0;
 
   return (
     <div className="space-y-6">
@@ -268,140 +256,6 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
         </div>
       </div>
 
-      {/* EARNINGS & DETAILS - Collapsible */}
-      <div className="rounded-2xl border border-gray-200 overflow-hidden bg-white">
-        <button
-          onClick={() => setShowEarningsSection(!showEarningsSection)}
-          className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
-          data-testid="earnings-toggle"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-              <DollarSign className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="text-left">
-              <p className="text-sm font-bold text-gray-700">Earnings & SPIFF Details</p>
-              <p className="text-[10px] text-gray-400">Commissions, payments, SPIFF breakdown</p>
-            </div>
-          </div>
-          {showEarningsSection ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <Plus className="w-5 h-5 text-gray-400" />}
-        </button>
-
-        {showEarningsSection && (
-          <div className="border-t border-gray-100 p-4 sm:p-6 space-y-6">
-            {/* Payments Section */}
-            <div>
-              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-emerald-600 mb-3">
-                Payments <span className="font-normal text-emerald-400">(Install Date)</span>
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
-                <div className="bg-emerald-50 rounded-xl p-3 sm:p-4 text-center border border-emerald-100 cursor-pointer hover:shadow-md transition-all"
-                  onClick={() => setInstallationsOpen(true)}>
-                  <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Installations</p>
-                  <p className="text-lg sm:text-2xl font-mono font-bold text-emerald-800">{kpiData.commission_payment_count || 0}</p>
-                  <p className="text-[9px] text-emerald-500 mt-1">Click for details</p>
-                </div>
-                <div className="bg-emerald-50 rounded-xl p-3 sm:p-4 text-center border border-emerald-100">
-                  <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Commission Payable</p>
-                  <p className="text-lg sm:text-2xl font-mono font-bold text-emerald-800">${(kpiData.commission_payment_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                </div>
-                <div className="bg-amber-50 rounded-xl p-3 sm:p-4 text-center border border-amber-100">
-                  <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">SPIFF Included</p>
-                  <p className="text-lg sm:text-2xl font-mono font-bold text-amber-600">${(kpiData.commission_payment_spiff || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Under Book Price */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-amber-700">
-                  Under Book Price <span className="font-normal text-amber-500">(5% Commission)</span>
-                </p>
-                <span className="text-[10px] sm:text-xs font-mono bg-gray-100 px-2 py-0.5 rounded-full text-gray-600">
-                  {kpiData.price_margin_sales_count} sales &mdash; {kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count / kpiData.closed_deals) * 100).toFixed(1) : 0}%
-                </span>
-              </div>
-            </div>
-
-            {/* SPIFF Breakdown */}
-            <div>
-              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-amber-700 mb-3">SPIFF Breakdown</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-                {Object.entries(kpiData.spiff_breakdown || {}).map(([brand, data]) => (
-                  <SpiffBrandCard key={brand} brand={brand} data={data} color={SPIFF_COLORS[brand] || '#94A3B8'}
-                    onClick={(b) => {
-                      const recs = kpiData.spiff_records?.[b] || [];
-                      setSpiffModal({ brand: b, records: recs, data });
-                    }} />
-                ))}
-              </div>
-              <div className="rounded-xl p-4 mt-3" style={{ background: 'linear-gradient(135deg, #92400E, #D97706)' }}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-white/80 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1">Total SPIFF</p>
-                    <p className="text-2xl sm:text-3xl font-mono font-bold text-white">${kpiData.spiff_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  </div>
-                  <Gift className="w-8 h-8 text-white/30" />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* SPIFF Sales Modal */}
-      {spiffModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSpiffModal(null)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()} data-testid="spiff-modal">
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between"
-              style={{ backgroundColor: SPIFF_COLORS[spiffModal.brand] || '#94A3B8' }}>
-              <div>
-                <h3 className="text-base font-bold text-white">{spiffModal.brand}</h3>
-                <p className="text-xs text-white/80">
-                  {spiffModal.data.count} sales &mdash; ${spiffModal.data.commission.toLocaleString('en-US', {minimumFractionDigits: 2})} SPIFF
-                </p>
-              </div>
-              <button onClick={() => setSpiffModal(null)} className="text-white/80 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="overflow-y-auto max-h-[60vh]">
-              {spiffModal.records.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-gray-50">
-                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3">Name</TableHead>
-                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3">Unit</TableHead>
-                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3 text-right">Value</TableHead>
-                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3 text-right">SPIFF</TableHead>
-                      <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3">Close</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {spiffModal.records.map((rec, i) => (
-                      <TableRow key={i} className="border-b border-gray-50 hover:bg-gray-50/50">
-                        <TableCell className="py-2 px-3 text-xs font-medium text-gray-800">{rec.name}</TableCell>
-                        <TableCell className="py-2 px-3 text-[10px] text-gray-500">{rec.unit_type}</TableCell>
-                        <TableCell className="py-2 px-3 text-xs font-mono text-gray-700 text-right">
-                          ${rec.ticket_value.toLocaleString('en-US', {minimumFractionDigits: 2})}
-                        </TableCell>
-                        <TableCell className="py-2 px-3 text-xs font-mono font-semibold text-right"
-                          style={{ color: SPIFF_COLORS[spiffModal.brand] || '#94A3B8' }}>
-                          ${rec.spiff_value.toLocaleString('en-US', {minimumFractionDigits: 2})}
-                        </TableCell>
-                        <TableCell className="py-2 px-3 text-[10px] font-mono text-gray-500">{rec.close_date || '\u2014'}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              ) : (
-                <div className="p-8 text-center text-gray-400 text-sm">No records found</div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

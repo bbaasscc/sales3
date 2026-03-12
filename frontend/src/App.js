@@ -16,6 +16,7 @@ import AdminOverview from "@/pages/AdminOverview";
 import DashboardTab from "@/components/DashboardTab.jsx";
 import FollowupsTab from "@/components/FollowupsTab";
 import DataTab from "@/components/DataTab";
+import EarningsTab from "@/components/EarningsTab";
 import EmailIngestConfig from "@/components/EmailIngestConfig";
 import SaleConversionModal from "@/components/SaleConversionModal";
 import {
@@ -525,6 +526,7 @@ function MainDashboard({ token, user, onLogout }) {
                 { id: 'dashboard', label: 'Dashboard' },
                 { id: 'followups', label: 'Follow-ups' },
                 { id: 'data', label: 'Data' },
+                { id: 'earnings', label: 'Earnings' },
               ]).map(tab => (
                 <button
                   key={tab.id} onClick={() => setActiveTab(tab.id)}
@@ -580,6 +582,11 @@ function MainDashboard({ token, user, onLogout }) {
                 setEditingLead={openEditLead} setPayPeriod={setPayPeriod} setDateFilter={setDateFilter}
                 authHeaders={authHeaders} fetchAllLeads={fetchAllLeads} fetchDashboardData={fetchDashboardData}
               />
+            )}
+
+            {/* Earnings Tab (separate from dashboard) */}
+            {activeTab === 'earnings' && !isAdmin && (
+              <EarningsTab kpiData={kpiData} setInstallationsOpen={setInstallationsOpen} />
             )}
 
             {/* Email Ingest Tab (Admin only) */}

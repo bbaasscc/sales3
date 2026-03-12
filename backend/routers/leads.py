@@ -31,7 +31,7 @@ async def parse_email_to_lead(body: dict):
 @router.post("/leads")
 async def create_lead(lead: LeadCreate, user=Depends(get_current_user)):
     doc = lead.model_dump()
-    for field in ['name', 'address', 'city']:
+    for field in ['name', 'address', 'city', 'email']:
         if doc.get(field):
             doc[field] = doc[field].upper()
     if doc.get('status'):
@@ -150,7 +150,7 @@ async def import_xls_file(file: UploadFile = File(...), user=Depends(get_current
             continue
         lead = {'lead_id': str(uuid.uuid4()), 'customer_number': str(row.get('customer_number', '')) if pd.notna(row.get('customer_number')) else '',
                 'name': name.upper(), 'address': (str(row.get('address', '')) if pd.notna(row.get('address')) else '').upper(),
-                'city': (str(row.get('city', '')) if pd.notna(row.get('city')) else '').upper(), 'email': str(row.get('email', '')) if pd.notna(row.get('email')) else '',
+                'city': (str(row.get('city', '')) if pd.notna(row.get('city')) else '').upper(), 'email': (str(row.get('email', '')) if pd.notna(row.get('email')) else '').upper(),
                 'phone': str(row.get('phone', '')) if pd.notna(row.get('phone')) else '',
                 'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
                 'status': normalize_status(row.get('status', 'PENDING')),

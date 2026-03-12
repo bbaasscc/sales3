@@ -12,6 +12,8 @@ export default function SaleConversionModal({ lead, onSave, onCancel }) {
   );
   const [ticketValue, setTicketValue] = useState(lead?.ticket_value || 0);
   const [commissionPercent, setCommissionPercent] = useState(lead?.commission_percent || 0);
+  const [isSelfGen, setIsSelfGen] = useState(lead?.is_self_gen || false);
+  const [promoCode, setPromoCode] = useState(lead?.promo_code || "");
 
   const addProduct = () => setProducts(p => [...p, { manufacturer: "", manufacturer_other: "", model: "" }]);
   const removeProduct = (i) => setProducts(p => p.filter((_, idx) => idx !== i));
@@ -35,6 +37,8 @@ export default function SaleConversionModal({ lead, onSave, onCancel }) {
       sale_accessories: cleanAccessories,
       ticket_value: ticketValue,
       commission_percent: commissionPercent,
+      is_self_gen: isSelfGen,
+      promo_code: promoCode,
     });
   };
 
@@ -153,6 +157,30 @@ export default function SaleConversionModal({ lead, onSave, onCancel }) {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* SELF GEN & PROMO */}
+          <div className="border-t border-gray-200 pt-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-[10px] font-bold uppercase text-gray-500">Self Generated?</label>
+                <div className="flex gap-2 mt-1">
+                  <button onClick={() => setIsSelfGen(true)}
+                    className={`flex-1 py-2 text-sm font-bold rounded-lg border transition-all ${isSelfGen ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>
+                    Yes
+                  </button>
+                  <button onClick={() => setIsSelfGen(false)}
+                    className={`flex-1 py-2 text-sm font-bold rounded-lg border transition-all ${!isSelfGen ? 'bg-gray-600 text-white border-gray-600' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>
+                    No
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase text-gray-500">Promo Code</label>
+                <input value={promoCode} onChange={e => setPromoCode(e.target.value.toUpperCase())}
+                  placeholder="Optional" className="w-full px-2 py-1.5 text-sm border rounded-lg mt-1" />
+              </div>
+            </div>
           </div>
 
           {/* FINANCIALS */}

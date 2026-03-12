@@ -1,0 +1,139 @@
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
+import {
+  DollarSign, Gift, ShoppingCart, BadgeDollarSign, X,
+} from "lucide-react";
+import { SpiffBrandCard } from "@/components/shared";
+import { SPIFF_COLORS } from "@/lib/constants";
+
+export default function EarningsTab({ kpiData, setInstallationsOpen }) {
+  const [spiffModal, setSpiffModal] = useState(null);
+
+  return (
+    <div className="space-y-6">
+      {/* Payments */}
+      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#ECFDF5', borderLeftColor: '#10B981' }}>
+        <div className="p-4 sm:p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <DollarSign className="w-5 h-5 text-emerald-600" />
+            <div>
+              <h2 className="text-lg font-bold text-emerald-800">Payments</h2>
+              <p className="text-xs text-emerald-600/70">Based on Install Date</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="bg-white/80 rounded-xl p-4 text-center border border-emerald-100 cursor-pointer hover:shadow-md transition-all"
+              onClick={() => setInstallationsOpen(true)}>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">Installations</p>
+              <p className="text-2xl font-mono font-bold text-emerald-800">{kpiData.commission_payment_count || 0}</p>
+              <p className="text-[9px] text-emerald-500 mt-1">Click for details</p>
+            </div>
+            <div className="bg-white/80 rounded-xl p-4 text-center border border-emerald-100">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">Commission Payable</p>
+              <p className="text-2xl font-mono font-bold text-emerald-800">${(kpiData.commission_payment_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            </div>
+            <div className="bg-white/80 rounded-xl p-4 text-center border border-amber-100">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-amber-600 mb-1">SPIFF Included</p>
+              <p className="text-2xl font-mono font-bold text-amber-600">${(kpiData.commission_payment_spiff || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="bg-white/80 rounded-xl p-3 text-center border border-emerald-100">
+              <p className="text-[10px] font-bold uppercase text-gray-500">Total Commission</p>
+              <p className="text-xl font-mono font-bold text-emerald-700">${(kpiData.total_commission || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            </div>
+            <div className="bg-white/80 rounded-xl p-3 text-center border border-emerald-100">
+              <p className="text-[10px] font-bold uppercase text-gray-500">Avg Comm %</p>
+              <p className="text-xl font-mono font-bold text-emerald-700">{kpiData.avg_commission_percent || 0}%</p>
+            </div>
+            <div className="bg-white/80 rounded-xl p-3 text-center border border-amber-100">
+              <p className="text-[10px] font-bold uppercase text-gray-500">Under Book (5%)</p>
+              <p className="text-xl font-mono font-bold text-amber-600">{kpiData.price_margin_sales_count || 0} sales</p>
+              <p className="text-[9px] text-gray-400">{kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count / kpiData.closed_deals) * 100).toFixed(1) : 0}% of deals</p>
+            </div>
+            <div className="bg-white/80 rounded-xl p-3 text-center border border-amber-100">
+              <p className="text-[10px] font-bold uppercase text-gray-500">Under Book Revenue</p>
+              <p className="text-xl font-mono font-bold text-amber-600">${(kpiData.price_margin_total || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SPIFF Breakdown */}
+      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#FFFBEB', borderLeftColor: '#F59E0B' }}>
+        <div className="p-4 sm:p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <Gift className="w-5 h-5 text-amber-600" />
+            <div>
+              <h2 className="text-lg font-bold text-amber-800">SPIFF Breakdown</h2>
+              <p className="text-xs text-amber-600/70">Click each brand for sale details</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {Object.entries(kpiData.spiff_breakdown || {}).map(([brand, data]) => (
+              <SpiffBrandCard key={brand} brand={brand} data={data} color={SPIFF_COLORS[brand] || '#94A3B8'}
+                onClick={(b) => {
+                  const recs = kpiData.spiff_records?.[b] || [];
+                  setSpiffModal({ brand: b, records: recs, data });
+                }} />
+            ))}
+          </div>
+
+          <div className="rounded-xl p-4 mt-4" style={{ background: 'linear-gradient(135deg, #92400E, #D97706)' }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white/80 text-[10px] font-bold uppercase tracking-wider mb-1">Total SPIFF</p>
+                <p className="text-3xl font-mono font-bold text-white">${(kpiData.spiff_total || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              </div>
+              <Gift className="w-10 h-10 text-white/30" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SPIFF Modal */}
+      {spiffModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSpiffModal(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b flex items-center justify-between" style={{ backgroundColor: SPIFF_COLORS[spiffModal.brand] || '#94A3B8' }}>
+              <div>
+                <h3 className="text-base font-bold text-white">{spiffModal.brand}</h3>
+                <p className="text-xs text-white/80">{spiffModal.data.count} sales &mdash; ${spiffModal.data.commission.toLocaleString('en-US', {minimumFractionDigits: 2})} SPIFF</p>
+              </div>
+              <button onClick={() => setSpiffModal(null)} className="text-white/80 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="overflow-y-auto max-h-[60vh]">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-50">
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3">Name</TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3">Unit</TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3 text-right">Value</TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3 text-right">SPIFF</TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-3">Close</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(spiffModal.records || []).map((rec, i) => (
+                    <TableRow key={i} className="border-b border-gray-50">
+                      <TableCell className="py-2 px-3 text-xs font-medium text-gray-800">{rec.name}</TableCell>
+                      <TableCell className="py-2 px-3 text-[10px] text-gray-500">{rec.unit_type}</TableCell>
+                      <TableCell className="py-2 px-3 text-xs font-mono text-right">${rec.ticket_value.toLocaleString('en-US', {minimumFractionDigits: 2})}</TableCell>
+                      <TableCell className="py-2 px-3 text-xs font-mono font-semibold text-right" style={{ color: SPIFF_COLORS[spiffModal.brand] }}>${rec.spiff_value.toLocaleString('en-US', {minimumFractionDigits: 2})}</TableCell>
+                      <TableCell className="py-2 px-3 text-[10px] font-mono text-gray-500">{rec.close_date || '\u2014'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
