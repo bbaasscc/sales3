@@ -295,7 +295,8 @@ async def fetch_new_emails(config: dict) -> list:
 
 async def create_lead_from_parsed(parsed: dict, email_date=None) -> dict:
     """Create a lead in the DB from parsed email data."""
-    from server import normalize_status, sync_lead_to_sp_collection
+    from utils import normalize_status
+    from services.sync_service import sync_lead_to_sp_collection
 
     # Find salesperson by sales_number
     salesperson = None
