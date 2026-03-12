@@ -17,6 +17,7 @@ import DashboardTab from "@/components/DashboardTab.jsx";
 import FollowupsTab from "@/components/FollowupsTab";
 import DataTab from "@/components/DataTab";
 import EmailIngestConfig from "@/components/EmailIngestConfig";
+import SaleConversionModal from "@/components/SaleConversionModal";
 import {
   PipelineModal, NewLeadModal, DeleteConfirmModal,
   ClientDetailModal, SaleDetailModal, InstallationsModal, EditLeadModal,
@@ -133,6 +134,7 @@ function MainDashboard({ token, user, onLogout }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [editingLead, setEditingLead] = useState(null);
   const [originalLead, setOriginalLead] = useState(null);
+  const [saleConversion, setSaleConversion] = useState(null); // lead being converted to SALE
   const openEditLead = (lead) => {
     const copy = lead ? {...lead} : null;
     setEditingLead(copy);
@@ -322,6 +324,11 @@ function MainDashboard({ token, user, onLogout }) {
 
   const handleSaveEditLead = async () => {
     if (!editingLead?.lead_id) return;
+    // If converting to SALE and wasn't SALE before, show conversion modal
+    if (editingLead.status === 'SALE' && originalLead?.status !== 'SALE' && !saleConversion) {
+      setSaleConversion(editingLead);
+      return;
+    }
     const spiffSum = (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
     const baseComm = (editingLead.ticket_value || 0) * (editingLead.commission_percent || 0) / 100;
     const dataToSave = { ...editingLead, commission_value: Math.round((baseComm + spiffSum) * 100) / 100, spif_total: Math.round(spiffSum * 100) / 100 };
@@ -329,8 +336,24 @@ function MainDashboard({ token, user, onLogout }) {
       await axios.put(`${API}/leads/${editingLead.lead_id}`, dataToSave, { headers: authHeaders });
       toast.success("Lead updated");
       setEditingLead(null);
+      setSaleConversion(null);
       fetchDashboardData(); fetchAllLeads();
     } catch { toast.error("Error updating lead"); }
+  };
+
+  const handleSaleConversion = async (saleData) => {
+    if (!saleConversion?.lead_id) return;
+    const lead = { ...saleConversion, ...saleData, status: 'SALE' };
+    const spiffSum = (lead.apco_x || 0) + (lead.samsung || 0) + (lead.mitsubishi || 0) + (lead.surge_protector || 0) + (lead.duct_cleaning || 0) + (lead.self_gen_mits || 0);
+    const baseComm = (lead.ticket_value || 0) * (lead.commission_percent || 0) / 100;
+    const dataToSave = { ...lead, commission_value: Math.round((baseComm + spiffSum) * 100) / 100, spif_total: Math.round(spiffSum * 100) / 100 };
+    try {
+      await axios.put(`${API}/leads/${saleConversion.lead_id}`, dataToSave, { headers: authHeaders });
+      toast.success(`${saleConversion.name} converted to SALE!`);
+      setEditingLead(null);
+      setSaleConversion(null);
+      fetchDashboardData(); fetchAllLeads();
+    } catch { toast.error("Error converting to sale"); }
   };
 
   // === HANDLERS ===
@@ -592,6 +615,9 @@ function MainDashboard({ token, user, onLogout }) {
       <SaleDetailModal selectedSale={selectedSale} setSelectedSale={setSelectedSale} />
       <InstallationsModal installationsOpen={installationsOpen} setInstallationsOpen={setInstallationsOpen} kpiData={kpiData} />
       <EditLeadModal editingLead={editingLead} setEditingLead={setEditingLead} handleSaveEditLead={handleSaveEditLead} setDeleteConfirm={setDeleteConfirm} originalLead={originalLead} />
+      {saleConversion && (
+        <SaleConversionModal lead={saleConversion} onSave={handleSaleConversion} onCancel={() => setSaleConversion(null)} />
+      )}
 
       {/* Footer */}
       <footer className="py-3 sm:py-4 mt-6 sm:mt-8 mb-16" style={{ backgroundColor: BRAND_COLORS.secondary }}>

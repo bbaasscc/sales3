@@ -11,14 +11,24 @@ import { BRAND_COLORS, PAY_PERIODS_DATA, API, STATUS_OPTIONS, STATUS_LABELS, STA
 const FILTER_STATUS_OPTIONS = ['all', ...STATUS_OPTIONS];
 const INACTIVE_STATUSES = new Set(['CANCEL_APPOINTMENT', 'RESCHEDULED']);
 
-function InlineStatus({ lead, onSave }) {
+function InlineStatus({ lead, onSave, onConvertToSale }) {
   const [editing, setEditing] = useState(false);
   const sc = STATUS_COLORS[lead.status] || STATUS_COLORS.PENDING;
+
+  const handleChange = (e) => {
+    const newStatus = e.target.value;
+    setEditing(false);
+    if (newStatus === 'SALE' && lead.status !== 'SALE') {
+      onConvertToSale(lead);
+    } else {
+      onSave(lead.lead_id, "status", newStatus);
+    }
+  };
 
   if (editing) {
     return (
       <select value={lead.status} autoFocus
-        onChange={(e) => { onSave(lead.lead_id, "status", e.target.value); setEditing(false); }}
+        onChange={handleChange}
         onBlur={() => setEditing(false)}
         onClick={(e) => e.stopPropagation()}
         className="w-full px-1 py-0.5 text-xs border rounded focus:outline-none focus:ring-1 focus:ring-blue-400"
@@ -201,7 +211,7 @@ export default function DataTab({
                   {isAdmin && <TableCell className="py-2 px-2 sm:px-3 text-[10px] sm:text-xs text-blue-600 hidden sm:table-cell">{lead.salesperson_name || '\u2014'}</TableCell>}
                   <TableCell className="py-2 px-2 sm:px-3 text-xs text-gray-600 hidden sm:table-cell">{lead.city}</TableCell>
                   <TableCell className="py-2 px-2 sm:px-3">
-                    <InlineStatus lead={lead} onSave={handleStatusSave} />
+                    <InlineStatus lead={lead} onSave={handleStatusSave} onConvertToSale={(l) => setEditingLead({...l, status: 'SALE'})} />
                   </TableCell>
                   <TableCell className="py-2 px-2 sm:px-3 text-[10px] sm:text-xs text-gray-600">{lead.unit_type}</TableCell>
                   <TableCell className="py-2 px-2 sm:px-3 font-mono text-xs font-semibold text-gray-800">${(lead.ticket_value || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</TableCell>

@@ -130,6 +130,12 @@ export const UNIT_TYPE_OPTIONS = [
   "Other",
 ];
 
+// Manufacturer options for sale conversion
+export const MANUFACTURER_OPTIONS = ["Lennox", "Samsung", "Mitsubishi", "Generac", "Other"];
+
+// Accessory options for sale conversion
+export const ACCESSORY_OPTIONS = ["Humidifier", "High Efficiency Filter 5\"", "APCO X", "Surge Protector", "Duct Cleaning", "Other"];
+
 // Quick Filter options
 export const QUICK_FILTERS = [
   { value: 'all', label: 'All Time' },
