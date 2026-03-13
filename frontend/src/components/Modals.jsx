@@ -556,14 +556,19 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
     }
     setEditingLead(p => ({...p, visit_date: newDate}));
   };
+  const isSold = editingLead.status === 'SALE' || editingLead.status === 'CREDIT_REJECT';
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onMouseDown={(e) => e.stopPropagation()}>
       <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onMouseDown={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
-          <div><h3 className="text-base font-bold">Edit Lead</h3><p className="text-xs text-white/80">{editingLead.name} {editingLead.customer_number && <span className="font-mono bg-white/20 px-1 rounded">#{editingLead.customer_number}</span>}</p></div>
+          <div>
+            <h3 className="text-base font-bold">{isSold ? 'Sale Details' : 'Appointment Info'}</h3>
+            <p className="text-xs text-white/80">{editingLead.name} {editingLead.customer_number && <span className="font-mono bg-white/20 px-1 rounded">#{editingLead.customer_number}</span>}</p>
+          </div>
           <button onClick={handleClose} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
         </div>
         <div className="p-4 space-y-3">
+          {/* CONTACT INFO - Always visible */}
           <div className="grid grid-cols-2 gap-2">
             {[['customer_number','Client #'],['name','Name'],['address','Address'],['city','City'],['email','Email'],['phone','Phone']].map(([k,l]) => (
               <div key={k} className={k === 'address' ? 'col-span-2' : ''}>
@@ -604,8 +609,12 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* APPOINTMENT INFO - Always visible */}
+          <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[10px] font-bold uppercase text-gray-500">Unit Type</label>
+              <label className="text-[10px] font-bold uppercase text-gray-500">Appointment Type</label>
               <select value={editingLead.unit_type || ''} onChange={(e) => setEditingLead(p => ({...p, unit_type: e.target.value}))}
                 className="w-full px-2 py-1.5 text-sm border rounded-lg">
                 <option value="">Select...</option>
@@ -620,81 +629,95 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
               </select>
             </div>
             <div>
-              <label className="text-[10px] font-bold uppercase text-gray-500">Ticket Value</label>
-              <input type="number" step="0.01" value={editingLead.ticket_value ?? ''} onFocus={handleNumFocus}
-                onChange={(e) => setEditingLead(p => ({...p, ticket_value: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
+              <label className="text-[10px] font-bold uppercase text-gray-500">Visit Date</label>
+              <input type="date" value={editingLead.visit_date || ''} onChange={(e) => handleVisitDateChange(e.target.value)}
                 className="w-full px-2 py-1.5 text-sm border rounded-lg" />
             </div>
             <div>
-              <label className="text-[10px] font-bold uppercase text-gray-500">Commission %</label>
-              <input type="number" step="0.01" value={editingLead.commission_percent ?? ''} onFocus={handleNumFocus}
-                onChange={(e) => setEditingLead(p => ({...p, commission_percent: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
+              <label className="text-[10px] font-bold uppercase text-gray-500">Follow-up Date</label>
+              <input type="date" value={editingLead.follow_up_date || ''} onChange={(e) => setEditingLead(p => ({...p, follow_up_date: e.target.value}))}
                 className="w-full px-2 py-1.5 text-sm border rounded-lg" />
             </div>
-            <div className="col-span-2 bg-green-50 rounded-lg p-2.5 border border-green-200">
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-500">Base ({editingLead.commission_percent || 0}% of ${(editingLead.ticket_value || 0).toLocaleString()})</span>
-                <span className="font-mono font-semibold">${baseComm.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
-              </div>
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-500">+ SPIFFs</span>
-                <span className="font-mono font-semibold text-amber-600">${spiffSum.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
-              </div>
-              <div className="flex justify-between text-sm font-bold border-t border-green-300 mt-1 pt-1">
-                <span className="text-green-700">Total Commission</span>
-                <span className="font-mono text-green-700">${totalComm.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
-              </div>
-            </div>
-            {[['visit_date','Visit Date'],['close_date','Close Date'],['install_date','Install Date'],['follow_up_date','Follow-up Date']].map(([k,l]) => (
-              <div key={k}>
-                <label className="text-[10px] font-bold uppercase text-gray-500">{l}</label>
-                <div className="flex gap-1 items-center">
-                  {k === 'visit_date' ? (
-                    <input type="date" value={editingLead[k] || ''} onChange={(e) => handleVisitDateChange(e.target.value)}
-                      className="w-full px-2 py-1.5 text-sm border rounded-lg" />
-                  ) : k === 'install_date' && editingLead.install_date === 'PENDING' ? (
-                    <input type="text" value="PENDING" readOnly className="w-full px-2 py-1.5 text-sm border rounded-lg bg-amber-50 text-amber-700 font-bold" />
-                  ) : (
-                    <input type="date" value={editingLead[k] || ''} onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value}))}
-                      className="w-full px-2 py-1.5 text-sm border rounded-lg" />
-                  )}
-                  {k === 'close_date' && (
-                    <>
-                      <button type="button" onClick={sameDaySale} title="Same Day Sale" className="px-2 py-1.5 text-[9px] font-bold bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 whitespace-nowrap">
-                        Same Day
-                      </button>
-                      <button type="button" onClick={todayClose} title="Today" className="px-2 py-1.5 text-[9px] font-bold bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 whitespace-nowrap">
-                        Today
-                      </button>
-                    </>
-                  )}
-                  {k === 'install_date' && (
-                    <button type="button" onClick={() => setEditingLead(p => ({...p, install_date: editingLead.install_date === 'PENDING' ? '' : 'PENDING'}))} title="Toggle Pending"
-                      className={`px-2 py-1.5 text-[9px] font-bold border rounded-lg hover:opacity-80 whitespace-nowrap ${editingLead.install_date === 'PENDING' ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-100 text-amber-700 border-amber-300'}`}>
-                      Pending
-                    </button>
-                  )}
-                </div>
-                {k === 'install_date' && editingLead.install_date === 'PENDING' && (
-                  <p className="text-[9px] text-amber-600 mt-0.5 font-semibold">Install date pending — remember to book installer</p>
-                )}
-              </div>
-            ))}
           </div>
-          <p className="text-[10px] font-bold uppercase text-gray-400 pt-2">SPIFF Details</p>
-          <div className="grid grid-cols-3 gap-2">
-            {[['apco_x','APCO X'],['samsung','Samsung'],['mitsubishi','Mitsubishi'],['surge_protector','Surge Prot.'],['duct_cleaning','Duct Clean.'],['self_gen_mits','Self Gen Mits']].map(([k,l]) => (
-              <div key={k}><label className="text-[10px] font-bold uppercase text-gray-400">{l}</label>
-                <input type="number" step="0.01" value={editingLead[k] ?? ''} onFocus={handleNumFocus}
-                  onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
-                  className="w-full px-2 py-1 text-xs border rounded-lg" /></div>
-            ))}
-          </div>
+
           <div>
             <label className="text-[10px] font-bold uppercase text-gray-500">Comments</label>
             <textarea value={editingLead.comments || ''} onChange={(e) => setEditingLead(p => ({...p, comments: e.target.value}))}
               rows={2} className="w-full px-2 py-1.5 text-sm border rounded-lg resize-none" />
           </div>
+
+          {/* SALE DETAILS - Only visible when SALE or CREDIT_REJECT */}
+          {isSold && (
+            <>
+              <div className="border-t border-gray-200 pt-3 mt-2">
+                <p className="text-[10px] font-bold uppercase text-emerald-600 mb-2">Sale Details</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-gray-500">Ticket Value</label>
+                    <input type="number" step="0.01" value={editingLead.ticket_value ?? ''} onFocus={handleNumFocus}
+                      onChange={(e) => setEditingLead(p => ({...p, ticket_value: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
+                      className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-gray-500">Commission %</label>
+                    <input type="number" step="0.01" value={editingLead.commission_percent ?? ''} onFocus={handleNumFocus}
+                      onChange={(e) => setEditingLead(p => ({...p, commission_percent: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
+                      className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                  </div>
+                  <div className="col-span-2 bg-green-50 rounded-lg p-2.5 border border-green-200">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-gray-500">Base ({editingLead.commission_percent || 0}% of ${(editingLead.ticket_value || 0).toLocaleString()})</span>
+                      <span className="font-mono font-semibold">${baseComm.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-gray-500">+ SPIFFs</span>
+                      <span className="font-mono font-semibold text-amber-600">${spiffSum.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                    </div>
+                    <div className="flex justify-between text-sm font-bold border-t border-green-300 mt-1 pt-1">
+                      <span className="text-green-700">Total Commission</span>
+                      <span className="font-mono text-green-700">${totalComm.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-gray-500">Close Date</label>
+                    <div className="flex gap-1 items-center">
+                      <input type="date" value={editingLead.close_date || ''} onChange={(e) => setEditingLead(p => ({...p, close_date: e.target.value}))}
+                        className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                      <button type="button" onClick={sameDaySale} title="Same Day" className="px-2 py-1.5 text-[9px] font-bold bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 whitespace-nowrap">Same Day</button>
+                      <button type="button" onClick={todayClose} title="Today" className="px-2 py-1.5 text-[9px] font-bold bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 whitespace-nowrap">Today</button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-gray-500">Install Date</label>
+                    <div className="flex gap-1 items-center">
+                      {editingLead.install_date === 'PENDING' ? (
+                        <input type="text" value="PENDING" readOnly className="w-full px-2 py-1.5 text-sm border rounded-lg bg-amber-50 text-amber-700 font-bold" />
+                      ) : (
+                        <input type="date" value={editingLead.install_date || ''} onChange={(e) => setEditingLead(p => ({...p, install_date: e.target.value}))}
+                          className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                      )}
+                      <button type="button" onClick={() => setEditingLead(p => ({...p, install_date: editingLead.install_date === 'PENDING' ? '' : 'PENDING'}))}
+                        className={`px-2 py-1.5 text-[9px] font-bold border rounded-lg whitespace-nowrap ${editingLead.install_date === 'PENDING' ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-100 text-amber-700 border-amber-300'}`}>
+                        Pending
+                      </button>
+                    </div>
+                    {editingLead.install_date === 'PENDING' && (
+                      <p className="text-[9px] text-amber-600 mt-0.5 font-semibold">Remember to book installer</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <p className="text-[10px] font-bold uppercase text-gray-400 pt-2">SPIFF Details</p>
+              <div className="grid grid-cols-3 gap-2">
+                {[['apco_x','APCO X'],['samsung','Samsung'],['mitsubishi','Mitsubishi'],['surge_protector','Surge Prot.'],['duct_cleaning','Duct Clean.'],['self_gen_mits','Self Gen Mits']].map(([k,l]) => (
+                  <div key={k}><label className="text-[10px] font-bold uppercase text-gray-400">{l}</label>
+                    <input type="number" step="0.01" value={editingLead[k] ?? ''} onFocus={handleNumFocus}
+                      onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
+                      className="w-full px-2 py-1 text-xs border rounded-lg" /></div>
+                ))}
+              </div>
+            </>
+          )}
           <div className="flex gap-2 pt-2">
             <Button onClick={handleSaveEditLead} className="flex-1" style={{ backgroundColor: '#2563EB' }}>Save Changes</Button>
             <Button onClick={() => setDeleteConfirm(editingLead)} variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
