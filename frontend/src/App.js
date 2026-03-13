@@ -119,6 +119,7 @@ function MainDashboard({ token, user, onLogout }) {
   // Follow-ups state
   const [followUpActions, setFollowUpActions] = useState([]);
   const [allClientNotes, setAllClientNotes] = useState({});
+  const [pendingTasks, setPendingTasks] = useState([]);
 
   // Modal state
   const [selectedClient, setSelectedClient] = useState(null);
@@ -201,6 +202,15 @@ function MainDashboard({ token, user, onLogout }) {
   }, []);
 
   useEffect(() => { if (activeTab === 'status') fetchAllNotes(); }, [activeTab, fetchAllNotes]);
+
+  const fetchTasks = useCallback(async () => {
+    try {
+      const res = await axios.get(`${API}/tasks`, { headers: authHeaders });
+      setPendingTasks(res.data.tasks || []);
+    } catch (err) { console.error(err); }
+  }, []);
+
+  useEffect(() => { if (activeTab === 'status') fetchTasks(); }, [activeTab, fetchTasks]);
 
   // === PIPELINE HELPERS ===
   const isStepDone = (clientName, stepId) => followUpActions.some(a => a.client_name === clientName && a.step_id === stepId);
@@ -339,7 +349,7 @@ function MainDashboard({ token, user, onLogout }) {
       toast.success("Lead updated");
       setEditingLead(null);
       setSaleConversion(null);
-      fetchDashboardData(); fetchAllLeads();
+      fetchDashboardData(); fetchAllLeads(); fetchTasks();
     } catch { toast.error("Error updating lead"); }
   };
 
@@ -354,14 +364,14 @@ function MainDashboard({ token, user, onLogout }) {
       toast.success(`${saleConversion.name} converted to SALE!`);
       setEditingLead(null);
       setSaleConversion(null);
-      fetchDashboardData(); fetchAllLeads();
+      fetchDashboardData(); fetchAllLeads(); fetchTasks();
     } catch { toast.error("Error converting to sale"); }
   };
 
   // === HANDLERS ===
   const handleRefresh = async () => {
     setRefreshing(true);
-    try { await fetchDashboardData(true, true); fetchAllLeads(); fetchAllNotes(); }
+    try { await fetchDashboardData(true, true); fetchAllLeads(); fetchAllNotes(); fetchTasks(); }
     catch { toast.error("Update Failed"); }
     finally { setRefreshing(false); }
   };
@@ -575,6 +585,7 @@ function MainDashboard({ token, user, onLogout }) {
                 setNewLeadOpen={setNewLeadOpen} setNewLeadStep={setNewLeadStep} setNewLeadText={setNewLeadText}
                 setEditingLead={openEditLead} setPayPeriod={setPayPeriod} setDateFilter={setDateFilter}
                 authHeaders={authHeaders} fetchAllLeads={fetchAllLeads} fetchDashboardData={fetchDashboardData}
+                pendingTasks={pendingTasks} fetchTasks={fetchTasks}
               />
             )}
 

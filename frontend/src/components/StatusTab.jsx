@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import { Card } from "@/components/ui/card";
 import {
@@ -7,6 +7,7 @@ import {
 import {
   Phone, AlertTriangle, Check, Target, Plus, Upload,
   ArrowUpDown, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Database,
+  Clock, Wrench, Calendar, Edit3, PhoneCall, Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -21,8 +22,9 @@ export default function StatusTab({
   allLeads, payPeriod, dateFilter, searchTerm, setSearchTerm,
   statusFilter, setStatusFilter, setNewLeadOpen, setNewLeadStep, setNewLeadText,
   setEditingLead, setPayPeriod, setDateFilter, authHeaders, fetchAllLeads, fetchDashboardData,
+  pendingTasks, fetchTasks,
 }) {
-  const [view, setView] = useState('leads'); // 'leads' | 'pipeline'
+  const [view, setView] = useState('leads');
   const [showDataTools, setShowDataTools] = useState(false);
   const [sortField, setSortField] = useState('visit_date');
   const [sortDir, setSortDir] = useState('desc');
@@ -110,11 +112,43 @@ export default function StatusTab({
     e.target.value = '';
   };
 
+  const handleCompleteTask = async (taskId) => {
+    try {
+      await axios.put(`${API}/tasks/${taskId}/complete`, {}, { headers: authHeaders });
+      toast.success("Task completed");
+      if (fetchTasks) fetchTasks();
+    } catch (err) {
+      toast.error("Failed to complete task");
+    }
+  };
+
+  const handleDismissTask = async (taskId) => {
+    try {
+      await axios.put(`${API}/tasks/${taskId}/dismiss`, {}, { headers: authHeaders });
+      toast.success("Task dismissed");
+      if (fetchTasks) fetchTasks();
+    } catch (err) {
+      toast.error("Failed to dismiss task");
+    }
+  };
+
+  // Open lead edit modal from task
+  const openLeadFromTask = (task) => {
+    const lead = allLeads.find(l => l.lead_id === task.lead_id);
+    if (lead) {
+      setEditingLead({...lead});
+    } else {
+      toast.error("Lead not found");
+    }
+  };
+
   // Pipeline view data
   const activeFollowups = (kpiData?.follow_ups || []).filter(f => {
     const p = getPipelineProgress(f.name);
     return p.done < p.total;
   });
+
+  const activeTasks = (pendingTasks || []).filter(t => t.status === 'pending');
 
   return (
     <div>
@@ -122,12 +156,24 @@ export default function StatusTab({
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
           <button onClick={() => setView('leads')}
-            className={`px-4 py-2 rounded-md text-xs font-bold transition-all ${view === 'leads' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            className={`px-4 py-2 rounded-md text-xs font-bold transition-all ${view === 'leads' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            data-testid="view-leads-btn">
             All Leads
           </button>
           <button onClick={() => setView('pipeline')}
-            className={`px-4 py-2 rounded-md text-xs font-bold transition-all ${view === 'pipeline' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            className={`px-4 py-2 rounded-md text-xs font-bold transition-all ${view === 'pipeline' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            data-testid="view-pipeline-btn">
             Pipeline ({activeFollowups.length})
+          </button>
+          <button onClick={() => setView('tasks')}
+            className={`px-4 py-2 rounded-md text-xs font-bold transition-all relative ${view === 'tasks' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            data-testid="view-tasks-btn">
+            Tasks
+            {activeTasks.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {activeTasks.length}
+              </span>
+            )}
           </button>
         </div>
         <button onClick={() => setShowDataTools(!showDataTools)}
@@ -155,6 +201,84 @@ export default function StatusTab({
         </div>
       )}
 
+      {/* TASKS VIEW */}
+      {view === 'tasks' && (
+        <div className="space-y-3" data-testid="tasks-view">
+          {/* Tasks Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Wrench className="w-4 h-4 text-amber-600" />
+              <h3 className="text-sm font-bold text-gray-800">Pending Installations</h3>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">
+                {activeTasks.length} pending
+              </span>
+            </div>
+          </div>
+
+          {activeTasks.length === 0 ? (
+            <div className="text-center py-12 text-gray-400" data-testid="tasks-empty">
+              <Check className="w-8 h-8 mx-auto mb-2 text-green-400" />
+              <p className="text-sm font-medium">No pending tasks</p>
+              <p className="text-xs mt-1">All installations have been scheduled</p>
+            </div>
+          ) : (
+            activeTasks.map((task) => (
+              <Card key={task.task_id}
+                className="p-4 border border-amber-200 bg-amber-50/30 hover:shadow-md transition-all"
+                data-testid={`task-card-${task.task_id}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Clock className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                      <h4 className="text-sm font-bold text-gray-800 truncate">{task.lead_name}</h4>
+                    </div>
+                    <p className="text-xs text-gray-500 ml-6">
+                      {task.lead_city && <span>{task.lead_city}</span>}
+                      {task.lead_unit_type && <span> &mdash; {task.lead_unit_type}</span>}
+                    </p>
+                    {task.lead_ticket_value > 0 && (
+                      <p className="text-xs font-mono font-semibold text-gray-700 ml-6 mt-0.5">
+                        ${task.lead_ticket_value.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}
+                      </p>
+                    )}
+                    <p className="text-[10px] text-gray-400 ml-6 mt-1">
+                      Created: {new Date(task.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1.5 flex-shrink-0">
+                    <button
+                      onClick={() => openLeadFromTask(task)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                      data-testid={`task-edit-${task.task_id}`}>
+                      <Calendar className="w-3 h-3" /> Set Date
+                    </button>
+                    {task.lead_phone && (
+                      <a href={`tel:${task.lead_phone}`}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
+                        data-testid={`task-call-${task.task_id}`}
+                        onClick={e => e.stopPropagation()}>
+                        <PhoneCall className="w-3 h-3" /> Call
+                      </a>
+                    )}
+                    <button
+                      onClick={() => handleDismissTask(task.task_id)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold bg-gray-100 text-gray-500 rounded-lg hover:bg-gray-200 transition-colors"
+                      data-testid={`task-dismiss-${task.task_id}`}>
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              </Card>
+            ))
+          )}
+
+          {/* Completed Tasks (collapsed) */}
+          {(pendingTasks || []).filter(t => t.status === 'completed').length > 0 && (
+            <CompletedTasks tasks={(pendingTasks || []).filter(t => t.status === 'completed')} />
+          )}
+        </div>
+      )}
+
       {/* LEADS VIEW */}
       {view === 'leads' && (
         <>
@@ -172,7 +296,8 @@ export default function StatusTab({
                 return (
                   <button key={s} onClick={() => setStatusFilter(s)}
                     className={`px-2 py-1.5 rounded-lg text-[10px] font-bold transition-all ${statusFilter === s ? 'text-white shadow-sm' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'}`}
-                    style={statusFilter === s ? { backgroundColor: sc.solid || BRAND_COLORS.primary } : {}}>
+                    style={statusFilter === s ? { backgroundColor: sc.solid || BRAND_COLORS.primary } : {}}
+                    data-testid={`filter-status-${s}`}>
                     {s === 'all' ? 'All' : (STATUS_LABELS[s] || s)}
                   </button>
                 );
@@ -199,14 +324,22 @@ export default function StatusTab({
                   {filteredLeads.map((lead, i) => {
                     const isInactive = lead.status === 'CANCEL_APPOINTMENT' || lead.status === 'RESCHEDULED';
                     const sc = STATUS_COLORS[lead.status] || STATUS_COLORS.PENDING;
+                    const hasPendingInstall = lead.status === 'SALE' && lead.install_date === 'PENDING';
                     return (
                       <TableRow key={lead.lead_id || i}
-                        className={`border-b border-gray-100 cursor-pointer transition-colors ${isInactive ? 'opacity-50 bg-gray-50/50 hover:opacity-75' : 'hover:bg-blue-50/50'}`}
+                        className={`border-b border-gray-100 cursor-pointer transition-colors ${isInactive ? 'opacity-50 bg-gray-50/50 hover:opacity-75' : hasPendingInstall ? 'bg-amber-50/40 hover:bg-amber-50' : 'hover:bg-blue-50/50'}`}
                         onClick={() => setEditingLead({...lead})}
                         data-testid={`status-row-${i}`}>
                         <TableCell className="py-2 px-2 font-mono text-[10px] text-gray-400">{lead.customer_number || '\u2014'}</TableCell>
                         <TableCell className="py-2 px-2 text-xs font-medium text-gray-800">
-                          <span className="line-clamp-1">{lead.name}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="line-clamp-1">{lead.name}</span>
+                            {hasPendingInstall && (
+                              <span className="flex-shrink-0 px-1 py-0.5 rounded text-[8px] font-bold bg-amber-200 text-amber-800" title="Pending installation">
+                                INSTALL
+                              </span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="py-2 px-2 text-xs text-gray-600 hidden sm:table-cell">{lead.city}</TableCell>
                         <TableCell className="py-2 px-2">
@@ -218,11 +351,20 @@ export default function StatusTab({
                         <TableCell className="py-2 px-2 font-mono text-xs font-semibold text-gray-800">${(lead.ticket_value || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</TableCell>
                         <TableCell className="py-2 px-2 font-mono text-[10px] text-gray-500 hidden lg:table-cell">{lead.visit_date || '\u2014'}</TableCell>
                         <TableCell className="py-2 px-2 hidden lg:table-cell" onClick={e => e.stopPropagation()}>
-                          {lead.status === 'PENDING' && (
-                            <button onClick={() => openPipelineMenu(lead)} className="text-[10px] px-2 py-1 bg-blue-50 text-blue-600 rounded font-bold hover:bg-blue-100">
-                              Pipeline
-                            </button>
-                          )}
+                          <div className="flex gap-1">
+                            {lead.status === 'PENDING' && (
+                              <button onClick={() => openPipelineMenu(lead)} className="text-[10px] px-2 py-1 bg-blue-50 text-blue-600 rounded font-bold hover:bg-blue-100"
+                                data-testid={`pipeline-btn-${i}`}>
+                                Pipeline
+                              </button>
+                            )}
+                            {lead.phone && (
+                              <a href={`tel:${lead.phone}`} className="text-[10px] px-2 py-1 bg-green-50 text-green-600 rounded font-bold hover:bg-green-100"
+                                onClick={e => e.stopPropagation()} data-testid={`call-btn-${i}`}>
+                                <Phone className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
@@ -239,7 +381,7 @@ export default function StatusTab({
 
       {/* PIPELINE VIEW */}
       {view === 'pipeline' && (
-        <div className="space-y-3">
+        <div className="space-y-3" data-testid="pipeline-view">
           {activeFollowups.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
               <Check className="w-8 h-8 mx-auto mb-2 text-green-400" />
@@ -252,7 +394,7 @@ export default function StatusTab({
               const pct = progress.total > 0 ? Math.round(progress.done / progress.total * 100) : 0;
               return (
                 <Card key={i} className={`p-4 border transition-all hover:shadow-md cursor-pointer ${fu.is_urgent ? 'border-red-200 bg-red-50/30' : 'border-gray-200'}`}
-                  onClick={() => openClientModal(fu)}>
+                  onClick={() => openClientModal(fu)} data-testid={`pipeline-card-${i}`}>
                   <div className="flex items-center justify-between mb-2">
                     <div>
                       <h4 className="text-sm font-bold text-gray-800">{fu.name}</h4>
@@ -268,16 +410,57 @@ export default function StatusTab({
                       <div className="h-2 rounded-full bg-green-500 transition-all" style={{ width: `${pct}%` }} />
                     </div>
                     <span className="text-[10px] font-bold text-gray-500">{progress.done}/{progress.total}</span>
-                    <button onClick={(e) => { e.stopPropagation(); openPipelineMenu(fu); }}
-                      className="text-[10px] px-2 py-1 bg-blue-50 text-blue-600 rounded font-bold hover:bg-blue-100">
-                      Actions
-                    </button>
+                    <div className="flex gap-1" onClick={e => e.stopPropagation()}>
+                      <button onClick={() => openPipelineMenu(fu)}
+                        className="text-[10px] px-2 py-1 bg-blue-50 text-blue-600 rounded font-bold hover:bg-blue-100"
+                        data-testid={`pipeline-actions-${i}`}>
+                        Actions
+                      </button>
+                      {fu.phone && (
+                        <a href={`tel:${fu.phone}`}
+                          className="text-[10px] px-2 py-1 bg-green-50 text-green-600 rounded font-bold hover:bg-green-100 flex items-center gap-1">
+                          <Phone className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
                   </div>
                   {note?.comment && <p className="text-[10px] text-gray-400 mt-1.5 line-clamp-1">Note: {note.comment}</p>}
                 </Card>
               );
             })
           )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CompletedTasks({ tasks }) {
+  const [expanded, setExpanded] = useState(false);
+  const recentCompleted = tasks.slice(0, 5);
+
+  return (
+    <div className="mt-4">
+      <button onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors"
+        data-testid="completed-tasks-toggle">
+        <Check className="w-3.5 h-3.5" />
+        Completed ({tasks.length})
+        {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+      </button>
+      {expanded && (
+        <div className="mt-2 space-y-2">
+          {recentCompleted.map(task => (
+            <div key={task.task_id} className="p-3 bg-gray-50 rounded-lg border border-gray-100 opacity-60">
+              <div className="flex items-center gap-2">
+                <Check className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                <span className="text-xs font-medium text-gray-600 line-through">{task.lead_name}</span>
+                {task.install_date_set && (
+                  <span className="text-[10px] text-green-600 font-mono">Installed: {task.install_date_set}</span>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -14,6 +14,7 @@ from utils import normalize_status, safe_float, safe_date, parse_lead_email
 from services.sync_service import sync_lead_to_sp_collection, get_sp_collection_name
 from routers.pipeline import generate_pipeline_schedule
 from routers.admin import PAY_PERIODS
+from routers.tasks import create_pending_install_task, complete_pending_install_task
 
 router = APIRouter(prefix="/api", tags=["leads"])
 
@@ -69,6 +70,12 @@ async def update_lead(lead_id: str, updates: LeadUpdate, user=Depends(get_curren
     updated_lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
     if updated_lead:
         await sync_lead_to_sp_collection(updated_lead)
+        # Auto-create/complete pending install tasks
+        install_date = updated_lead.get("install_date", "")
+        if install_date == "PENDING":
+            await create_pending_install_task(updated_lead)
+        elif install_date and install_date != "PENDING":
+            await complete_pending_install_task(lead_id, install_date)
     return {"message": "Lead updated"}
 
 

@@ -84,6 +84,11 @@ class LeadUpdate(BaseModel):
     mitsubishi: Optional[float] = None
     surge_protector: Optional[float] = None
     self_gen_mits: Optional[float] = None
+    additional_phones: Optional[List[Dict[str, str]]] = None
+    products: Optional[List[Dict[str, str]]] = None
+    sale_accessories: Optional[List[Dict[str, str]]] = None
+    is_self_gen: Optional[bool] = None
+    promo_code: Optional[str] = None
 
 class PipelineScheduleUpdate(BaseModel):
     client_name: str

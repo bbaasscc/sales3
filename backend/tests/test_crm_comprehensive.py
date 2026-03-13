@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://lead-tracker-dev.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://sales-mgmt-app-1.preview.emergentagent.com')
 
 # Credentials as specified
 ADMIN_EMAIL = "bsanchezcar@gmail.com"
