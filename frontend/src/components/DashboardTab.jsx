@@ -103,6 +103,13 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
               <p className="text-3xl sm:text-4xl font-mono font-bold text-emerald-400">{kpiData.closed_deals}</p>
               <p className="text-[10px] text-white/40 mt-1">SALE status</p>
             </div>
+
+            {/* Price Match (PM) */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">PM (Under Book)</p>
+              <p className="text-3xl sm:text-4xl font-mono font-bold text-red-400">{kpiData.price_margin_sales_count || 0}</p>
+              <p className="text-[10px] text-white/40 mt-1">{kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count || 0) / kpiData.closed_deals * 100).toFixed(1) : '0.0'}% of deals</p>
+            </div>
           </div>
 
           {(kpiData.cancel_count > 0 || kpiData.rescheduled_count > 0) && (
