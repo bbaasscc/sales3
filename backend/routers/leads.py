@@ -55,6 +55,8 @@ async def create_lead(lead: LeadCreate, user=Depends(get_current_user)):
     if doc.get('visit_date'):
         schedule = generate_pipeline_schedule(doc['visit_date'])
         await db.pipeline_schedules.update_one({"client_name": doc['name']}, {"$set": {"client_name": doc['name'], "steps": schedule, "is_custom": False}}, upsert=True)
+    if doc.get('install_date') == 'PENDING':
+        await create_pending_install_task(doc)
     return {"message": "Lead created", "lead": doc}
 
 
