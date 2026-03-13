@@ -16,19 +16,80 @@ def slugify(name: str) -> str:
     return re.sub(r'[^a-z0-9]+', '_', name.lower()).strip('_')
 
 
-# Standard unit type mapping
-UNIT_TYPE_MAP = {
-    'FURNACE': 'Furnace', 'COMBO': 'Furnace + AC', 'A/C': 'AC Only', 'AC': 'AC Only',
-    'HEAT PUMP': 'Heat Pump Only', 'HP': 'Heat Pump Only', 'DUCTLESS': 'Heat Pump Only',
-    'BOILER': 'Boiler', 'GENERATOR': 'Generator',
+# Standard unit type mapping - comprehensive
+UNIT_TYPE_MAP = {}
+# Build case-insensitive map
+_raw_map = {
+    # Furnace only
+    'Furnace': ['FURNACE', 'Furnace', 'FUrnace', 'furnace'],
+    # Furnace + AC
+    'Furnace + AC': ['FURNACE + AC', 'Furnace + AC', 'FUrnace + AC', 'FURNACE + AC + HWT', 'COMBO', 'Combo'],
+    # Furnace + Heat Pump
+    'Furnace + Heat Pump': [
+        'Furnace + HP', 'FURNACE + HP', 'Furnace + Heat Pump', 'HEAT PUMP + Furnace', 'HEAT PUMP + FURNACE',
+        'Mitsubishi intelli-HEAT + 90 Furnace', 'Mitsubishi intelli-HEAT + 80 Furnace',
+        'Mitsu Intelli heat 80 combo', 'Samsung Hylex + 80 Furnace', 'Samsung Hylex + 80 FURNACE',
+        'Samsung Hylex + Furnace + DC', 'Samsung Hylex + Furnace',
+    ],
+    # AC Only
+    'AC Only': ['A/C', 'AC', 'AC ONLY', 'Ac Only', 'ac'],
+    # Heat Pump Only
+    'Heat Pump Only': ['HEAT PUMP', 'HP', 'DUCTLESS', 'Ductless', 'Mitsubishi Lead', 'Heat Pump', 'HEAT PUMP ONLY'],
+    # Air Handler
+    'Air Handler + AC': ['Air Handler + AC', 'AIR HANDLER + AC'],
+    'Air Handler + Heat Pump': ['Air Handler + HP', 'AIR HANDLER + HP', 'Samsung Hylex + Air Handler', 'Air Handler + Heat Pump'],
+    'Air Handler Only': ['Air Handler', 'AIR HANDLER', 'Air Handler Only'],
+    # Generator
+    'Generator': ['GENERATOR', 'Generator', 'generator', 'GENERAC'],
+    # Boiler
+    'Boiler': ['BOILER', 'Boiler', 'boiler'],
+    # Other
+    'Other': ['Magic-Pak', 'MAGIC-PAK', 'Other', 'OTHER'],
 }
+for standard, variants in _raw_map.items():
+    for v in variants:
+        UNIT_TYPE_MAP[v] = standard
+        UNIT_TYPE_MAP[v.upper()] = standard
+        UNIT_TYPE_MAP[v.lower()] = standard
 
 def standardize_unit_type(val: str) -> str:
     """Map raw unit type to standard options."""
     if not val:
         return val
     v = val.strip()
-    return UNIT_TYPE_MAP.get(v.upper(), UNIT_TYPE_MAP.get(v, v))
+    # Direct match
+    result = UNIT_TYPE_MAP.get(v)
+    if result:
+        return result
+    # Case-insensitive match
+    result = UNIT_TYPE_MAP.get(v.upper())
+    if result:
+        return result
+    # Fuzzy: check if key words match
+    vu = v.upper()
+    if 'FURNACE' in vu and ('HP' in vu or 'HEAT PUMP' in vu or 'HYLEX' in vu or 'INTELLI' in vu):
+        return 'Furnace + Heat Pump'
+    if 'FURNACE' in vu and 'AC' in vu:
+        return 'Furnace + AC'
+    if 'FURNACE' in vu:
+        return 'Furnace'
+    if 'AIR HANDLER' in vu and ('HP' in vu or 'HEAT PUMP' in vu or 'HYLEX' in vu):
+        return 'Air Handler + Heat Pump'
+    if 'AIR HANDLER' in vu and 'AC' in vu:
+        return 'Air Handler + AC'
+    if 'AIR HANDLER' in vu:
+        return 'Air Handler Only'
+    if 'HEAT PUMP' in vu or 'HP' in vu or 'DUCTLESS' in vu or 'MINI SPLIT' in vu:
+        return 'Heat Pump Only'
+    if vu in ('AC', 'A/C'):
+        return 'AC Only'
+    if 'BOILER' in vu:
+        return 'Boiler'
+    if 'GENERATOR' in vu or 'GENERAC' in vu:
+        return 'Generator'
+    if 'COMBO' in vu:
+        return 'Furnace + AC'
+    return v  # Return as-is if no match
 
 
 def normalize_status(status: str) -> str:

@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime, timezone, timedelta
 from auth import get_current_user
 from database import db
+from utils import standardize_unit_type
 import logging
 
 logger = logging.getLogger(__name__)
@@ -179,7 +180,7 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
 
     equipment_types = {}
     for l in all_sales:
-        ut = l.get("unit_type", "") or "Other"
+        ut = standardize_unit_type(l.get("unit_type", "") or "") or "Other"
         if ut not in equipment_types:
             equipment_types[ut] = {"count": 0, "revenue": 0}
         equipment_types[ut]["count"] += 1

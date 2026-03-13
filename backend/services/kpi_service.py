@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 
-from utils import normalize_status, safe_float, safe_date, EXCLUDED_STATUSES
+from utils import normalize_status, safe_float, safe_date, EXCLUDED_STATUSES, standardize_unit_type
 from routers.admin import PAY_PERIODS
 
 
@@ -53,6 +53,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
 
     for dc in ['visit_date', 'close_date', 'install_date', 'follow_up_date']:
         df[dc] = df[dc].apply(safe_date)
+
+    # Standardize unit types for consistent charts
+    df['unit_type'] = df['unit_type'].apply(lambda x: standardize_unit_type(str(x).strip()) if pd.notna(x) and str(x).strip() else '')
 
     df['effective_close_date'] = df['close_date'].combine_first(df['visit_date'])
 
