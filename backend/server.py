@@ -16,6 +16,7 @@ from routers.email_ingest import router as email_ingest_router
 from routers.leads import router as leads_router
 from routers.dashboard import router as dashboard_router
 from routers.tasks import router as tasks_router
+from routers.notifications import router as notifications_router
 
 # Services
 from services.sync_service import seed_database
@@ -43,6 +44,7 @@ app.include_router(email_ingest_router)
 app.include_router(leads_router)
 app.include_router(dashboard_router)
 app.include_router(tasks_router)
+app.include_router(notifications_router)
 
 # CORS
 app.add_middleware(

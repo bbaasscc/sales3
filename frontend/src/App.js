@@ -21,6 +21,7 @@ import DataTab from "@/components/DataTab";
 import EarningsTab from "@/components/EarningsTab";
 import EmailIngestConfig from "@/components/EmailIngestConfig";
 import SaleConversionModal from "@/components/SaleConversionModal";
+import NotificationBell from "@/components/NotificationBell";
 import {
   PipelineModal, NewLeadModal, DeleteConfirmModal,
   ClientDetailModal, SaleDetailModal, InstallationsModal, EditLeadModal,
@@ -480,7 +481,8 @@ function MainDashboard({ token, user, onLogout }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              {!isAdmin && <NotificationBell authHeaders={authHeaders} />}
               <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10 h-8 w-8"
                 onClick={() => setFiltersOpen(!filtersOpen)} data-testid="filters-toggle">
                 <Menu className="w-4 h-4" />
