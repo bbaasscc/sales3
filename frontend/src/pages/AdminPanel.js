@@ -25,7 +25,7 @@ export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const params = {};
+      const params = { category: 'hvac' };
       if (payPeriod && payPeriod !== "all") params.pay_period = payPeriod;
       if (dateFilter && dateFilter !== "all") params.date_filter = dateFilter;
       const [compRes, spRes] = await Promise.all([

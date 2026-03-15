@@ -105,13 +105,18 @@ async def get_salespeople(user=Depends(get_current_user)):
 
 
 @router.get("/comparison")
-async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filter: Optional[str] = None, user=Depends(get_current_user)):
+async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filter: Optional[str] = None, category: Optional[str] = None, user=Depends(get_current_user)):
     if user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin only")
     salespeople = await db.users.find({"role": "salesperson"}, {"_id": 0, "password_hash": 0}).to_list(1000)
     comparison = []
     for sp in salespeople:
-        all_sp_leads = await db.leads.find({"salesperson_id": sp["user_id"]}, {"_id": 0}).to_list(10000)
+        lead_filter = {"salesperson_id": sp["user_id"]}
+        if category == "hvac":
+            lead_filter["unit_type"] = {"$ne": "Generator"}
+        elif category == "generator":
+            lead_filter["unit_type"] = "Generator"
+        all_sp_leads = await db.leads.find(lead_filter, {"_id": 0}).to_list(10000)
         EXCLUDED_FROM_VISITS = {"CANCEL_APPOINTMENT", "RESCHEDULED"}
         # Total leads excludes Cancel and Rescheduled
         all_period_leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter)
@@ -160,7 +165,12 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         sp["overall_position"] = i + 1
 
     # Global totals (all metrics based on visit_date)
-    all_leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
+    global_filter = {}
+    if category == "hvac":
+        global_filter["unit_type"] = {"$ne": "Generator"}
+    elif category == "generator":
+        global_filter["unit_type"] = "Generator"
+    all_leads = await db.leads.find(global_filter, {"_id": 0}).to_list(10000)
     all_leads_filtered = filter_leads_by_period(all_leads, pay_period, date_filter)
     all_sales_filtered = filter_leads_by_period(all_leads, pay_period, date_filter, date_field="visit_date")
     all_sales = [l for l in all_sales_filtered if l.get("status") == "SALE"]

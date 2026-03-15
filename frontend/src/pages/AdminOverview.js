@@ -34,7 +34,7 @@ export default function AdminOverview({ token, payPeriod, dateFilter }) {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const params = {};
+      const params = { category: 'hvac' };
       if (payPeriod && payPeriod !== "all") params.pay_period = payPeriod;
       if (dateFilter && dateFilter !== "all") params.date_filter = dateFilter;
       const res = await axios.get(`${API}/admin/comparison`, {

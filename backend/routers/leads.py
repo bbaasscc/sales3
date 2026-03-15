@@ -107,12 +107,16 @@ async def delete_lead(lead_id: str, user=Depends(get_current_user)):
 
 
 @router.get("/leads")
-async def get_leads(salesperson_id: Optional[str] = None, user=Depends(get_optional_user)):
+async def get_leads(salesperson_id: Optional[str] = None, category: Optional[str] = None, user=Depends(get_optional_user)):
     lead_filter = {}
     if user and user["role"] == "salesperson":
         lead_filter["salesperson_id"] = user["user_id"]
     elif user and user["role"] == "admin" and salesperson_id:
         lead_filter["salesperson_id"] = salesperson_id
+    if category == "hvac":
+        lead_filter["unit_type"] = {"$ne": "Generator"}
+    elif category == "generator":
+        lead_filter["unit_type"] = "Generator"
     leads = await db.leads.find(lead_filter, {"_id": 0}).to_list(10000)
     if user and user["role"] == "admin" and leads:
         sp_map = {}

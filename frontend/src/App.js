@@ -18,6 +18,7 @@ import FollowupsTab from "@/components/FollowupsTab";
 import StatusTab from "@/components/StatusTab";
 import DataTab from "@/components/DataTab";
 import EarningsTab from "@/components/EarningsTab";
+import GeneratorsTab from "@/components/GeneratorsTab";
 import EmailIngestConfig from "@/components/EmailIngestConfig";
 import SaleConversionModal from "@/components/SaleConversionModal";
 import {
@@ -157,7 +158,7 @@ function MainDashboard({ token, user, onLogout }) {
     const currentPeriod = resetToCurrentPeriod ? getCurrentPayPeriod() : payPeriod;
     if (resetToCurrentPeriod && currentPeriod !== payPeriod) setPayPeriod(currentPeriod);
     try {
-      const params = { date_filter: dateFilter };
+      const params = { date_filter: dateFilter, category: 'hvac' };
       const periodToUse = resetToCurrentPeriod ? currentPeriod : payPeriod;
       if (periodToUse && periodToUse !== "all") params.pay_period = periodToUse;
       if (isAdmin && filterSalespersonId) params.salesperson_id = filterSalespersonId;
@@ -183,7 +184,7 @@ function MainDashboard({ token, user, onLogout }) {
 
   const fetchAllLeads = useCallback(async () => {
     try {
-      const params = {};
+      const params = { category: 'hvac' };
       if (isAdmin && filterSalespersonId) params.salesperson_id = filterSalespersonId;
       const res = await axios.get(`${API}/leads`, { headers: authHeaders, params });
       setAllLeads(res.data.leads || []);
@@ -549,6 +550,7 @@ function MainDashboard({ token, user, onLogout }) {
                 { id: 'dashboard', label: 'Dashboard' },
                 { id: 'status', label: 'Status' },
                 { id: 'earnings', label: 'Earnings' },
+                { id: 'generators', label: 'Generators' },
               ]).map(tab => (
                 <button
                   key={tab.id} onClick={() => setActiveTab(tab.id)}
@@ -616,6 +618,16 @@ function MainDashboard({ token, user, onLogout }) {
             {/* Earnings Tab (separate from dashboard) */}
             {activeTab === 'earnings' && !isAdmin && (
               <EarningsTab kpiData={kpiData} setInstallationsOpen={setInstallationsOpen} />
+            )}
+
+            {/* Generators Tab */}
+            {activeTab === 'generators' && !isAdmin && (
+              <GeneratorsTab
+                payPeriod={payPeriod} dateFilter={dateFilter} authHeaders={authHeaders}
+                setEditingLead={openEditLead} setNewLeadOpen={setNewLeadOpen}
+                setNewLeadStep={setNewLeadStep} setNewLeadText={setNewLeadText}
+                fetchDashboardData={fetchDashboardData}
+              />
             )}
 
             {/* Email Ingest Tab (Admin only) */}
