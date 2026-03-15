@@ -333,7 +333,6 @@ export default function StatusTab({
               <Table>
                 <TableHeader>
                   <TableRow className="bg-gray-50">
-                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none hidden sm:table-cell" onClick={() => toggleSort('customer_number')}># <SortIcon field="customer_number" /></TableHead>
                     <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none" onClick={() => toggleSort('name')}>Name <SortIcon field="name" /></TableHead>
                     <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 hidden md:table-cell cursor-pointer select-none" onClick={() => toggleSort('city')}>City <SortIcon field="city" /></TableHead>
                     <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none" onClick={() => toggleSort('status')}>Status <SortIcon field="status" /></TableHead>
@@ -353,7 +352,6 @@ export default function StatusTab({
                         className={`border-b border-gray-100 cursor-pointer transition-colors ${isInactive ? 'opacity-50 bg-gray-50/50 hover:opacity-75' : hasPendingInstall ? 'bg-amber-50/40 hover:bg-amber-50' : 'hover:bg-blue-50/50'}`}
                         onClick={() => setEditingLead({...lead})}
                         data-testid={`status-row-${i}`}>
-                        <TableCell className="py-2 px-2 font-mono text-[10px] text-gray-400 hidden sm:table-cell">{lead.customer_number || '\u2014'}</TableCell>
                         <TableCell className="py-2 px-2 text-xs font-medium text-gray-800">
                           <div>
                             <div className="flex items-center gap-1.5">
@@ -364,7 +362,10 @@ export default function StatusTab({
                                 </span>
                               )}
                             </div>
-                            <span className="text-[10px] text-gray-400 md:hidden">{lead.city}</span>
+                            <div className="flex items-center gap-2 text-[10px] text-gray-400">
+                              {lead.customer_number && <span className="font-mono">#{lead.customer_number}</span>}
+                              <span className="md:hidden">{lead.city}</span>
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell className="py-2 px-2 text-xs text-gray-600 hidden md:table-cell">{lead.city}</TableCell>
@@ -431,51 +432,65 @@ export default function StatusTab({
               const note = allClientNotes[fu.name];
               const pct = progress.total > 0 ? Math.round(progress.done / progress.total * 100) : 0;
               return (
-                <Card key={i} className={`p-4 border transition-all hover:shadow-md cursor-pointer ${fu.is_urgent ? 'border-red-200 bg-red-50/30' : 'border-gray-200'}`}
-                  onClick={() => openClientModal(fu)} data-testid={`pipeline-card-${i}`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <h4 className="text-sm font-bold text-gray-800">{fu.name}</h4>
-                      <p className="text-[10px] text-gray-500">{fu.city} &mdash; Visit: {fu.visit_date}</p>
+                <div key={i} className="relative anim-row" style={{ animationDelay: `${i * 0.05}s` }}
+                  data-testid={`pipeline-card-${i}`}>
+                  {/* Book-style card */}
+                  <div className={`rounded-xl overflow-hidden border-2 transition-all hover:shadow-lg cursor-pointer ${fu.is_urgent ? 'border-red-300' : 'border-gray-200'}`}
+                    style={{ borderLeft: '6px solid #1E3A5F' }}>
+                    {/* Book spine accent */}
+                    <div className="flex">
+                      {/* Content */}
+                      <div className="flex-1 p-4" onClick={() => openClientModal(fu)}>
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h4 className="text-sm font-bold text-gray-800">{fu.name}</h4>
+                            <p className="text-[10px] text-gray-400 font-mono">
+                              {fu.customer_number && `#${fu.customer_number} · `}{fu.city} · Visit: {fu.visit_date}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                            {fu.is_urgent && <AlertTriangle className="w-4 h-4 text-red-500" />}
+                            <span className="text-[10px] font-mono bg-gray-100 px-2 py-0.5 rounded-full">{fu.days_until}d</span>
+                          </div>
+                        </div>
+                        {/* Progress bar */}
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="flex-1 bg-gray-200 rounded-full h-2">
+                            <div className="h-2 rounded-full bg-green-500 transition-all" style={{ width: `${pct}%` }} />
+                          </div>
+                          <span className="text-[10px] font-bold text-gray-500">{progress.done}/{progress.total}</span>
+                        </div>
+                        {note?.comment && <p className="text-[10px] text-gray-400 line-clamp-1">Note: {note.comment}</p>}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {fu.is_urgent && <AlertTriangle className="w-4 h-4 text-red-500" />}
-                      <span className="text-[10px] font-mono bg-gray-100 px-2 py-0.5 rounded-full">{fu.days_until}d</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 bg-gray-200 rounded-full h-2">
-                      <div className="h-2 rounded-full bg-green-500 transition-all" style={{ width: `${pct}%` }} />
-                    </div>
-                    <span className="text-[10px] font-bold text-gray-500">{progress.done}/{progress.total}</span>
-                    <div className="flex gap-1" onClick={e => e.stopPropagation()}>
+                    {/* Action bar */}
+                    <div className="flex items-center gap-1.5 px-4 py-2 bg-gray-50 border-t border-gray-100" onClick={e => e.stopPropagation()}>
                       <button onClick={() => openPipelineMenu(fu)}
-                        className="text-[10px] px-2 py-1 bg-blue-50 text-blue-600 rounded font-bold hover:bg-blue-100"
+                        className="text-[10px] px-3 py-1.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 active:scale-95 transition-all"
                         data-testid={`pipeline-actions-${i}`}>
-                        Actions
+                        Closing Flow
                       </button>
                       {fu.phone && (
                         <button onClick={(e) => handleCall(fu, e)}
-                          className="p-1 bg-green-50 text-green-600 rounded hover:bg-green-100" title="Call">
-                          <Phone className="w-3 h-3" />
+                          className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 active:scale-95 transition-transform" title="Call">
+                          <Phone className="w-3.5 h-3.5" />
                         </button>
                       )}
                       {fu.phone && (
                         <button onClick={(e) => handleSMS(fu, e)}
-                          className="p-1 bg-purple-50 text-purple-600 rounded hover:bg-purple-100" title="SMS">
-                          <MessageSquare className="w-3 h-3" />
+                          className="p-1.5 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 active:scale-95 transition-transform" title="SMS">
+                          <MessageSquare className="w-3.5 h-3.5" />
                         </button>
                       )}
                       {fu.email && (
                         <button onClick={(e) => handleEmail(fu, e)}
-                          className="p-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100" title="Email">
-                          <Mail className="w-3 h-3" />
+                          className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 active:scale-95 transition-transform" title="Email">
+                          <Mail className="w-3.5 h-3.5" />
                         </button>
                       )}
                     </div>
                   </div>
-                  {note?.comment && <p className="text-[10px] text-gray-400 mt-1.5 line-clamp-1">Note: {note.comment}</p>}
-                </Card>
+                </div>
               );
             })
           )}

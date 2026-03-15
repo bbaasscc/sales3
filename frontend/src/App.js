@@ -244,8 +244,11 @@ function MainDashboard({ token, user, onLogout }) {
   const handleCopySMS = async (client, action) => {
     const name = getFirstName(client.name);
     const text = action.text.replace(/\[NAME\]/g, name);
-    try { await navigator.clipboard.writeText(text); toast.success('SMS copied to clipboard'); }
-    catch { toast.error('Could not copy'); }
+    const phone = client.phone || '';
+    // Open native SMS app with pre-filled message and phone number
+    const smsUrl = `sms:${phone}${phone ? '?' : ''}body=${encodeURIComponent(text)}`;
+    window.open(smsUrl, '_self');
+    toast.success(`SMS to ${name}`);
   };
 
   const openClientModal = async (client) => {
