@@ -114,3 +114,28 @@ html {
         font-size: 2rem;
     }
 }
+
+
+/* Folder Tab Animation - Filing Cabinet Pull Effect */
+@keyframes folderSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+        filter: blur(2px);
+    }
+    40% {
+        opacity: 0.7;
+        transform: translateY(6px) scale(0.995);
+        filter: blur(0.5px);
+    }
+    70% {
+        opacity: 0.95;
+        transform: translateY(1px) scale(1);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}

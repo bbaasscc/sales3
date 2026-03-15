@@ -564,19 +564,60 @@ function MainDashboard({ token, user, onLogout }) {
               ))}
             </div>
 
-            {/* Category Toggle (HVAC / Generators) */}
-            <div className="flex items-center justify-center gap-1 mb-4 bg-gray-100 rounded-lg p-0.5 max-w-xs mx-auto" data-testid="category-toggle">
-              <button onClick={() => setActiveCategory('hvac')}
-                className={`flex-1 py-1.5 px-4 rounded-md text-xs font-bold transition-all ${activeCategory === 'hvac' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                data-testid="category-hvac">
-                HVAC
-              </button>
-              <button onClick={() => setActiveCategory('generator')}
-                className={`flex-1 py-1.5 px-4 rounded-md text-xs font-bold transition-all ${activeCategory === 'generator' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                data-testid="category-generator">
-                Generators
-              </button>
-            </div>
+            {/* Category Folder Tabs (HVAC / Generators) */}
+            <div className="mb-6" data-testid="category-toggle">
+              <div className="flex items-end gap-0 pl-4">
+                {[
+                  { id: 'hvac', label: 'HVAC', color: '#1E3A5F', lightBg: '#EFF6FF', border: '#BFDBFE' },
+                  { id: 'generator', label: 'Generators', color: '#14532D', lightBg: '#F0FDF4', border: '#BBF7D0' },
+                ].map((cat, i) => {
+                  const isActive = activeCategory === cat.id;
+                  return (
+                    <button key={cat.id}
+                      onClick={() => setActiveCategory(cat.id)}
+                      data-testid={`category-${cat.id}`}
+                      className="relative transition-all duration-300 ease-out"
+                      style={{
+                        zIndex: isActive ? 10 : 5 - i,
+                        transform: isActive ? 'translateY(0)' : 'translateY(4px)',
+                        marginRight: '-2px',
+                      }}>
+                      <div className={`
+                        px-5 sm:px-7 pt-2.5 pb-2 text-xs sm:text-sm font-bold tracking-wide
+                        rounded-t-xl border-t-2 border-l-2 border-r-2
+                        transition-all duration-300 ease-out
+                        ${isActive
+                          ? 'text-white shadow-lg'
+                          : 'text-gray-400 hover:text-gray-600 bg-gray-100 border-gray-200 hover:bg-gray-200 opacity-70 hover:opacity-90'
+                        }
+                      `}
+                      style={isActive ? {
+                        backgroundColor: cat.color,
+                        borderColor: cat.color,
+                        boxShadow: `0 -4px 12px -2px ${cat.color}33`,
+                      } : {}}>
+                        {cat.label}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className={`
+                rounded-xl rounded-tl-none border-2 overflow-hidden
+                transition-all duration-500 ease-out
+              `}
+              style={{
+                borderColor: activeCategory === 'hvac' ? '#1E3A5F' : '#14532D',
+                backgroundColor: activeCategory === 'hvac' ? '#FAFCFF' : '#FAFFF7',
+                boxShadow: activeCategory === 'hvac'
+                  ? '0 4px 24px -4px rgba(30,58,95,0.12)'
+                  : '0 4px 24px -4px rgba(20,83,45,0.12)',
+              }}>
+                <div className="p-3 sm:p-4 md:p-5"
+                  style={{
+                    animation: 'folderSlideIn 0.4s ease-out',
+                  }}
+                  key={activeCategory}>
 
             {/* Admin salesperson filter banner */}
             {isAdmin && filterSalespersonName && activeTab !== 'admin' && (
@@ -637,6 +678,10 @@ function MainDashboard({ token, user, onLogout }) {
             {activeTab === 'email' && isAdmin && (
               <EmailIngestConfig token={token} />
             )}
+
+                </div>
+              </div>
+            </div>
           </>
         ) : null}
       </main>
