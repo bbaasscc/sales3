@@ -79,13 +79,13 @@ export default function LoginPage({ onLogin }) {
         {/* Logo */}
         <div className="text-center mb-8">
           <img
-            src="https://www.fourseasonsheatingcooling.com/wp-content/uploads/2026/02/Four-Seasons-Logo_Current_2026_Four-Seasons_Logo_2026_Blue_Tagline-2048x531.png"
-            alt="Four Seasons Heating & Cooling"
-            className="h-14 mx-auto mb-4 object-contain"
+            src="https://static.prod-images.emergentagent.com/jobs/7d8c38f9-ada4-4711-8896-4fc103fbde80/images/9a22c72164b9e3fa9ad33692cf44146d55855edbc17156258323d2188c87c86c.png"
+            alt="The Salesman's Legend League"
+            className="h-16 mx-auto mb-4 object-contain"
             data-testid="login-logo"
           />
           <h1 className="text-2xl font-bold tracking-tight" style={{ color: BRAND_COLORS.secondary }} data-testid="login-title">
-            Sales Dashboard
+            The Salesman's Legend League
           </h1>
           <p className="text-sm text-gray-500 mt-1">
             {mode === "login" ? "Sign in to your account" : "Create your account"}

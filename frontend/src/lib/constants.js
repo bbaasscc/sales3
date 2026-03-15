@@ -1,4 +1,4 @@
-// Four Seasons brand colors
+// The Salesman's Legend League brand colors
 export const BRAND_COLORS = {
   primary: '#C62828',
   primaryDark: '#8E0000',
@@ -8,7 +8,7 @@ export const BRAND_COLORS = {
   dark: '#212121',
 };
 
-// Chart colors matching Four Seasons brand
+// Chart colors
 export const CHART_COLORS = ["#C62828", "#1E3A5F", "#4CAF50", "#FF9800", "#9C27B0", "#00BCD4"];
 export const SPIFF_COLORS = {
   'APCO X': '#C62828',

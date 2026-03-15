@@ -410,14 +410,14 @@ function MainDashboard({ token, user, onLogout }) {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0 flex-shrink-0">
               <img 
-                src="https://www.fourseasonsheatingcooling.com/wp-content/uploads/2026/02/Four-Seasons-Logo_Current_2026_Four-Seasons_Logo_2026_Blue_Tagline-2048x531.png"
-                alt="Four Seasons Heating & Cooling"
-                className="h-8 sm:h-10 md:h-12 w-auto object-contain bg-white rounded px-2 py-1"
+                src="https://static.prod-images.emergentagent.com/jobs/7d8c38f9-ada4-4711-8896-4fc103fbde80/images/9a22c72164b9e3fa9ad33692cf44146d55855edbc17156258323d2188c87c86c.png"
+                alt="The Salesman's Legend League"
+                className="h-8 sm:h-10 md:h-12 w-auto object-contain rounded"
                 data-testid="company-logo"
               />
               <div className="hidden sm:block min-w-0">
                 <h1 className="text-sm md:text-lg lg:text-xl font-bold tracking-tight text-white font-heading truncate" data-testid="dashboard-title">
-                  {isAdmin ? 'Four Seasons Sales' : (filterSalespersonName || user.name)}
+                  {isAdmin ? "Salesman's Legend League" : (filterSalespersonName || user.name)}
                 </h1>
                 <p className="text-xs text-white/80 truncate">
                   {isAdmin ? (filterSalespersonName ? `Viewing: ${filterSalespersonName}` : 'Admin Dashboard') : 'Sales Performance Dashboard'}
@@ -721,7 +721,7 @@ function MainDashboard({ token, user, onLogout }) {
       <footer className="py-3 sm:py-4 mt-6 sm:mt-8 mb-16" style={{ backgroundColor: BRAND_COLORS.secondary }}>
         <div className="max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8">
           <p className="text-[10px] sm:text-xs text-white/60 text-center">
-            &copy; {new Date().getFullYear()} Four Seasons Heating & Cooling
+            &copy; {new Date().getFullYear()} The Salesman's Legend League
           </p>
         </div>
       </footer>
