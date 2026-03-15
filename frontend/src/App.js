@@ -15,7 +15,6 @@ import LoginPage from "@/pages/LoginPage";
 import AdminPanel from "@/pages/AdminPanel";
 import AdminOverview from "@/pages/AdminOverview";
 import DashboardTab from "@/components/DashboardTab.jsx";
-import FollowupsTab from "@/components/FollowupsTab";
 import StatusTab from "@/components/StatusTab";
 import DataTab from "@/components/DataTab";
 import EarningsTab from "@/components/EarningsTab";
@@ -24,8 +23,9 @@ import SaleConversionModal from "@/components/SaleConversionModal";
 import NotificationBell from "@/components/NotificationBell";
 import {
   PipelineModal, NewLeadModal, DeleteConfirmModal,
-  ClientDetailModal, SaleDetailModal, InstallationsModal, EditLeadModal,
+  ClientDetailModal, SaleDetailModal, InstallationsModal,
 } from "@/components/Modals";
+import { EditLeadModal } from "@/components/modals/EditLeadModal";
 import {
   BRAND_COLORS, PAY_PERIODS, getCurrentPayPeriod,
   ALL_PIPELINE_ACTIONS, PIPELINE_STEPS, getFirstName, API,
