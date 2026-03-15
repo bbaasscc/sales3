@@ -52,8 +52,8 @@ export default function SaleConversionModal({ lead, onSave, onCancel }) {
   const totalComm = baseComm + spiffSum;
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto pb-16" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/60 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 anim-backdrop">
+      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto pb-16 anim-modal" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="sticky top-0 z-10 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white"
           style={{ background: isGen ? 'linear-gradient(135deg, #1a472a, #2d6a4f)' : 'linear-gradient(135deg, #059669, #10B981)' }}>

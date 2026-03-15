@@ -27,7 +27,7 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
   return (
     <div className="space-y-6">
       {/* SALES METRICS - Power Rankings */}
-      <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#1E3A5F' }}>
+      <div className="rounded-2xl overflow-hidden anim-section" style={{ backgroundColor: '#1E3A5F' }}>
         <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white/10">
@@ -41,14 +41,14 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {/* Closing Ratio (Net) */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card anim-delay-1">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">R% (Net Close)</p>
               <p className="text-3xl sm:text-4xl font-mono font-bold text-white">{kpiData.closing_rate}%</p>
               <p className="text-[10px] text-white/40 mt-1">{kpiData.closed_deals} of {kpiData.total_visits} leads</p>
             </div>
 
             {/* Gross Closing */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card anim-delay-2">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Gross R%</p>
               <p className="text-3xl sm:text-4xl font-mono font-bold text-white">
                 {kpiData.total_visits > 0 ? ((kpiData.gross_closed || kpiData.closed_deals) / kpiData.total_visits * 100).toFixed(1) : '0.0'}%
@@ -57,7 +57,7 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
             </div>
 
             {/* Total Revenue */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card anim-delay-3">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Total Revenue</p>
               <p className="text-2xl sm:text-3xl font-mono font-bold text-emerald-400">
                 ${kpiData.total_revenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
@@ -66,21 +66,21 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
             </div>
 
             {/* Total Leads */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card anim-delay-4">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Leads</p>
               <p className="text-3xl sm:text-4xl font-mono font-bold text-white">{kpiData.total_visits}</p>
               <p className="text-[10px] text-white/40 mt-1">Excl. Cancel/Resched</p>
             </div>
 
             {/* Credit Reject */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card anim-delay-5">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Credit Reject</p>
               <p className="text-3xl sm:text-4xl font-mono font-bold text-amber-400">{kpiData.credit_reject_count || 0}</p>
               <p className="text-[10px] text-white/40 mt-1">{kpiData.total_visits > 0 ? ((kpiData.credit_reject_count || 0) / kpiData.total_visits * 100).toFixed(1) : '0.0'}% of leads</p>
             </div>
 
             {/* Average Ticket */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card anim-delay-6">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Avg Ticket</p>
               <p className="text-2xl sm:text-3xl font-mono font-bold text-white">
                 ${kpiData.average_ticket.toLocaleString('en-US', { maximumFractionDigits: 0 })}
@@ -89,7 +89,7 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
             </div>
 
             {/* DPA - Dollars Per Appointment */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card anim-delay-7">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">DPA</p>
               <p className="text-2xl sm:text-3xl font-mono font-bold text-cyan-400">
                 ${dpa.toLocaleString('en-US', { maximumFractionDigits: 0 })}
@@ -98,14 +98,14 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
             </div>
 
             {/* Closed Deals */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card anim-delay-8">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Closed Deals</p>
               <p className="text-3xl sm:text-4xl font-mono font-bold text-emerald-400">{kpiData.closed_deals}</p>
               <p className="text-[10px] text-white/40 mt-1">SALE status</p>
             </div>
 
             {/* Price Match (PM) */}
-            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card anim-delay-9">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">PM (Under Book)</p>
               <p className="text-3xl sm:text-4xl font-mono font-bold text-red-400">{kpiData.price_margin_sales_count || 0}</p>
               <p className="text-[10px] text-white/40 mt-1">{kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count || 0) / kpiData.closed_deals * 100).toFixed(1) : '0.0'}% of deals</p>
@@ -130,7 +130,7 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
       </div>
 
       {/* WHAT AM I SELLING? - Charts */}
-      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#EFF6FF', borderLeftColor: '#3B82F6' }}>
+      <div className="rounded-2xl border-l-4 overflow-hidden anim-section anim-delay-3" style={{ backgroundColor: '#EFF6FF', borderLeftColor: '#3B82F6' }}>
         <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white shadow-sm">
@@ -201,7 +201,7 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
       </div>
 
       {/* CLOSED SALES TABLE */}
-      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#F5F3FF', borderLeftColor: '#8B5CF6' }}>
+      <div className="rounded-2xl border-l-4 overflow-hidden anim-section anim-delay-5" style={{ backgroundColor: '#F5F3FF', borderLeftColor: '#8B5CF6' }}>
         <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-3 mb-5">
             <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white shadow-sm">

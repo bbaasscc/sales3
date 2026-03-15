@@ -12,8 +12,8 @@ export function PipelineModal({
 }) {
   if (!actionMenu) return null;
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
-      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 anim-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
+      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16 anim-modal" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-gradient-to-r from-red-600 to-orange-500 px-4 sm:px-6 py-3 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
           <div>
             <h3 className="text-base font-bold">Closing Flow</h3>
@@ -102,8 +102,8 @@ export function NewLeadModal({
 }) {
   if (!newLeadOpen) return null;
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
-      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[85vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 anim-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
+      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-md max-h-[85vh] overflow-y-auto pb-16 anim-modal" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-500 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
           <div className="flex items-center gap-2"><Plus className="w-5 h-5" /><h3 className="text-base font-bold">New Lead</h3></div>
           <button onClick={() => setNewLeadOpen(false)} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
@@ -159,8 +159,8 @@ export function NewLeadModal({
 export function DeleteConfirmModal({ deleteConfirm, setDeleteConfirm, handleDeleteLead }) {
   if (!deleteConfirm) return null;
   return (
-    <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4" onClick={() => setDeleteConfirm(null)}>
-      <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 anim-backdrop" onClick={() => setDeleteConfirm(null)}>
+      <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 anim-modal" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center"><Trash2 className="w-5 h-5 text-red-600" /></div>
           <div><h3 className="font-bold text-gray-900">Delete Lead?</h3><p className="text-sm text-gray-500">{deleteConfirm.name}</p></div>
@@ -182,8 +182,8 @@ export function ClientDetailModal({
 }) {
   if (!selectedClient) return null;
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 anim-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
+      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto pb-16 anim-modal" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold text-gray-900">{selectedClient.name}</h3>
@@ -374,8 +374,8 @@ export function ClientDetailModal({
 export function SaleDetailModal({ selectedSale, setSelectedSale }) {
   if (!selectedSale) return null;
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 anim-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
+      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto pb-16 anim-modal" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-green-600 text-white px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-xl">
           <div>
             <h3 className="text-lg font-bold">{selectedSale.name}</h3>
@@ -487,8 +487,8 @@ export function SaleDetailModal({ selectedSale, setSelectedSale }) {
 export function InstallationsModal({ installationsOpen, setInstallationsOpen, kpiData }) {
   if (!installationsOpen || !kpiData) return null;
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
-      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 anim-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
+      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16 anim-modal" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
           <div>
             <h3 className="text-base font-bold">Installations This Period</h3>
@@ -574,8 +574,8 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
   };
   const isSold = editingLead.status === 'SALE' || editingLead.status === 'CREDIT_REJECT';
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onMouseDown={(e) => e.stopPropagation()}>
-      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onMouseDown={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 anim-backdrop" onMouseDown={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16 anim-modal" onMouseDown={(e) => e.stopPropagation()}>
         <div className={`sticky top-0 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10 ${isGen ? 'bg-gradient-to-r from-green-900 to-green-800' : 'bg-gradient-to-r from-gray-800 to-gray-700'}`}>
           <div>
             <h3 className="text-base font-bold">{isGen ? (isSold ? 'Generator Sale Details' : 'Generator Appointment') : (isSold ? 'Sale Details' : 'Appointment Info')}</h3>

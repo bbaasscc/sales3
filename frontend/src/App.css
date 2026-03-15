@@ -118,24 +118,80 @@ html {
 
 /* Folder Tab Animation - Filing Cabinet Pull Effect */
 @keyframes folderSlideIn {
-    0% {
-        opacity: 0;
-        transform: translateY(20px) scale(0.98);
-        filter: blur(2px);
-    }
-    40% {
-        opacity: 0.7;
-        transform: translateY(6px) scale(0.995);
-        filter: blur(0.5px);
-    }
-    70% {
-        opacity: 0.95;
-        transform: translateY(1px) scale(1);
-        filter: blur(0);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
-    }
+    0% { opacity: 0; transform: translateY(20px) scale(0.98); filter: blur(2px); }
+    40% { opacity: 0.7; transform: translateY(6px) scale(0.995); filter: blur(0.5px); }
+    70% { opacity: 0.95; transform: translateY(1px) scale(1); filter: blur(0); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
+
+/* ═══════════════════════════════════════════════════════════ */
+/*  GLOBAL ANIMATIONS                                         */
+/* ═══════════════════════════════════════════════════════════ */
+
+/* Modal - slides up from bottom with spring feel */
+@keyframes modalSlideUp {
+    0% { opacity: 0; transform: translateY(60px) scale(0.95); }
+    50% { opacity: 1; transform: translateY(-8px) scale(1.01); }
+    75% { transform: translateY(3px) scale(1); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes modalBackdropIn {
+    0% { opacity: 0; backdrop-filter: blur(0); }
+    100% { opacity: 1; backdrop-filter: blur(4px); }
+}
+
+/* Tab content - slide & fade */
+@keyframes tabSlideRight {
+    0% { opacity: 0; transform: translateX(30px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes tabSlideLeft {
+    0% { opacity: 0; transform: translateX(-30px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+/* KPI cards - staggered pop-in */
+@keyframes cardPopIn {
+    0% { opacity: 0; transform: translateY(16px) scale(0.92); }
+    60% { opacity: 1; transform: translateY(-4px) scale(1.02); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* List items - slide in from side */
+@keyframes rowSlideIn {
+    0% { opacity: 0; transform: translateX(-12px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Sections - fade up */
+@keyframes sectionFadeUp {
+    0% { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Button press */
+@keyframes buttonPress {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+/* Apply classes */
+.anim-modal { animation: modalSlideUp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.anim-backdrop { animation: modalBackdropIn 0.3s ease-out forwards; }
+.anim-tab { animation: tabSlideRight 0.35s ease-out forwards; }
+.anim-tab-left { animation: tabSlideLeft 0.35s ease-out forwards; }
+.anim-card { animation: cardPopIn 0.4s ease-out both; }
+.anim-row { animation: rowSlideIn 0.3s ease-out both; }
+.anim-section { animation: sectionFadeUp 0.5s ease-out both; }
+
+/* Stagger delays for cards */
+.anim-delay-1 { animation-delay: 0.05s; }
+.anim-delay-2 { animation-delay: 0.1s; }
+.anim-delay-3 { animation-delay: 0.15s; }
+.anim-delay-4 { animation-delay: 0.2s; }
+.anim-delay-5 { animation-delay: 0.25s; }
+.anim-delay-6 { animation-delay: 0.3s; }
+.anim-delay-7 { animation-delay: 0.35s; }
+.anim-delay-8 { animation-delay: 0.4s; }
+.anim-delay-9 { animation-delay: 0.45s; }
