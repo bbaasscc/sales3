@@ -66,6 +66,18 @@ async def update_lead(lead_id: str, updates: LeadUpdate, user=Depends(get_curren
     if 'status' in update_data:
         update_data['status'] = normalize_status(update_data['status'])
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+
+    # If status changes away from PENDING, auto-remove from pipeline
+    new_status = update_data.get('status')
+    if new_status and new_status != 'PENDING':
+        old_lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
+        if old_lead and old_lead.get('status') == 'PENDING':
+            update_data['follow_up_date'] = ''
+            lead_name = old_lead.get('name', '')
+            if lead_name:
+                await db.followup_actions.delete_many({"client_name": lead_name})
+                await db.pipeline_schedules.delete_one({"client_name": lead_name})
+
     result = await db.leads.update_one({"lead_id": lead_id}, {"$set": update_data})
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Lead not found")

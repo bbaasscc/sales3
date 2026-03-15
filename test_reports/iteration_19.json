@@ -1,0 +1,69 @@
+{
+  "summary": "Completed testing of iteration 19 features: Pipeline filtering (only PENDING leads in follow-ups), Auto-cleanup on status change, and Remove from Pipeline button. All 12 backend tests passed. All frontend features verified working.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: GET /api/ health check returns 200 with Sales Dashboard API message",
+    "Backend: GET /api/dashboard/kpis follow_ups ONLY contains PENDING status leads (17 leads, all PENDING)",
+    "Backend: No non-PENDING leads have follow_up_date set in database",
+    "Backend: PUT /api/leads/{id} changing PENDING to SALE auto-clears follow_up_date",
+    "Backend: PUT /api/leads/{id} changing PENDING to LOST auto-clears follow_up_date",
+    "Backend: POST /api/pipeline/remove-client clears follow_up_date without deleting lead",
+    "Backend: POST /api/pipeline/remove-client returns message about required params when empty",
+    "Backend: GET /api/tasks returns tasks list for salesperson",
+    "Backend: PUT /api/leads/{id} with additional_phones saves correctly",
+    "Backend: Admin login returns role=admin",
+    "Backend: Admin GET /api/leads returns all leads with salesperson_name field",
+    "Backend: GET /api/dashboard/kpis returns all required fields",
+    "Frontend: Salesperson login works (Bcardarelli@fshac.com)",
+    "Frontend: Dashboard tab loads with Sales Metrics and charts",
+    "Frontend: Status tab has 3 sub-views: All Leads, Pipeline (10), Tasks",
+    "Frontend: Pipeline view shows 10 cards (reduced from 19 after cleanup)",
+    "Frontend: All pipeline cards show PENDING leads only",
+    "Frontend: ClientDetailModal shows 'Remove from Pipeline' button",
+    "Frontend: PipelineModal (Closing Flow) shows 'Remove from Pipeline' button",
+    "Frontend: All Leads view with sorting and status filters works",
+    "Frontend: Tasks view shows 'No pending tasks' with 3 completed",
+    "Frontend: Earnings tab loads with Payments and SPIFF Breakdown",
+    "Frontend: Admin login works (Bsanchezcar@gmail.com)",
+    "Frontend: Admin has 4 tabs: Overview, Salespeople, All Data, Email Ingest",
+    "Frontend: Admin Overview shows Company Totals and Lead Status pie chart",
+    "Frontend: Admin All Data shows leads with INSTALL column (PENDING visible)"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_pipeline_filtering_v19.py",
+    "/app/test_reports/pytest/pipeline_filtering_v19.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Good: kpi_service.py follow_ups filter correctly checks status == 'PENDING'",
+    "Good: leads.py update_lead auto-clears follow_up_date when status changes FROM PENDING",
+    "Good: pipeline.py remove-client endpoint clears follow_up_date and removes pipeline_schedules/followup_actions",
+    "Good: Database cleanup successful - no non-PENDING leads have follow_up_date",
+    "Good: 'Remove from Pipeline' button added to both ClientDetailModal and PipelineModal with proper data-testid attributes",
+    "Good: Pipeline count reduced from 19 to 10 cards for Benjamin (only PENDING leads)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_pipeline_filtering_v19.py"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "100% (all UI features verified)"
+  },
+  "test_credentials": {
+    "salesperson_1": "Bcardarelli@fshac.com / Benja123",
+    "salesperson_2": "Fbarbagallo@fshac.com / Franco123",
+    "admin": "Bsanchezcar@gmail.com / Benja123"
+  },
+  "seed_data_creation": "Test leads created and cleaned up during backend tests (TEST_AUTO_CLEANUP_*, TEST_REMOVE_PIPELINE, TEST_ADDITIONAL_PHONES)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Pipeline now only shows PENDING leads. When status changes from PENDING to any other status (SALE, LOST, CREDIT_REJECT, CANCEL_APPOINTMENT), follow_up_date is auto-cleared and pipeline data is removed. 'Remove from Pipeline' button in ClientDetailModal (data-testid='remove-from-pipeline-btn') and PipelineModal (data-testid='pipeline-remove-btn') allows manual removal without status change."
+}

@@ -167,11 +167,11 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'ticket_value': safe_float(r.get('ticket_value',0)), 'spiff_value': round(safe_float(r.get('mitsubishi',0)) + safe_float(r.get('self_gen_mits',0)), 2),
             'close_date': r.get('close_date').strftime('%Y-%m-%d') if pd.notna(r.get('close_date')) else ''} for _, r in mits_df.iterrows()]
 
-    # Follow-ups
+    # Follow-ups - ONLY PENDING leads should be in follow-ups
     follow_ups = []
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
-    fu_df = (df[df['follow_up_date'].notna() & (df['status'] != 'SALE') & df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en)].copy()
-             if start_date and en else df[df['follow_up_date'].notna() & (df['status'] != 'SALE')].copy())
+    fu_df = (df[df['follow_up_date'].notna() & (df['status'] == 'PENDING') & df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en)].copy()
+             if start_date and en else df[df['follow_up_date'].notna() & (df['status'] == 'PENDING')].copy())
     for _, row in fu_df.iterrows():
         fd = row.get('follow_up_date')
         if pd.notna(fd):
