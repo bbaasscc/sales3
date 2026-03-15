@@ -410,9 +410,9 @@ function MainDashboard({ token, user, onLogout }) {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0 flex-shrink-0">
               <img 
-                src="https://static.prod-images.emergentagent.com/jobs/7d8c38f9-ada4-4711-8896-4fc103fbde80/images/9a22c72164b9e3fa9ad33692cf44146d55855edbc17156258323d2188c87c86c.png"
+                src="https://static.prod-images.emergentagent.com/jobs/7d8c38f9-ada4-4711-8896-4fc103fbde80/images/cbcc0d0a6129511874977a30d71019e4e2ebd7722353db4081c57778a6a4c562.png"
                 alt="The Salesman's Legend League"
-                className="h-8 sm:h-10 md:h-12 w-auto object-contain rounded"
+                className="h-10 sm:h-12 md:h-14 w-auto object-contain"
                 data-testid="company-logo"
               />
               <div className="hidden sm:block min-w-0">

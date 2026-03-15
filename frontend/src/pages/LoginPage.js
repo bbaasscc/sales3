@@ -79,9 +79,9 @@ export default function LoginPage({ onLogin }) {
         {/* Logo */}
         <div className="text-center mb-8">
           <img
-            src="https://static.prod-images.emergentagent.com/jobs/7d8c38f9-ada4-4711-8896-4fc103fbde80/images/9a22c72164b9e3fa9ad33692cf44146d55855edbc17156258323d2188c87c86c.png"
+            src="https://static.prod-images.emergentagent.com/jobs/7d8c38f9-ada4-4711-8896-4fc103fbde80/images/cbcc0d0a6129511874977a30d71019e4e2ebd7722353db4081c57778a6a4c562.png"
             alt="The Salesman's Legend League"
-            className="h-16 mx-auto mb-4 object-contain"
+            className="h-28 sm:h-36 mx-auto mb-5 object-contain"
             data-testid="login-logo"
           />
           <h1 className="text-2xl font-bold tracking-tight" style={{ color: BRAND_COLORS.secondary }} data-testid="login-title">
