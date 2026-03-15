@@ -59,11 +59,11 @@ Sales dashboard application for a company with "Admin" and "Salesperson" roles. 
 - **P1: Additional Phones & Sale Data Fix**
   - Fixed LeadUpdate model to include: additional_phones, products, sale_accessories, is_self_gen, promo_code
   - These fields were being silently dropped before
-- **Remove from Pipeline (without deleting lead)**
-  - New "Remove from Pipeline" button in ClientDetailModal and PipelineModal
-  - Clears follow_up_date on the lead and removes pipeline actions/schedule
-  - Lead remains in the system, just removed from follow-up tracking
-  - Backend: POST /api/pipeline/remove-client
+- **Pipeline Cleanup & Auto-removal for Deploy**
+  - Fixed: Only PENDING leads appear in follow-ups (was excluding only SALE before)
+  - Auto-cleanup: When status changes from PENDING to any other status (SALE, LOST, CANCEL, etc.), follow_up_date is cleared and pipeline data removed automatically
+  - DB cleanup: Cleared 51 non-PENDING leads from follow-up, removed 12 orphan schedules and 39 orphan actions
+  - Backend: kpi_service.py follow-up filter changed from `status != 'SALE'` to `status == 'PENDING'`
 
 ## Pending/Backlog
 
