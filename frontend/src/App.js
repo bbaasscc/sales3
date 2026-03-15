@@ -408,19 +408,18 @@ function MainDashboard({ token, user, onLogout }) {
       <header className="sticky top-0 z-10 shadow-md" style={{ backgroundColor: BRAND_COLORS.primary }}>
         <div className="max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0 flex-shrink-0">
+            <div className="flex items-center gap-3 min-w-0 flex-shrink-0 bg-white/95 rounded-xl px-3 py-1.5 shadow-sm">
               <img 
                 src="/logo.png"
                 alt="The Salesman's Legend League"
-                className="h-12 sm:h-14 md:h-16 w-auto object-contain"
-                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+                className="h-10 sm:h-12 md:h-14 w-auto object-contain"
                 data-testid="company-logo"
               />
               <div className="hidden sm:block min-w-0">
-                <h1 className="text-sm md:text-lg lg:text-xl font-bold tracking-tight text-white font-heading truncate" data-testid="dashboard-title">
+                <h1 className="text-sm md:text-lg lg:text-xl font-bold tracking-tight font-heading truncate" style={{ color: BRAND_COLORS.secondary }} data-testid="dashboard-title">
                   {isAdmin ? "Salesman's Legend League" : (filterSalespersonName || user.name)}
                 </h1>
-                <p className="text-xs text-white/80 truncate">
+                <p className="text-xs truncate" style={{ color: BRAND_COLORS.primary }}>
                   {isAdmin ? (filterSalespersonName ? `Viewing: ${filterSalespersonName}` : 'Admin Dashboard') : 'Sales Performance Dashboard'}
                 </p>
               </div>
