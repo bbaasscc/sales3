@@ -722,7 +722,7 @@ function MainDashboard({ token, user, onLogout }) {
         clientNote={clientNote} setClientNote={setClientNote}
         noteSaving={noteSaving} saveClientNote={saveClientNote}
         setDeleteConfirm={setDeleteConfirm} isStepDone={isStepDone} getPipelineProgress={getPipelineProgress}
-        onRemoveFromPipeline={handleRemoveFromPipeline}
+        onRemoveFromPipeline={handleRemoveFromPipeline} authHeaders={authHeaders}
       />
       <SaleDetailModal selectedSale={selectedSale} setSelectedSale={setSelectedSale} />
       <InstallationsModal installationsOpen={installationsOpen} setInstallationsOpen={setInstallationsOpen} kpiData={kpiData} />

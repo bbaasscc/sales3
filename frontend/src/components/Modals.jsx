@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   X, Mail, MessageSquare, Check, MapPin, FileText, AlertTriangle, User,
@@ -178,8 +179,17 @@ export function DeleteConfirmModal({ deleteConfirm, setDeleteConfirm, handleDele
 export function ClientDetailModal({
   selectedClient, setSelectedClient, clientNote, setClientNote,
   noteSaving, saveClientNote, setDeleteConfirm,
-  isStepDone, getPipelineProgress, onRemoveFromPipeline,
+  isStepDone, getPipelineProgress, onRemoveFromPipeline, authHeaders,
 }) {
+  const [activities, setActivities] = useState([]);
+  useEffect(() => {
+    if (selectedClient?.lead_id && authHeaders) {
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/api/leads/${selectedClient.lead_id}/activities`, {
+        headers: authHeaders
+      }).then(r => r.json()).then(d => setActivities(d.activities || [])).catch(() => {});
+    }
+  }, [selectedClient?.lead_id, authHeaders]);
+
   if (!selectedClient) return null;
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 anim-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
@@ -287,6 +297,30 @@ export function ClientDetailModal({
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wider">Comments</p>
                 <p className="text-sm text-gray-700">{selectedClient.comments}</p>
+              </div>
+            </div>
+          )}
+
+          {/* ACTIVITY LOG */}
+          {activities.length > 0 && (
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-600 uppercase tracking-wider font-bold mb-2">Recent Activity</p>
+              <div className="space-y-1.5">
+                {activities.slice(0, 8).map((a, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs">
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      a.activity_type === 'call' ? 'bg-green-100 text-green-600' :
+                      a.activity_type === 'sms' ? 'bg-purple-100 text-purple-600' :
+                      'bg-blue-100 text-blue-600'
+                    }`}>
+                      {a.activity_type === 'call' ? <Phone className="w-2.5 h-2.5" /> :
+                       a.activity_type === 'sms' ? <MessageSquare className="w-2.5 h-2.5" /> :
+                       <Mail className="w-2.5 h-2.5" />}
+                    </span>
+                    <span className="text-gray-600 capitalize">{a.activity_type}</span>
+                    <span className="text-gray-400 font-mono text-[10px] ml-auto">{new Date(a.timestamp).toLocaleDateString()} {new Date(a.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}

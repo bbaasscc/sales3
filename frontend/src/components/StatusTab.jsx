@@ -350,6 +350,7 @@ export default function StatusTab({
                     return (
                       <TableRow key={lead.lead_id || i}
                         className={`border-b border-gray-100 cursor-pointer transition-colors ${isInactive ? 'opacity-50 bg-gray-50/50 hover:opacity-75' : hasPendingInstall ? 'bg-amber-50/40 hover:bg-amber-50' : 'hover:bg-blue-50/50'}`}
+                        style={{ borderLeft: `4px solid ${sc.solid || '#6B7280'}` }}
                         onClick={() => setEditingLead({...lead})}
                         data-testid={`status-row-${i}`}>
                         <TableCell className="py-2 px-2 text-xs font-medium text-gray-800">
