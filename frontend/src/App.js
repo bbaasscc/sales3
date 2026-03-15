@@ -408,18 +408,18 @@ function MainDashboard({ token, user, onLogout }) {
       <header className="sticky top-0 z-10 shadow-md" style={{ backgroundColor: BRAND_COLORS.primary }}>
         <div className="max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0 flex-shrink-0 bg-white/95 rounded-xl px-3 py-1.5 shadow-sm">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-shrink bg-white/95 rounded-xl px-2 sm:px-3 py-1.5 shadow-sm">
               <img 
                 src="/logo.png"
                 alt="The Salesman's Legend League"
-                className="h-10 sm:h-12 md:h-14 w-auto object-contain"
+                className="h-8 sm:h-12 md:h-14 w-auto object-contain flex-shrink-0"
                 data-testid="company-logo"
               />
-              <div className="hidden sm:block min-w-0">
-                <h1 className="text-sm md:text-lg lg:text-xl font-bold tracking-tight font-heading truncate" style={{ color: BRAND_COLORS.secondary }} data-testid="dashboard-title">
-                  {isAdmin ? "Salesman's Legend League" : (filterSalespersonName || user.name)}
+              <div className="min-w-0">
+                <h1 className="text-xs sm:text-sm md:text-lg lg:text-xl font-bold tracking-tight font-heading truncate" style={{ color: BRAND_COLORS.secondary }} data-testid="dashboard-title">
+                  {isAdmin ? "Legend League" : (filterSalespersonName || user.name)}
                 </h1>
-                <p className="text-xs truncate" style={{ color: BRAND_COLORS.primary }}>
+                <p className="text-[9px] sm:text-xs truncate hidden sm:block" style={{ color: BRAND_COLORS.primary }}>
                   {isAdmin ? (filterSalespersonName ? `Viewing: ${filterSalespersonName}` : 'Admin Dashboard') : 'Sales Performance Dashboard'}
                 </p>
               </div>
@@ -462,11 +462,6 @@ function MainDashboard({ token, user, onLogout }) {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2 flex-shrink-0">
-              <div className="sm:hidden min-w-0 mr-2">
-                <h1 className="text-sm font-bold tracking-tight text-white font-heading truncate" data-testid="dashboard-title-mobile">
-                  {isAdmin ? 'Admin' : user.name.split(' ')[0]}
-                </h1>
-              </div>
               <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10 h-8 w-8"
                 onClick={() => setFiltersOpen(!filtersOpen)} data-testid="filters-toggle">
                 <Menu className="w-4 h-4" />
