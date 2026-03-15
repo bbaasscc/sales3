@@ -57,8 +57,6 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     # Standardize unit types for consistent charts
     df['unit_type'] = df['unit_type'].apply(lambda x: standardize_unit_type(str(x).strip()) if pd.notna(x) and str(x).strip() else '')
 
-    df['effective_close_date'] = df['close_date'].combine_first(df['visit_date'])
-
     now = datetime.now(timezone.utc)
     start_date, end_date = None, None
     if pay_period and pay_period != "all":
@@ -77,14 +75,16 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
 
     EXCLUDED_FROM_VISITS = {'CANCEL_APPOINTMENT', 'RESCHEDULED'}
 
+    # All lead KPIs (closing rate, revenue, avg ticket) are attributed to VISIT DATE period.
+    # Commission payments remain based on INSTALL DATE (how they are actually paid).
     if start_date:
         sn = start_date.replace(tzinfo=None) if hasattr(start_date, 'tzinfo') and start_date.tzinfo else start_date
         en = end_date if end_date else None
         if en:
-            df_close = df[df['effective_close_date'].notna() & (df['effective_close_date'] >= sn) & (df['effective_close_date'] <= en)]
+            df_close = df[df['visit_date'].notna() & (df['visit_date'] >= sn) & (df['visit_date'] <= en)]
             df_install = df[df['install_date'].notna() & (df['install_date'] >= sn) & (df['install_date'] <= en)]
         else:
-            df_close = df[df['effective_close_date'].notna() & (df['effective_close_date'] >= sn)]
+            df_close = df[df['visit_date'].notna() & (df['visit_date'] >= sn)]
             df_install = df[df['install_date'].notna() & (df['install_date'] >= sn)]
     else:
         df_close, df_install = df, df
