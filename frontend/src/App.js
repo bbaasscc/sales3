@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { RefreshCw, Menu, LogOut } from "lucide-react";
+import confetti from "canvas-confetti";
 
 import LoginPage from "@/pages/LoginPage";
 import AdminPanel from "@/pages/AdminPanel";
@@ -374,11 +375,26 @@ function MainDashboard({ token, user, onLogout }) {
     const dataToSave = { ...lead, commission_value: Math.round((baseComm + spiffSum) * 100) / 100, spif_total: Math.round(spiffSum * 100) / 100 };
     try {
       await axios.put(`${API}/leads/${saleConversion.lead_id}`, dataToSave, { headers: authHeaders });
-      toast.success(`${saleConversion.name} converted to SALE!`);
+      // CELEBRATION!
+      const name = saleConversion.name.split(' ')[0];
+      const value = dataToSave.ticket_value || 0;
+      toast.success(`${name} converted to SALE!`, { description: value > 0 ? `$${value.toLocaleString()} deal closed!` : 'Deal closed!' });
+      celebrateSale();
       setEditingLead(null);
       setSaleConversion(null);
       fetchDashboardData(); fetchAllLeads(); fetchTasks();
     } catch { toast.error("Error converting to sale"); }
+  };
+
+  const celebrateSale = () => {
+    // First burst - center
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#C62828', '#1E3A5F', '#FFD700', '#4CAF50', '#FF9800'] });
+    // Left side
+    setTimeout(() => confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 0, y: 0.65 }, colors: ['#C62828', '#FFD700', '#4CAF50'] }), 150);
+    // Right side
+    setTimeout(() => confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 1, y: 0.65 }, colors: ['#1E3A5F', '#FFD700', '#FF9800'] }), 300);
+    // Final rain
+    setTimeout(() => confetti({ particleCount: 80, spread: 100, origin: { y: 0.3 }, gravity: 0.8, colors: ['#C62828', '#1E3A5F', '#FFD700', '#4CAF50'] }), 600);
   };
 
   // === HANDLERS ===
