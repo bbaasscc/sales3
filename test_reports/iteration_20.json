@@ -1,0 +1,86 @@
+{
+  "summary": "Completed comprehensive testing of HVAC/Generator category separation (iteration 20). All 18 backend tests passed. Frontend verification confirmed category toggle, KPI filtering, EditLeadModal adaptations, and dual lead (also_generator) functionality working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: API health check returns 200",
+    "Backend: Benjamin login returns salesperson role",
+    "Backend: Franco login returns salesperson role",
+    "Backend: Admin login returns admin role",
+    "Backend: GET /api/dashboard/kpis?category=hvac - Benjamin: 77 visits, 30 deals, $348,850, 39% R%",
+    "Backend: GET /api/dashboard/kpis?category=generator - Benjamin: 1 visit, 0 deals, $0",
+    "Backend: GET /api/leads?category=generator - Benjamin: 1 lead (MARIA MEDINA)",
+    "Backend: GET /api/dashboard/kpis?category=hvac - Franco: 65 visits, 29 deals, $357,043, 44.6% R%",
+    "Backend: GET /api/leads?category=generator - Franco: 6 leads (ZOUP, PAUL, FRED FLUDE dual, VANESSA, DAVID BERRY, CARL)",
+    "Backend: Dual leads (also_generator=true) appear in HVAC view (FRED FLUDE unit_type=Furnace)",
+    "Backend: Dual leads (also_generator=true) appear in Generator view",
+    "Backend: Admin comparison with category=hvac excludes Generator from equipment_types",
+    "Backend: Admin comparison with category=generator returns correct totals",
+    "Backend: GET /api/leads?category=hvac excludes pure Generator leads",
+    "Backend: GET /api/leads?category=generator returns only Generator + also_generator leads",
+    "Backend: Pipeline follow_ups only contain PENDING status",
+    "Backend: Tasks endpoint returns correct data",
+    "Backend: Non-PENDING leads have no follow_up_date (iteration 19 verification)",
+    "Frontend: Benjamin login + Dashboard loads with HVAC by default",
+    "Frontend: Category toggle visible below tabs (HVAC/Generators)",
+    "Frontend: HVAC Dashboard shows correct KPIs (39% R%, $348,850, 77 leads, 30 deals)",
+    "Frontend: Generator Dashboard shows correct KPIs (1 lead, 0 deals, $0)",
+    "Frontend: Status tab with HVAC shows HVAC leads only (no Generator unit_type)",
+    "Frontend: Status tab with Generators shows 1 generator lead (MARIA MEDINA)",
+    "Frontend: Generator EditLeadModal has green header 'Generator Appointment'",
+    "Frontend: Generator EditLeadModal has NO SPIFF section",
+    "Frontend: HVAC EditLeadModal shows 'Also includes Generator' checkbox",
+    "Frontend: Franco Generator view shows all 6 leads including FRED FLUDE (dual)",
+    "Frontend: Admin category toggle visible",
+    "Frontend: Admin Overview shows HVAC totals ($705,893 revenue, 59 closed deals)",
+    "Frontend: Admin Overview Equipment Breakdown excludes Generator for HVAC",
+    "Frontend: Admin Salespeople tab works for both HVAC and Generator categories",
+    "Frontend: Admin All Data tab shows 7 generator leads total"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_hvac_generator_category_v20.py",
+    "/app/test_reports/pytest/hvac_generator_v20.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Good: Category filter in dashboard.py correctly uses $or for generator (line 24): unit_type=Generator OR also_generator=true",
+    "Good: Category filter in leads.py mirrors dashboard filter logic",
+    "Good: Admin comparison endpoint in admin.py correctly filters by category",
+    "Good: Frontend activeCategory state properly passed to all API calls (fetchDashboardData, fetchAllLeads)",
+    "Good: EditLeadModal correctly detects generator leads using isGeneratorLead() helper from constants.js",
+    "Good: EditLeadModal hides SPIFF section for generator leads (line 540: spiffSum = isGen ? 0 : ...)",
+    "Good: EditLeadModal shows 'Also includes Generator' checkbox only for HVAC leads (line 657-666)",
+    "Good: SaleConversionModal uses GENERATOR_MANUFACTURER_OPTIONS (Generac/Kohler) for generators",
+    "Good: isGeneratorLead() function in constants.js handles 'generator', 'generac', 'kohler' variants"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_hvac_generator_category_v20.py"
+  ],
+  "success_rate": {
+    "backend": "100% (18/18 tests passed)",
+    "frontend": "100% (all UI features verified)"
+  },
+  "test_credentials": {
+    "salesperson_1": "Bcardarelli@fshac.com / Benja123",
+    "salesperson_2": "Fbarbagallo@fshac.com / Franco123",
+    "admin": "Bsanchezcar@gmail.com / Benja123"
+  },
+  "seed_data_creation": "None - used existing production data",
+  "verified_data_points": {
+    "benjamin_hvac": {"visits": 77, "deals": 30, "revenue": 348850, "closing_rate": "39%"},
+    "benjamin_generator": {"leads": 1, "lead_name": "MARIA MEDINA (DSCC)"},
+    "franco_hvac": {"visits": 65, "deals": 29, "revenue": 357043, "closing_rate": "44.6%"},
+    "franco_generator": {"leads": 6, "includes_dual": "FRED FLUDE (Furnace + also_generator=true)"},
+    "admin_hvac_totals": {"deals": 59, "revenue": 705893}
+  },
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Category toggle (HVAC/Generators) is now functional. HVAC filter excludes Generator unit_type. Generator filter uses $or: [unit_type=Generator, also_generator=true]. FRED FLUDE is a dual lead appearing in both views. EditLeadModal adapts header color and hides SPIFFs for generators. SaleConversionModal shows Generac/Kohler options for generators. Closing rate is calculated using visit_date. Default date filter is current_year."
+}
