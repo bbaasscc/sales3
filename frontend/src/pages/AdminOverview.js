@@ -27,23 +27,24 @@ const ACCESSORY_COLORS = {
   duct_cleaning: '#9C27B0',
 };
 
-export default function AdminOverview({ token, payPeriod, dateFilter }) {
+export default function AdminOverview({ token, payPeriod, dateFilter, category }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const params = { category: 'hvac' };
+      const params = { category: category || 'hvac' };
       if (payPeriod && payPeriod !== "all") params.pay_period = payPeriod;
       if (dateFilter && dateFilter !== "all") params.date_filter = dateFilter;
       const res = await axios.get(`${API}/admin/comparison`, {
+        headers: { Authorization: `Bearer ${token}` }, params,
         headers: { Authorization: `Bearer ${token}` }, params,
       });
       setData(res.data);
     } catch { toast.error("Error loading data"); }
     finally { setLoading(false); }
-  }, [token, payPeriod, dateFilter]);
+  }, [token, payPeriod, dateFilter, category]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 

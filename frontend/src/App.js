@@ -18,7 +18,6 @@ import FollowupsTab from "@/components/FollowupsTab";
 import StatusTab from "@/components/StatusTab";
 import DataTab from "@/components/DataTab";
 import EarningsTab from "@/components/EarningsTab";
-import GeneratorsTab from "@/components/GeneratorsTab";
 import EmailIngestConfig from "@/components/EmailIngestConfig";
 import SaleConversionModal from "@/components/SaleConversionModal";
 import {
@@ -116,6 +115,7 @@ function MainDashboard({ token, user, onLogout }) {
   const [error, setError] = useState(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeCategory, setActiveCategory] = useState('hvac');
 
   // Follow-ups state
   const [followUpActions, setFollowUpActions] = useState([]);
@@ -158,7 +158,7 @@ function MainDashboard({ token, user, onLogout }) {
     const currentPeriod = resetToCurrentPeriod ? getCurrentPayPeriod() : payPeriod;
     if (resetToCurrentPeriod && currentPeriod !== payPeriod) setPayPeriod(currentPeriod);
     try {
-      const params = { date_filter: dateFilter, category: 'hvac' };
+      const params = { date_filter: dateFilter, category: activeCategory };
       const periodToUse = resetToCurrentPeriod ? currentPeriod : payPeriod;
       if (periodToUse && periodToUse !== "all") params.pay_period = periodToUse;
       if (isAdmin && filterSalespersonId) params.salesperson_id = filterSalespersonId;
@@ -169,7 +169,7 @@ function MainDashboard({ token, user, onLogout }) {
       setError(err.response?.data?.detail || "Failed to load dashboard data");
       if (showToast) toast.error("Update Failed");
     } finally { setLoading(false); setRefreshing(false); }
-  }, [dateFilter, payPeriod, filterSalespersonId]);
+  }, [dateFilter, payPeriod, filterSalespersonId, activeCategory]);
 
   useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
 
@@ -184,12 +184,12 @@ function MainDashboard({ token, user, onLogout }) {
 
   const fetchAllLeads = useCallback(async () => {
     try {
-      const params = { category: 'hvac' };
+      const params = { category: activeCategory };
       if (isAdmin && filterSalespersonId) params.salesperson_id = filterSalespersonId;
       const res = await axios.get(`${API}/leads`, { headers: authHeaders, params });
       setAllLeads(res.data.leads || []);
     } catch (err) { console.error(err); }
-  }, [filterSalespersonId]);
+  }, [filterSalespersonId, activeCategory]);
 
   useEffect(() => { if (activeTab === 'data' || activeTab === 'status') fetchAllLeads(); }, [activeTab, fetchAllLeads]);
 
@@ -550,7 +550,6 @@ function MainDashboard({ token, user, onLogout }) {
                 { id: 'dashboard', label: 'Dashboard' },
                 { id: 'status', label: 'Status' },
                 { id: 'earnings', label: 'Earnings' },
-                { id: 'generators', label: 'Generators' },
               ]).map(tab => (
                 <button
                   key={tab.id} onClick={() => setActiveTab(tab.id)}
@@ -565,6 +564,20 @@ function MainDashboard({ token, user, onLogout }) {
               ))}
             </div>
 
+            {/* Category Toggle (HVAC / Generators) */}
+            <div className="flex items-center justify-center gap-1 mb-4 bg-gray-100 rounded-lg p-0.5 max-w-xs mx-auto" data-testid="category-toggle">
+              <button onClick={() => setActiveCategory('hvac')}
+                className={`flex-1 py-1.5 px-4 rounded-md text-xs font-bold transition-all ${activeCategory === 'hvac' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                data-testid="category-hvac">
+                HVAC
+              </button>
+              <button onClick={() => setActiveCategory('generator')}
+                className={`flex-1 py-1.5 px-4 rounded-md text-xs font-bold transition-all ${activeCategory === 'generator' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                data-testid="category-generator">
+                Generators
+              </button>
+            </div>
+
             {/* Admin salesperson filter banner */}
             {isAdmin && filterSalespersonName && activeTab !== 'admin' && (
               <div className="mb-4 px-4 py-2.5 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-700 flex items-center justify-between" data-testid="sp-filter-banner">
@@ -575,12 +588,12 @@ function MainDashboard({ token, user, onLogout }) {
 
             {/* Admin Salespeople Tab */}
             {activeTab === 'admin' && isAdmin && (
-              <AdminPanel token={token} user={user} onFilterSalesperson={handleFilterSalesperson} payPeriod={payPeriod} dateFilter={dateFilter} />
+              <AdminPanel token={token} user={user} onFilterSalesperson={handleFilterSalesperson} payPeriod={payPeriod} dateFilter={dateFilter} category={activeCategory} />
             )}
 
             {/* Admin Overview Tab */}
             {activeTab === 'dashboard' && isAdmin && !filterSalespersonId && (
-              <AdminOverview token={token} onFilterSalesperson={handleFilterSalesperson} payPeriod={payPeriod} dateFilter={dateFilter} />
+              <AdminOverview token={token} onFilterSalesperson={handleFilterSalesperson} payPeriod={payPeriod} dateFilter={dateFilter} category={activeCategory} />
             )}
 
             {/* Salesperson Dashboard Tab */}
@@ -618,16 +631,6 @@ function MainDashboard({ token, user, onLogout }) {
             {/* Earnings Tab (separate from dashboard) */}
             {activeTab === 'earnings' && !isAdmin && (
               <EarningsTab kpiData={kpiData} setInstallationsOpen={setInstallationsOpen} />
-            )}
-
-            {/* Generators Tab */}
-            {activeTab === 'generators' && !isAdmin && (
-              <GeneratorsTab
-                payPeriod={payPeriod} dateFilter={dateFilter} authHeaders={authHeaders}
-                setEditingLead={openEditLead} setNewLeadOpen={setNewLeadOpen}
-                setNewLeadStep={setNewLeadStep} setNewLeadText={setNewLeadText}
-                fetchDashboardData={fetchDashboardData}
-              />
             )}
 
             {/* Email Ingest Tab (Admin only) */}

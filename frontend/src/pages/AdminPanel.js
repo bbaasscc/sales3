@@ -14,7 +14,7 @@ const RankBadge = ({ rank, total }) => {
   return <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[9px] font-bold ${color}`}>{rank}</span>;
 };
 
-export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod, dateFilter }) {
+export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod, dateFilter, category }) {
   const [comparison, setComparison] = useState([]);
   const [salespeople, setSalespeople] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const params = { category: 'hvac' };
+      const params = { category: category || 'hvac' };
       if (payPeriod && payPeriod !== "all") params.pay_period = payPeriod;
       if (dateFilter && dateFilter !== "all") params.date_filter = dateFilter;
       const [compRes, spRes] = await Promise.all([
@@ -36,7 +36,7 @@ export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod
       setSalespeople(spRes.data.users || []);
     } catch { toast.error("Error loading data"); }
     finally { setLoading(false); }
-  }, [token, payPeriod, dateFilter]);
+  }, [token, payPeriod, dateFilter, category]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
