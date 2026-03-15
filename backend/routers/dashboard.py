@@ -17,11 +17,11 @@ async def get_dashboard_kpis(date_filter: str = "all", pay_period: Optional[str]
         lead_filter["salesperson_id"] = user["user_id"]
     elif user and user["role"] == "admin" and salesperson_id:
         lead_filter["salesperson_id"] = salesperson_id
-    # Category filter: hvac excludes generators, generator only generators
+    # Category filter: hvac excludes pure generators, generator includes pure + dual
     if category == "hvac":
         lead_filter["unit_type"] = {"$ne": "Generator"}
     elif category == "generator":
-        lead_filter["unit_type"] = "Generator"
+        lead_filter["$or"] = [{"unit_type": "Generator"}, {"also_generator": True}]
     leads = await db.leads.find(lead_filter, {"_id": 0}).to_list(10000)
     if not leads:
         return {"total_revenue": 0, "total_commission": 0, "closed_deals": 0, "closing_rate": 0, "total_visits": 0, "average_ticket": 0,

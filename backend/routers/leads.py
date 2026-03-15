@@ -116,7 +116,7 @@ async def get_leads(salesperson_id: Optional[str] = None, category: Optional[str
     if category == "hvac":
         lead_filter["unit_type"] = {"$ne": "Generator"}
     elif category == "generator":
-        lead_filter["unit_type"] = "Generator"
+        lead_filter["$or"] = [{"unit_type": "Generator"}, {"also_generator": True}]
     leads = await db.leads.find(lead_filter, {"_id": 0}).to_list(10000)
     if user and user["role"] == "admin" and leads:
         sp_map = {}

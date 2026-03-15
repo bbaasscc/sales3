@@ -115,7 +115,8 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         if category == "hvac":
             lead_filter["unit_type"] = {"$ne": "Generator"}
         elif category == "generator":
-            lead_filter["unit_type"] = "Generator"
+            lead_filter["$or"] = [{"unit_type": "Generator"}, {"also_generator": True}]
+            lead_filter["salesperson_id"] = sp["user_id"]
         all_sp_leads = await db.leads.find(lead_filter, {"_id": 0}).to_list(10000)
         EXCLUDED_FROM_VISITS = {"CANCEL_APPOINTMENT", "RESCHEDULED"}
         # Total leads excludes Cancel and Rescheduled
@@ -169,7 +170,7 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
     if category == "hvac":
         global_filter["unit_type"] = {"$ne": "Generator"}
     elif category == "generator":
-        global_filter["unit_type"] = "Generator"
+        global_filter["$or"] = [{"unit_type": "Generator"}, {"also_generator": True}]
     all_leads = await db.leads.find(global_filter, {"_id": 0}).to_list(10000)
     all_leads_filtered = filter_leads_by_period(all_leads, pay_period, date_filter)
     all_sales_filtered = filter_leads_by_period(all_leads, pay_period, date_filter, date_field="visit_date")

@@ -548,7 +548,8 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
       'visit_date','close_date','install_date','follow_up_date','comments','customer_number',
       'apco_x','samsung','mitsubishi','surge_protector','duct_cleaning','self_gen_mits'];
     return fields.some(f => String(editingLead[f] || '') !== String(originalLead[f] || ''))
-      || JSON.stringify(editingLead.additional_phones || []) !== JSON.stringify(originalLead.additional_phones || []);
+      || JSON.stringify(editingLead.additional_phones || []) !== JSON.stringify(originalLead.additional_phones || [])
+      || Boolean(editingLead.also_generator) !== Boolean(originalLead.also_generator);
   };
 
   const handleClose = () => {
@@ -653,6 +654,16 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
               <input type="date" value={editingLead.follow_up_date || ''} onChange={(e) => setEditingLead(p => ({...p, follow_up_date: e.target.value}))}
                 className="w-full px-2 py-1.5 text-sm border rounded-lg" />
             </div>
+            {!isGen && (
+              <div className="col-span-2">
+                <label className="flex items-center gap-2 cursor-pointer py-1">
+                  <input type="checkbox" checked={editingLead.also_generator || false}
+                    onChange={(e) => setEditingLead(p => ({...p, also_generator: e.target.checked}))}
+                    className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500" />
+                  <span className="text-[10px] font-bold uppercase text-gray-500">Also includes Generator</span>
+                </label>
+              </div>
+            )}
           </div>
 
           <div>
