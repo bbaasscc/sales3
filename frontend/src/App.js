@@ -109,7 +109,7 @@ function MainDashboard({ token, user, onLogout }) {
   // Core state
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [dateFilter, setDateFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("current_year");
   const [payPeriod, setPayPeriod] = useState("all");
   const [kpiData, setKpiData] = useState(null);
   const [error, setError] = useState(null);
