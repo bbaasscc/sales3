@@ -93,6 +93,29 @@ async def update_lead(lead_id: str, updates: LeadUpdate, user=Depends(get_curren
     return {"message": "Lead updated"}
 
 
+@router.post("/leads/{lead_id}/activity")
+async def log_lead_activity(lead_id: str, body: dict, user=Depends(get_current_user)):
+    """Log an interaction activity (call, sms, email) on a lead."""
+    activity = {
+        "lead_id": lead_id,
+        "activity_type": body.get("type", ""),  # call, sms, email
+        "user_id": user["user_id"],
+        "user_name": user.get("name", ""),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.lead_activities.insert_one(activity)
+    activity.pop("_id", None)
+    return {"message": "Activity logged"}
+
+
+@router.get("/leads/{lead_id}/activities")
+async def get_lead_activities(lead_id: str, user=Depends(get_current_user)):
+    activities = await db.lead_activities.find(
+        {"lead_id": lead_id}, {"_id": 0}
+    ).sort("timestamp", -1).to_list(100)
+    return {"activities": activities}
+
+
 @router.delete("/leads/{lead_id}")
 async def delete_lead(lead_id: str, user=Depends(get_current_user)):
     lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})

@@ -7,7 +7,7 @@ import {
 import {
   Phone, AlertTriangle, Check, Target, Plus, Upload,
   ArrowUpDown, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Database,
-  Clock, Wrench, Calendar, Edit3, PhoneCall, Eye,
+  Clock, Wrench, Calendar, Edit3, PhoneCall, Eye, MessageSquare, Mail,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -140,6 +140,29 @@ export default function StatusTab({
     } else {
       toast.error("Lead not found");
     }
+  };
+
+  // Log activity and perform action
+  const handleCall = (lead, e) => {
+    e?.stopPropagation();
+    if (!lead.phone) return;
+    axios.post(`${API}/leads/${lead.lead_id}/activity`, { type: 'call' }, { headers: authHeaders }).catch(() => {});
+    window.open(`tel:${lead.phone}`, '_self');
+    toast.success(`Calling ${lead.name.split(' ')[0]}...`);
+  };
+  const handleSMS = (lead, e) => {
+    e?.stopPropagation();
+    if (!lead.phone) return;
+    axios.post(`${API}/leads/${lead.lead_id}/activity`, { type: 'sms' }, { headers: authHeaders }).catch(() => {});
+    window.open(`sms:${lead.phone}`, '_self');
+    toast.success(`SMS to ${lead.name.split(' ')[0]}`);
+  };
+  const handleEmail = (lead, e) => {
+    e?.stopPropagation();
+    if (!lead.email) return;
+    axios.post(`${API}/leads/${lead.lead_id}/activity`, { type: 'email' }, { headers: authHeaders }).catch(() => {});
+    window.open(`mailto:${lead.email}`, '_blank');
+    toast.success(`Email to ${lead.name.split(' ')[0]}`);
   };
 
   // Pipeline view data
@@ -359,10 +382,22 @@ export default function StatusTab({
                               </button>
                             )}
                             {lead.phone && (
-                              <a href={`tel:${lead.phone}`} className="text-[10px] px-2 py-1 bg-green-50 text-green-600 rounded font-bold hover:bg-green-100"
-                                onClick={e => e.stopPropagation()} data-testid={`call-btn-${i}`}>
+                              <button onClick={(e) => handleCall(lead, e)} className="p-1 bg-green-50 text-green-600 rounded hover:bg-green-100" title="Call"
+                                data-testid={`call-btn-${i}`}>
                                 <Phone className="w-3 h-3" />
-                              </a>
+                              </button>
+                            )}
+                            {lead.phone && (
+                              <button onClick={(e) => handleSMS(lead, e)} className="p-1 bg-purple-50 text-purple-600 rounded hover:bg-purple-100" title="SMS"
+                                data-testid={`sms-btn-${i}`}>
+                                <MessageSquare className="w-3 h-3" />
+                              </button>
+                            )}
+                            {lead.email && (
+                              <button onClick={(e) => handleEmail(lead, e)} className="p-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100" title="Email"
+                                data-testid={`email-btn-${i}`}>
+                                <Mail className="w-3 h-3" />
+                              </button>
                             )}
                           </div>
                         </TableCell>
@@ -417,10 +452,22 @@ export default function StatusTab({
                         Actions
                       </button>
                       {fu.phone && (
-                        <a href={`tel:${fu.phone}`}
-                          className="text-[10px] px-2 py-1 bg-green-50 text-green-600 rounded font-bold hover:bg-green-100 flex items-center gap-1">
+                        <button onClick={(e) => handleCall(fu, e)}
+                          className="p-1 bg-green-50 text-green-600 rounded hover:bg-green-100" title="Call">
                           <Phone className="w-3 h-3" />
-                        </a>
+                        </button>
+                      )}
+                      {fu.phone && (
+                        <button onClick={(e) => handleSMS(fu, e)}
+                          className="p-1 bg-purple-50 text-purple-600 rounded hover:bg-purple-100" title="SMS">
+                          <MessageSquare className="w-3 h-3" />
+                        </button>
+                      )}
+                      {fu.email && (
+                        <button onClick={(e) => handleEmail(fu, e)}
+                          className="p-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100" title="Email">
+                          <Mail className="w-3 h-3" />
+                        </button>
                       )}
                     </div>
                   </div>
