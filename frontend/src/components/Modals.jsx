@@ -8,7 +8,7 @@ import { BRAND_COLORS, PIPELINE_STEPS, ALL_PIPELINE_ACTIONS, STATUS_OPTIONS, STA
 export function PipelineModal({
   actionMenu, setActionMenu, pipelineSchedule, setPipelineSchedule,
   isStepDone, toggleStep, handleSendEmail, handleCopySMS,
-  savePipelineSchedule, getPipelineProgress,
+  savePipelineSchedule, getPipelineProgress, onRemoveFromPipeline,
 }) {
   if (!actionMenu) return null;
   return (
@@ -80,6 +80,16 @@ export function PipelineModal({
             );
           })}
         </div>
+        {onRemoveFromPipeline && (
+          <div className="px-3 sm:px-4 pb-4">
+            <button
+              onClick={() => { if (window.confirm(`Remove ${actionMenu.client.name} from pipeline? The lead will NOT be deleted.`)) onRemoveFromPipeline(actionMenu.client); }}
+              className="w-full py-2.5 text-xs font-bold text-amber-600 border border-amber-200 rounded-lg hover:bg-amber-50 transition-colors"
+              data-testid="pipeline-remove-btn">
+              Remove from Pipeline
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -168,7 +178,7 @@ export function DeleteConfirmModal({ deleteConfirm, setDeleteConfirm, handleDele
 export function ClientDetailModal({
   selectedClient, setSelectedClient, clientNote, setClientNote,
   noteSaving, saveClientNote, setDeleteConfirm,
-  isStepDone, getPipelineProgress,
+  isStepDone, getPipelineProgress, onRemoveFromPipeline,
 }) {
   if (!selectedClient) return null;
   return (
@@ -341,16 +351,20 @@ export function ClientDetailModal({
           </div>
         </div>
         
-        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 flex gap-2">
-          <Button onClick={saveClientNote} disabled={noteSaving} className="flex-1" style={{ backgroundColor: '#2563EB' }} data-testid="save-notes-btn">
-            {noteSaving ? 'Saving...' : 'Save Notes'}
-          </Button>
-          {selectedClient.lead_id && (
-            <Button onClick={() => setDeleteConfirm(selectedClient)} variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
-              <Trash2 className="w-4 h-4" />
+        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 space-y-2">
+          <div className="flex gap-2">
+            <Button onClick={saveClientNote} disabled={noteSaving} className="flex-1" style={{ backgroundColor: '#2563EB' }} data-testid="save-notes-btn">
+              {noteSaving ? 'Saving...' : 'Save Notes'}
+            </Button>
+            <Button onClick={() => setSelectedClient(null)} variant="outline" className="flex-1">Close</Button>
+          </div>
+          {onRemoveFromPipeline && (
+            <Button onClick={() => { if (window.confirm(`Remove ${selectedClient.name} from pipeline? The lead will NOT be deleted.`)) onRemoveFromPipeline(selectedClient); }}
+              variant="outline" className="w-full text-amber-600 border-amber-200 hover:bg-amber-50 text-xs"
+              data-testid="remove-from-pipeline-btn">
+              Remove from Pipeline
             </Button>
           )}
-          <Button onClick={() => setSelectedClient(null)} variant="outline" className="flex-1">Close</Button>
         </div>
       </div>
     </div>

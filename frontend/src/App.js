@@ -334,6 +334,18 @@ function MainDashboard({ token, user, onLogout }) {
     } catch { toast.error("Error deleting lead"); }
   };
 
+  const handleRemoveFromPipeline = async (lead) => {
+    try {
+      await axios.post(`${API}/pipeline/remove-client`, {
+        lead_id: lead.lead_id, client_name: lead.name
+      }, { headers: authHeaders });
+      toast.success(`${lead.name} removed from pipeline`);
+      setSelectedClient(null);
+      setActionMenu(null);
+      fetchDashboardData(); fetchActions(); fetchAllLeads();
+    } catch { toast.error("Error removing from pipeline"); }
+  };
+
   const handleSaveEditLead = async () => {
     if (!editingLead?.lead_id) return;
     // If converting to SALE and wasn't SALE before, show conversion modal
@@ -621,6 +633,7 @@ function MainDashboard({ token, user, onLogout }) {
         isStepDone={isStepDone} toggleStep={toggleStep}
         handleSendEmail={handleSendEmail} handleCopySMS={handleCopySMS}
         savePipelineSchedule={savePipelineSchedule} getPipelineProgress={getPipelineProgress}
+        onRemoveFromPipeline={handleRemoveFromPipeline}
       />
       <NewLeadModal
         newLeadOpen={newLeadOpen} setNewLeadOpen={setNewLeadOpen}
@@ -635,6 +648,7 @@ function MainDashboard({ token, user, onLogout }) {
         clientNote={clientNote} setClientNote={setClientNote}
         noteSaving={noteSaving} saveClientNote={saveClientNote}
         setDeleteConfirm={setDeleteConfirm} isStepDone={isStepDone} getPipelineProgress={getPipelineProgress}
+        onRemoveFromPipeline={handleRemoveFromPipeline}
       />
       <SaleDetailModal selectedSale={selectedSale} setSelectedSale={setSelectedSale} />
       <InstallationsModal installationsOpen={installationsOpen} setInstallationsOpen={setInstallationsOpen} kpiData={kpiData} />

@@ -79,3 +79,23 @@ async def save_pipeline_schedule(data: PipelineScheduleUpdate):
         upsert=True,
     )
     return {"message": "Schedule saved"}
+
+
+@router.post("/pipeline/remove-client")
+async def remove_client_from_pipeline(body: dict, user=Depends(get_current_user)):
+    """Remove a lead from pipeline/follow-up WITHOUT deleting the lead."""
+    lead_id = body.get("lead_id")
+    client_name = body.get("client_name")
+    if not lead_id and not client_name:
+        return {"message": "lead_id or client_name required"}
+    # Clear follow_up_date on the lead
+    if lead_id:
+        await db.leads.update_one(
+            {"lead_id": lead_id},
+            {"$set": {"follow_up_date": "", "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+    # Remove pipeline actions and schedule by client name
+    if client_name:
+        await db.followup_actions.delete_many({"client_name": client_name})
+        await db.pipeline_schedules.delete_one({"client_name": client_name})
+    return {"message": "Lead removed from pipeline"}

@@ -59,6 +59,11 @@ Sales dashboard application for a company with "Admin" and "Salesperson" roles. 
 - **P1: Additional Phones & Sale Data Fix**
   - Fixed LeadUpdate model to include: additional_phones, products, sale_accessories, is_self_gen, promo_code
   - These fields were being silently dropped before
+- **Remove from Pipeline (without deleting lead)**
+  - New "Remove from Pipeline" button in ClientDetailModal and PipelineModal
+  - Clears follow_up_date on the lead and removes pipeline actions/schedule
+  - Lead remains in the system, just removed from follow-up tracking
+  - Backend: POST /api/pipeline/remove-client
 
 ## Pending/Backlog
 
