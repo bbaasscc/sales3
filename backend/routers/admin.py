@@ -119,8 +119,8 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
         total_leads = len(leads)
         cancel_count = len([l for l in all_period_leads if l.get("status") == "CANCEL_APPOINTMENT"])
         rescheduled_count = len([l for l in all_period_leads if l.get("status") == "RESCHEDULED"])
-        # Sales/revenue filtered by close_date (consistent with KPIs dashboard)
-        sales_leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter, date_field="close_date")
+        # Sales/revenue filtered by visit_date (consistent with KPIs dashboard rule)
+        sales_leads = filter_leads_by_period(all_sp_leads, pay_period, date_filter, date_field="visit_date")
         sales = [l for l in sales_leads if l.get("status") == "SALE"]
         credit_rejects = [l for l in sales_leads if l.get("status") == "CREDIT_REJECT"]
         lost = [l for l in leads if l.get("status") == "LOST"]
@@ -159,10 +159,10 @@ async def get_salesperson_comparison(pay_period: Optional[str] = None, date_filt
     for i, sp in enumerate(comparison):
         sp["overall_position"] = i + 1
 
-    # Global totals (use close_date for sales metrics, visit_date for lead counts)
+    # Global totals (all metrics based on visit_date)
     all_leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
     all_leads_filtered = filter_leads_by_period(all_leads, pay_period, date_filter)
-    all_sales_filtered = filter_leads_by_period(all_leads, pay_period, date_filter, date_field="close_date")
+    all_sales_filtered = filter_leads_by_period(all_leads, pay_period, date_filter, date_field="visit_date")
     all_sales = [l for l in all_sales_filtered if l.get("status") == "SALE"]
     all_lost = [l for l in all_leads_filtered if l.get("status") == "LOST"]
     all_credit_rejects = [l for l in all_sales_filtered if l.get("status") == "CREDIT_REJECT"]
