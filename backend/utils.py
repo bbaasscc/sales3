@@ -40,7 +40,7 @@ _raw_map = {
     'Air Handler + Heat Pump': ['Air Handler + HP', 'AIR HANDLER + HP', 'Samsung Hylex + Air Handler', 'Air Handler + Heat Pump'],
     'Air Handler Only': ['Air Handler', 'AIR HANDLER', 'Air Handler Only'],
     # Generator
-    'Generator': ['GENERATOR', 'Generator', 'generator', 'GENERAC'],
+    'Generator': ['GENERATOR', 'Generator', 'generator', 'GENERAC', 'Generac', 'KOHLER', 'Kohler'],
     # Boiler
     'Boiler': ['BOILER', 'Boiler', 'boiler'],
     # Other
@@ -85,7 +85,7 @@ def standardize_unit_type(val: str) -> str:
         return 'AC Only'
     if 'BOILER' in vu:
         return 'Boiler'
-    if 'GENERATOR' in vu or 'GENERAC' in vu:
+    if 'GENERATOR' in vu or 'GENERAC' in vu or 'KOHLER' in vu:
         return 'Generator'
     if 'COMBO' in vu:
         return 'Furnace + AC'

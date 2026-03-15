@@ -133,8 +133,20 @@ export const UNIT_TYPE_OPTIONS = [
 // Manufacturer options for sale conversion
 export const MANUFACTURER_OPTIONS = ["Lennox", "Samsung", "Mitsubishi", "Generac", "Other"];
 
-// Accessory options for sale conversion
+// Generator manufacturer options
+export const GENERATOR_MANUFACTURER_OPTIONS = ["Generac", "Kohler", "Other"];
+
+// Accessory options for sale conversion (HVAC)
 export const ACCESSORY_OPTIONS = ["Humidifier", "High Efficiency Filter 5\"", "APCO X", "Surge Protector", "Duct Cleaning", "Other"];
+
+// Accessory options for generators
+export const GENERATOR_ACCESSORY_OPTIONS = ["Transfer Switch", "Load Center", "Battery Backup", "Maintenance Plan", "Other"];
+
+// Helper to detect if a lead is a generator
+export const isGeneratorLead = (lead) => {
+  const ut = (lead?.unit_type || '').toLowerCase();
+  return ut === 'generator' || ut === 'generac' || ut === 'kohler';
+};
 
 // Quick Filter options
 export const QUICK_FILTERS = [

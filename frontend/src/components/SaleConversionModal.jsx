@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { X, Plus, Trash2, ShoppingCart, Package } from "lucide-react";
-import { MANUFACTURER_OPTIONS, ACCESSORY_OPTIONS, BRAND_COLORS } from "@/lib/constants";
+import { MANUFACTURER_OPTIONS, ACCESSORY_OPTIONS, GENERATOR_MANUFACTURER_OPTIONS, GENERATOR_ACCESSORY_OPTIONS, BRAND_COLORS, isGeneratorLead } from "@/lib/constants";
 
 export default function SaleConversionModal({ lead, onSave, onCancel }) {
+  const isGen = isGeneratorLead(lead);
+  const mfgOptions = isGen ? GENERATOR_MANUFACTURER_OPTIONS : MANUFACTURER_OPTIONS;
+  const accOptions = isGen ? GENERATOR_ACCESSORY_OPTIONS : ACCESSORY_OPTIONS;
   const [products, setProducts] = useState(
     lead?.products?.length > 0 ? lead.products : [{ manufacturer: "", manufacturer_other: "", model: "" }]
   );
@@ -44,7 +47,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel }) {
 
   const handleFocus = (e) => e.target.select();
 
-  const spiffSum = (lead?.apco_x || 0) + (lead?.samsung || 0) + (lead?.mitsubishi || 0) + (lead?.surge_protector || 0) + (lead?.duct_cleaning || 0) + (lead?.self_gen_mits || 0);
+  const spiffSum = isGen ? 0 : (lead?.apco_x || 0) + (lead?.samsung || 0) + (lead?.mitsubishi || 0) + (lead?.surge_protector || 0) + (lead?.duct_cleaning || 0) + (lead?.self_gen_mits || 0);
   const baseComm = ticketValue * commissionPercent / 100;
   const totalComm = baseComm + spiffSum;
 
@@ -53,9 +56,9 @@ export default function SaleConversionModal({ lead, onSave, onCancel }) {
       <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto pb-16" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="sticky top-0 z-10 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white"
-          style={{ background: 'linear-gradient(135deg, #059669, #10B981)' }}>
+          style={{ background: isGen ? 'linear-gradient(135deg, #1a472a, #2d6a4f)' : 'linear-gradient(135deg, #059669, #10B981)' }}>
           <div>
-            <h3 className="text-base font-bold">Convert to Sale</h3>
+            <h3 className="text-base font-bold">{isGen ? 'Convert to Generator Sale' : 'Convert to Sale'}</h3>
             <p className="text-xs text-white/80">{lead?.name}</p>
           </div>
           <button onClick={onCancel} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
@@ -88,7 +91,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel }) {
                       <select value={p.manufacturer} onChange={e => updateProduct(i, 'manufacturer', e.target.value)}
                         className="w-full px-2 py-1.5 text-sm border rounded-lg">
                         <option value="">Select...</option>
-                        {MANUFACTURER_OPTIONS.map(m => <option key={m} value={m}>{m}</option>)}
+                        {mfgOptions.map(m => <option key={m} value={m}>{m}</option>)}
                       </select>
                     </div>
                     {p.manufacturer === "Other" ? (
@@ -136,7 +139,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel }) {
                         <select value={a.name} onChange={e => updateAccessory(i, 'name', e.target.value)}
                           className="w-full px-2 py-1.5 text-sm border rounded-lg">
                           <option value="">Select...</option>
-                          {ACCESSORY_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                          {accOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                         </select>
                       </div>
                       {a.name === "Other" ? (

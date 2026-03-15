@@ -3,7 +3,7 @@ import {
   X, Mail, MessageSquare, Check, MapPin, FileText, AlertTriangle, User,
   Settings, Save, Plus, Trash2, ClipboardPaste, Copy, Send,
 } from "lucide-react";
-import { BRAND_COLORS, PIPELINE_STEPS, ALL_PIPELINE_ACTIONS, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS, UNIT_TYPE_OPTIONS } from "@/lib/constants";
+import { BRAND_COLORS, PIPELINE_STEPS, ALL_PIPELINE_ACTIONS, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS, UNIT_TYPE_OPTIONS, isGeneratorLead } from "@/lib/constants";
 
 export function PipelineModal({
   actionMenu, setActionMenu, pipelineSchedule, setPipelineSchedule,
@@ -536,7 +536,8 @@ export function InstallationsModal({ installationsOpen, setInstallationsOpen, kp
 
 export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead, setDeleteConfirm, originalLead }) {
   if (!editingLead) return null;
-  const spiffSum = (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
+  const isGen = isGeneratorLead(editingLead);
+  const spiffSum = isGen ? 0 : (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
   const baseComm = (editingLead.ticket_value || 0) * (editingLead.commission_percent || 0) / 100;
   const totalComm = baseComm + spiffSum;
 
@@ -574,9 +575,9 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onMouseDown={(e) => e.stopPropagation()}>
       <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16" onMouseDown={(e) => e.stopPropagation()}>
-        <div className="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
+        <div className={`sticky top-0 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10 ${isGen ? 'bg-gradient-to-r from-green-900 to-green-800' : 'bg-gradient-to-r from-gray-800 to-gray-700'}`}>
           <div>
-            <h3 className="text-base font-bold">{isSold ? 'Sale Details' : 'Appointment Info'}</h3>
+            <h3 className="text-base font-bold">{isGen ? (isSold ? 'Generator Sale Details' : 'Generator Appointment') : (isSold ? 'Sale Details' : 'Appointment Info')}</h3>
             <p className="text-xs text-white/80">{editingLead.name} {editingLead.customer_number && <span className="font-mono bg-white/20 px-1 rounded">#{editingLead.customer_number}</span>}</p>
           </div>
           <button onClick={handleClose} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
@@ -721,15 +722,25 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
                   </div>
                 </div>
               </div>
-              <p className="text-[10px] font-bold uppercase text-gray-400 pt-2">SPIFF Details</p>
-              <div className="grid grid-cols-3 gap-2">
-                {[['apco_x','APCO X'],['samsung','Samsung'],['mitsubishi','Mitsubishi'],['surge_protector','Surge Prot.'],['duct_cleaning','Duct Clean.'],['self_gen_mits','Self Gen Mits']].map(([k,l]) => (
-                  <div key={k}><label className="text-[10px] font-bold uppercase text-gray-400">{l}</label>
-                    <input type="number" step="0.01" value={editingLead[k] ?? ''} onFocus={handleNumFocus}
-                      onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
-                      className="w-full px-2 py-1 text-xs border rounded-lg" /></div>
-                ))}
-              </div>
+              {!isGen && (
+                <>
+                  <p className="text-[10px] font-bold uppercase text-gray-400 pt-2">SPIFF Details</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[['apco_x','APCO X'],['samsung','Samsung'],['mitsubishi','Mitsubishi'],['surge_protector','Surge Prot.'],['duct_cleaning','Duct Clean.'],['self_gen_mits','Self Gen Mits']].map(([k,l]) => (
+                      <div key={k}><label className="text-[10px] font-bold uppercase text-gray-400">{l}</label>
+                        <input type="number" step="0.01" value={editingLead[k] ?? ''} onFocus={handleNumFocus}
+                          onChange={(e) => setEditingLead(p => ({...p, [k]: e.target.value === '' ? 0 : parseFloat(e.target.value)}))}
+                          className="w-full px-2 py-1 text-xs border rounded-lg" /></div>
+                    ))}
+                  </div>
+                </>
+              )}
+              {isGen && (
+                <div className="bg-green-50 rounded-lg p-3 mt-2 border border-green-200">
+                  <p className="text-[10px] font-bold uppercase text-green-700 mb-1">Generator Info</p>
+                  <p className="text-xs text-gray-500">Equipment details are managed in the Sale Conversion modal</p>
+                </div>
+              )}
             </>
           )}
           <div className="flex gap-2 pt-2">
