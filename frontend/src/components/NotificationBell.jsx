@@ -64,6 +64,14 @@ export default function NotificationBell({ authHeaders }) {
     } catch {}
   };
 
+  const clearAll = async () => {
+    try {
+      const ids = notifications.map(n => n.id);
+      await axios.post(`${API}/notifications/clear-all`, { ids }, { headers: authHeaders });
+      setNotifications([]);
+    } catch {}
+  };
+
   const count = notifications.length;
   const highCount = notifications.filter(n => n.priority === "high").length;
 
@@ -101,7 +109,16 @@ export default function NotificationBell({ authHeaders }) {
               <Bell className="w-4 h-4 text-gray-600" />
               <h3 className="text-sm font-bold text-gray-800">Notifications</h3>
             </div>
-            <span className="text-[10px] font-bold text-gray-400">{count} active</span>
+            <div className="flex items-center gap-2">
+              {count > 0 && (
+                <button onClick={clearAll}
+                  className="text-[10px] font-bold text-red-500 hover:text-red-700 hover:underline"
+                  data-testid="clear-all-notifs">
+                  Clear All
+                </button>
+              )}
+              <span className="text-[10px] font-bold text-gray-400">{count} active</span>
+            </div>
           </div>
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
