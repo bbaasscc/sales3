@@ -135,6 +135,15 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     cp_spiff = installed_df['spif_total'].sum()
     pm_df = closed_df[(closed_df['commission_percent'] >= 4.5) & (closed_df['commission_percent'] <= 5.5)]
 
+    # Install-based earnings metrics (for Earnings tab - everything by install_date)
+    install_total_commission = installed_df['commission_value'].sum()
+    install_valid_cp = installed_df[installed_df['commission_percent'] > 0]['commission_percent']
+    install_avg_cp = install_valid_cp.mean() if len(install_valid_cp) > 0 else 0
+    install_pm_df = installed_df[(installed_df['commission_percent'] >= 4.5) & (installed_df['commission_percent'] <= 5.5)]
+    install_pm_count = len(install_pm_df)
+    install_pm_revenue = install_pm_df['ticket_value'].sum()
+    install_pm_commission = install_pm_df['commission_value'].sum()
+
     # SPIFF breakdown
     spiff_breakdown = {}
     spiff_total = 0.0
@@ -257,4 +266,9 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         "monthly_data": monthly_data, "status_distribution": status_dist,
         "records": records, "pay_periods": pp_data, "selected_pay_period": pay_period,
         "cancel_count": len(cancel_df), "rescheduled_count": len(rescheduled_df), "credit_reject_count": len(credit_reject_df),
+        "install_total_commission": round(install_total_commission, 2),
+        "install_avg_commission_percent": round(install_avg_cp, 2),
+        "install_pm_count": install_pm_count,
+        "install_pm_revenue": round(install_pm_revenue, 2),
+        "install_pm_commission": round(install_pm_commission, 2),
     }

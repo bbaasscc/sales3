@@ -44,20 +44,20 @@ export default function EarningsTab({ kpiData, setInstallationsOpen }) {
           <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-white/80 rounded-xl p-3 text-center border border-emerald-100">
               <p className="text-[10px] font-bold uppercase text-gray-500">Total Commission</p>
-              <p className="text-xl font-mono font-bold text-emerald-700">${(kpiData.total_commission || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <p className="text-xl font-mono font-bold text-emerald-700">${(kpiData.install_total_commission || kpiData.commission_payment_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
             <div className="bg-white/80 rounded-xl p-3 text-center border border-emerald-100">
               <p className="text-[10px] font-bold uppercase text-gray-500">Avg Comm %</p>
-              <p className="text-xl font-mono font-bold text-emerald-700">{kpiData.avg_commission_percent || 0}%</p>
+              <p className="text-xl font-mono font-bold text-emerald-700">{kpiData.install_avg_commission_percent || kpiData.avg_commission_percent || 0}%</p>
             </div>
             <div className="bg-white/80 rounded-xl p-3 text-center border border-amber-100">
               <p className="text-[10px] font-bold uppercase text-gray-500">Under Book (5%)</p>
-              <p className="text-xl font-mono font-bold text-amber-600">{kpiData.price_margin_sales_count || 0} sales</p>
-              <p className="text-[9px] text-gray-400">{kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count / kpiData.closed_deals) * 100).toFixed(1) : 0}% of deals</p>
+              <p className="text-xl font-mono font-bold text-amber-600">{kpiData.install_pm_count || 0} sales</p>
+              <p className="text-[9px] text-gray-400">{kpiData.commission_payment_count > 0 ? ((kpiData.install_pm_count || 0) / kpiData.commission_payment_count * 100).toFixed(1) : 0}% of installs</p>
             </div>
             <div className="bg-white/80 rounded-xl p-3 text-center border border-amber-100">
               <p className="text-[10px] font-bold uppercase text-gray-500">Under Book Revenue</p>
-              <p className="text-xl font-mono font-bold text-amber-600">${(kpiData.price_margin_total || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}</p>
+              <p className="text-xl font-mono font-bold text-amber-600">${(kpiData.install_pm_revenue || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}</p>
             </div>
           </div>
         </div>
