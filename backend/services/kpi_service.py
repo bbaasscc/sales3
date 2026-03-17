@@ -246,6 +246,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'close_date': r.get('close_date').strftime('%Y-%m-%d') if pd.notna(r.get('close_date')) else '',
             'install_date': r.get('install_date').strftime('%Y-%m-%d') if pd.notna(r.get('install_date')) else '',
             'email': str(r.get('email', '')) if pd.notna(r.get('email')) else '',
+            'phone': str(r.get('phone', '')) if pd.notna(r.get('phone')) else '',
         })
 
     pp_data = []
