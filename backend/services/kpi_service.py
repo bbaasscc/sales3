@@ -38,7 +38,8 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
 
     for col in ['customer_number', 'name', 'status', 'unit_type', 'ticket_value', 'commission_value', 'commission_percent',
                 'visit_date', 'close_date', 'install_date', 'follow_up_date', 'spif_total',
-                'apco_x', 'samsung', 'mitsubishi', 'surge_protector', 'duct_cleaning', 'self_gen_mits']:
+                'apco_x', 'samsung', 'mitsubishi', 'surge_protector', 'duct_cleaning', 'self_gen_mits',
+                'phone', 'email', 'lead_id', 'city', 'address', 'feeling', 'comments', 'objections']:
         if col not in df.columns:
             df[col] = None
 
@@ -197,6 +198,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
                 'unit_type': str(row.get('unit_type', '')) if pd.notna(row.get('unit_type')) else '',
                 'ticket_value': safe_float(row.get('ticket_value', 0)),
                 'email': str(row.get('email', '')) if pd.notna(row.get('email')) else '',
+                'phone': str(row.get('phone', '')) if pd.notna(row.get('phone')) else '',
                 'feeling': str(row.get('feeling', '')) if pd.notna(row.get('feeling')) else '',
                 'comments': str(row.get('comments', '')) if pd.notna(row.get('comments')) else '',
                 'objections': str(row.get('objections', '')) if pd.notna(row.get('objections')) else '',

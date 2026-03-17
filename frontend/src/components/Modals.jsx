@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   X, Mail, MessageSquare, Check, MapPin, FileText, AlertTriangle, User,
-  Settings, Save, Plus, Trash2, ClipboardPaste, Copy, Send,
+  Settings, Save, Plus, Trash2, ClipboardPaste, Send, Phone,
 } from "lucide-react";
 import { BRAND_COLORS, PIPELINE_STEPS, ALL_PIPELINE_ACTIONS, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS, UNIT_TYPE_OPTIONS, isGeneratorLead } from "@/lib/constants";
 
@@ -59,7 +59,7 @@ export function PipelineModal({
                             </div>
                             <button onClick={() => action.type === 'email' ? handleSendEmail(actionMenu.client, action) : handleCopySMS(actionMenu.client, action)}
                               className={`p-1.5 rounded-md flex-shrink-0 ${action.type === 'email' ? 'hover:bg-blue-100 text-blue-500' : 'hover:bg-green-100 text-green-500'}`}>
-                              {action.type === 'email' ? <Send className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                              <Send className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </div>
