@@ -279,12 +279,12 @@ export default function StatusTab({
                       <Calendar className="w-3 h-3" /> Set Date
                     </button>
                     {task.lead_phone && (
-                      <a href={`tel:${task.lead_phone}`}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleCall({...task, phone: task.lead_phone, name: task.lead_name, lead_id: task.lead_id}, e); }}
                         className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
-                        data-testid={`task-call-${task.task_id}`}
-                        onClick={e => e.stopPropagation()}>
+                        data-testid={`task-call-${task.task_id}`}>
                         <PhoneCall className="w-3 h-3" /> Call
-                      </a>
+                      </button>
                     )}
                     <button
                       onClick={() => handleDismissTask(task.task_id)}

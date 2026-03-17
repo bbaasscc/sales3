@@ -238,6 +238,7 @@ function MainDashboard({ token, user, onLogout }) {
   const handleSendEmail = (client, action) => {
     const name = getFirstName(client.name);
     const body = action.body.replace(/\[NAME\]/g, name);
+    if (client.lead_id) axios.post(`${API}/leads/${client.lead_id}/activity`, { type: 'email' }, { headers: authHeaders }).catch(() => {});
     window.open(`mailto:${client.email || ''}?subject=${encodeURIComponent(action.subject)}&body=${encodeURIComponent(body)}`, '_blank');
     toast.success(`Email opened for ${name}`);
   };
@@ -246,7 +247,7 @@ function MainDashboard({ token, user, onLogout }) {
     const name = getFirstName(client.name);
     const text = action.text.replace(/\[NAME\]/g, name);
     const phone = (client.phone || '').replace(/\D/g, '').slice(-10);
-    // sms: URI — use &body= for iOS compatibility, ?body= for Android
+    if (client.lead_id) axios.post(`${API}/leads/${client.lead_id}/activity`, { type: 'sms' }, { headers: authHeaders }).catch(() => {});
     const sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? '&' : '?';
     window.location.href = `sms:${phone}${sep}body=${encodeURIComponent(text)}`;
     toast.success(`SMS to ${name}`);
