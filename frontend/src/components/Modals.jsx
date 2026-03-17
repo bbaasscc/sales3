@@ -314,31 +314,7 @@ export function ClientDetailModal({
             }}
           />
           {activities.length > 0 && (
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-600 uppercase tracking-wider font-bold mb-2">Interaction History ({activities.length})</p>
-              <div className="space-y-2">
-                {activities.slice(0, 10).map((a, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs">
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                      a.activity_type === 'call' ? 'bg-green-100 text-green-600' :
-                      a.activity_type === 'sms' ? 'bg-purple-100 text-purple-600' :
-                      'bg-blue-100 text-blue-600'
-                    }`}>
-                      {a.activity_type === 'call' ? <Phone className="w-2.5 h-2.5" /> :
-                       a.activity_type === 'sms' ? <MessageSquare className="w-2.5 h-2.5" /> :
-                       <Mail className="w-2.5 h-2.5" />}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1">
-                        <span className="text-gray-700 capitalize font-semibold">{a.activity_type}</span>
-                        <span className="text-gray-400 font-mono text-[10px] ml-auto">{new Date(a.timestamp).toLocaleDateString()} {new Date(a.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span>
-                      </div>
-                      {a.description && <p className="text-gray-500 text-[10px] mt-0.5 line-clamp-2">{a.description}</p>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <InteractionTimeline activities={activities} />
           )}
 
           {/* PIPELINE STATUS */}
@@ -585,3 +561,75 @@ export function InstallationsModal({ installationsOpen, setInstallationsOpen, kp
 }
 
 // EditLeadModal extracted to /components/modals/EditLeadModal.jsx
+
+function InteractionTimeline({ activities }) {
+  const [expandedId, setExpandedId] = useState(null);
+
+  const typeConfig = {
+    call:  { icon: Phone, color: 'bg-green-500', lightBg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', label: 'Phone Call', line: 'bg-green-300' },
+    sms:   { icon: MessageSquare, color: 'bg-purple-500', lightBg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', label: 'Text Message', line: 'bg-purple-300' },
+    email: { icon: Mail, color: 'bg-blue-500', lightBg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', label: 'Email', line: 'bg-blue-300' },
+  };
+
+  // Group by date
+  const grouped = {};
+  activities.forEach(a => {
+    const date = new Date(a.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    if (!grouped[date]) grouped[date] = [];
+    grouped[date].push(a);
+  });
+
+  return (
+    <div className="rounded-lg overflow-hidden border border-gray-200">
+      <div className="px-3 py-2 bg-gray-100 flex items-center justify-between">
+        <p className="text-xs font-bold text-gray-700 uppercase tracking-wider">Interaction Timeline</p>
+        <span className="text-[10px] font-mono text-gray-400">{activities.length} total</span>
+      </div>
+      <div className="px-3 py-2 max-h-64 overflow-y-auto">
+        {Object.entries(grouped).map(([date, items], gi) => (
+          <div key={date}>
+            <div className="flex items-center gap-2 py-1.5">
+              <div className="h-px flex-1 bg-gray-200" />
+              <span className="text-[9px] font-bold text-gray-400 uppercase whitespace-nowrap">{date}</span>
+              <div className="h-px flex-1 bg-gray-200" />
+            </div>
+            {items.map((a, i) => {
+              const cfg = typeConfig[a.activity_type] || typeConfig.call;
+              const Icon = cfg.icon;
+              const isExpanded = expandedId === `${gi}-${i}`;
+              const time = new Date(a.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              return (
+                <div key={`${gi}-${i}`} className="relative flex gap-2.5 pb-2">
+                  {/* Timeline line */}
+                  {i < items.length - 1 && <div className={`absolute left-[11px] top-6 w-0.5 h-[calc(100%-12px)] ${cfg.line}`} />}
+                  {/* Icon */}
+                  <div className={`w-6 h-6 rounded-full ${cfg.color} flex items-center justify-center flex-shrink-0 z-10`}>
+                    <Icon className="w-3 h-3 text-white" />
+                  </div>
+                  {/* Content */}
+                  <div className={`flex-1 rounded-lg p-2 border cursor-pointer transition-all ${cfg.lightBg} ${cfg.border} ${isExpanded ? 'shadow-sm' : ''}`}
+                    onClick={() => setExpandedId(isExpanded ? null : `${gi}-${i}`)}>
+                    <div className="flex items-center justify-between">
+                      <span className={`text-[10px] font-bold ${cfg.text}`}>{cfg.label}</span>
+                      <span className="text-[9px] font-mono text-gray-400">{time}</span>
+                    </div>
+                    {a.description ? (
+                      <p className={`text-[10px] text-gray-600 mt-0.5 ${isExpanded ? '' : 'line-clamp-1'}`}>
+                        {a.description}
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-gray-400 italic mt-0.5">Quick {a.activity_type}</p>
+                    )}
+                    {a.user_name && isExpanded && (
+                      <p className="text-[9px] text-gray-400 mt-1">by {a.user_name}</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
