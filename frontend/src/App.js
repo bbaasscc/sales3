@@ -245,10 +245,10 @@ function MainDashboard({ token, user, onLogout }) {
   const handleCopySMS = async (client, action) => {
     const name = getFirstName(client.name);
     const text = action.text.replace(/\[NAME\]/g, name);
-    const phone = client.phone || '';
-    // Open native SMS app with pre-filled message and phone number
-    const smsUrl = `sms:${phone}${phone ? '?' : ''}body=${encodeURIComponent(text)}`;
-    window.open(smsUrl, '_self');
+    const phone = (client.phone || '').replace(/\D/g, '').slice(-10);
+    // sms: URI — use &body= for iOS compatibility, ?body= for Android
+    const sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? '&' : '?';
+    window.location.href = `sms:${phone}${sep}body=${encodeURIComponent(text)}`;
     toast.success(`SMS to ${name}`);
   };
 

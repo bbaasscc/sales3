@@ -147,14 +147,17 @@ export default function StatusTab({
     e?.stopPropagation();
     if (!lead.phone) return;
     axios.post(`${API}/leads/${lead.lead_id}/activity`, { type: 'call' }, { headers: authHeaders }).catch(() => {});
-    window.open(`tel:${lead.phone}`, '_self');
+    const phone = (lead.phone || '').replace(/\D/g, '').slice(-10);
+    window.location.href = `tel:${phone}`;
     toast.success(`Calling ${lead.name.split(' ')[0]}...`);
   };
   const handleSMS = (lead, e) => {
     e?.stopPropagation();
     if (!lead.phone) return;
     axios.post(`${API}/leads/${lead.lead_id}/activity`, { type: 'sms' }, { headers: authHeaders }).catch(() => {});
-    window.open(`sms:${lead.phone}`, '_self');
+    const phone = (lead.phone || '').replace(/\D/g, '').slice(-10);
+    const sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? '&' : '?';
+    window.location.href = `sms:${phone}${sep}body=`;
     toast.success(`SMS to ${lead.name.split(' ')[0]}`);
   };
   const handleEmail = (lead, e) => {
