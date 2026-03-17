@@ -108,6 +108,42 @@ async def log_lead_activity(lead_id: str, body: dict, user=Depends(get_current_u
     return {"message": "Activity logged"}
 
 
+@router.post("/leads/{lead_id}/interaction")
+async def log_interaction(lead_id: str, body: dict, user=Depends(get_current_user)):
+    """Log a detailed interaction (call/sms/email) with notes."""
+    interaction = {
+        "lead_id": lead_id,
+        "activity_type": body.get("type", ""),
+        "description": body.get("description", ""),
+        "user_id": user["user_id"],
+        "user_name": user.get("name", ""),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.lead_activities.insert_one(interaction)
+    interaction.pop("_id", None)
+    return {"message": "Interaction saved", "interaction": interaction}
+
+
+@router.post("/translate")
+async def translate_text(body: dict, user=Depends(get_current_user)):
+    """Translate Spanish text to English using GPT."""
+    import os
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    text = body.get("text", "").strip()
+    if not text:
+        return {"translated": ""}
+    try:
+        chat = LlmChat(
+            api_key=os.environ.get("EMERGENT_LLM_KEY", ""),
+            session_id=f"translate_{user['user_id']}_{uuid.uuid4().hex[:8]}",
+            system_message="You are a translator. Translate the following Spanish text to English. Return ONLY the translation, nothing else."
+        ).with_model("openai", "gpt-4.1-nano")
+        result = await chat.send_message(UserMessage(text=text))
+        return {"translated": result.strip()}
+    except Exception as e:
+        return {"translated": "", "error": str(e)}
+
+
 @router.get("/leads/{lead_id}/activities")
 async def get_lead_activities(lead_id: str, user=Depends(get_current_user)):
     activities = await db.lead_activities.find(

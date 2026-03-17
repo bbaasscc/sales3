@@ -5,6 +5,7 @@ import {
   Settings, Save, Plus, Trash2, ClipboardPaste, Send, Phone,
 } from "lucide-react";
 import { BRAND_COLORS, PIPELINE_STEPS, ALL_PIPELINE_ACTIONS, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS, UNIT_TYPE_OPTIONS, isGeneratorLead } from "@/lib/constants";
+import AddInteraction from "@/components/AddInteraction";
 
 export function PipelineModal({
   actionMenu, setActionMenu, pipelineSchedule, setPipelineSchedule,
@@ -301,14 +302,24 @@ export function ClientDetailModal({
             </div>
           )}
 
-          {/* ACTIVITY LOG */}
+          {/* ADD INTERACTION + ACTIVITY LOG */}
+          <AddInteraction
+            leadId={selectedClient.lead_id}
+            leadName={selectedClient.name}
+            authHeaders={authHeaders}
+            onSaved={() => {
+              fetch(`${process.env.REACT_APP_BACKEND_URL}/api/leads/${selectedClient.lead_id}/activities`, {
+                headers: authHeaders
+              }).then(r => r.json()).then(d => setActivities(d.activities || [])).catch(() => {});
+            }}
+          />
           {activities.length > 0 && (
             <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-600 uppercase tracking-wider font-bold mb-2">Recent Activity</p>
-              <div className="space-y-1.5">
-                {activities.slice(0, 8).map((a, i) => (
-                  <div key={i} className="flex items-center gap-2 text-xs">
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+              <p className="text-xs text-gray-600 uppercase tracking-wider font-bold mb-2">Interaction History ({activities.length})</p>
+              <div className="space-y-2">
+                {activities.slice(0, 10).map((a, i) => (
+                  <div key={i} className="flex items-start gap-2 text-xs">
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
                       a.activity_type === 'call' ? 'bg-green-100 text-green-600' :
                       a.activity_type === 'sms' ? 'bg-purple-100 text-purple-600' :
                       'bg-blue-100 text-blue-600'
@@ -317,8 +328,13 @@ export function ClientDetailModal({
                        a.activity_type === 'sms' ? <MessageSquare className="w-2.5 h-2.5" /> :
                        <Mail className="w-2.5 h-2.5" />}
                     </span>
-                    <span className="text-gray-600 capitalize">{a.activity_type}</span>
-                    <span className="text-gray-400 font-mono text-[10px] ml-auto">{new Date(a.timestamp).toLocaleDateString()} {new Date(a.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-700 capitalize font-semibold">{a.activity_type}</span>
+                        <span className="text-gray-400 font-mono text-[10px] ml-auto">{new Date(a.timestamp).toLocaleDateString()} {new Date(a.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span>
+                      </div>
+                      {a.description && <p className="text-gray-500 text-[10px] mt-0.5 line-clamp-2">{a.description}</p>}
+                    </div>
                   </div>
                 ))}
               </div>
