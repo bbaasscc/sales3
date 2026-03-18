@@ -21,6 +21,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
 
   // SPIFF selections: { spiff_id: { selected: true, option_idx: 0, product_value: 0 } }
   const [spiffSelections, setSpiffSelections] = useState({});
+  const [customSpiffs, setCustomSpiffs] = useState(lead?.custom_spiffs || []);
 
   useEffect(() => {
     const h = authHeaders || {};
@@ -80,8 +81,16 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
       }
     }
 
+    // Custom SPIFFs
+    for (const cs of customSpiffs) {
+      if (cs.amount > 0) {
+        spiffTotal += cs.amount;
+        breakdown.push({ label: cs.description || 'Custom SPIFF', amount: cs.amount, detail: 'Custom' });
+      }
+    }
+
     return { percent: commPercent, base, spiffTotal, total: base + spiffTotal, breakdown };
-  }, [rules, priceTier, ticketValue, spiffSelections]);
+  }, [rules, priceTier, ticketValue, spiffSelections, customSpiffs]);
 
   const isUnderBook = priceTier === 'under_book';
 
@@ -107,6 +116,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
       sale_accessories: accessories.filter(a => a.name),
       is_self_gen: isSelfGen,
       promo_code: promoCode,
+      custom_spiffs: customSpiffs.filter(c => c.amount > 0),
       price_tier: priceTier,
       ...spiffData,
     });
@@ -259,6 +269,35 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
                   );
                 })}
               </div>
+            </div>
+          )}
+
+          {/* Custom SPIFFs */}
+          {!isGen && (
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-[10px] font-bold uppercase text-gray-500">Custom SPIFFs</label>
+                <button onClick={() => setCustomSpiffs(prev => [...prev, { description: '', amount: 0 }])}
+                  className="text-[10px] px-2 py-0.5 bg-amber-50 text-amber-600 rounded font-bold hover:bg-amber-100 flex items-center gap-1">
+                  <Plus className="w-3 h-3" /> Add SPIFF
+                </button>
+              </div>
+              {customSpiffs.map((cs, i) => (
+                <div key={i} className="flex gap-1.5 mb-1.5">
+                  <input value={cs.description} placeholder="Description..."
+                    onChange={e => { const n = [...customSpiffs]; n[i] = { ...n[i], description: e.target.value }; setCustomSpiffs(n); }}
+                    className="flex-1 px-2 py-1.5 text-xs border rounded-lg" />
+                  <div className="relative w-24">
+                    <span className="absolute left-2 top-1.5 text-xs text-gray-400">$</span>
+                    <input type="number" value={cs.amount || ''} placeholder="0"
+                      onChange={e => { const n = [...customSpiffs]; n[i] = { ...n[i], amount: parseFloat(e.target.value) || 0 }; setCustomSpiffs(n); }}
+                      onFocus={e => e.target.select()}
+                      className="w-full pl-5 pr-2 py-1.5 text-xs font-mono border rounded-lg" />
+                  </div>
+                  <button onClick={() => setCustomSpiffs(prev => prev.filter((_, j) => j !== i))}
+                    className="text-red-400 hover:text-red-600 px-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                </div>
+              ))}
             </div>
           )}
 

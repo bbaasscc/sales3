@@ -90,6 +90,8 @@ class LeadUpdate(BaseModel):
     is_self_gen: Optional[bool] = None
     promo_code: Optional[str] = None
     also_generator: Optional[bool] = None
+    custom_spiffs: Optional[List[Dict[str, Any]]] = None
+    price_tier: Optional[str] = None
 
 class PipelineScheduleUpdate(BaseModel):
     client_name: str
