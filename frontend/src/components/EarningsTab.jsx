@@ -144,6 +144,29 @@ export default function EarningsTab({ kpiData, setInstallationsOpen, category })
         </div>
       </div>
 
+      {/* Quarterly Self Gen Mitsubishi */}
+      {(kpiData.quarterly_self_gen_mits || []).length > 0 && (
+        <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#F0FDF4', borderLeftColor: '#16a34a' }}>
+          <div className="p-4 sm:p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <DollarSign className="w-5 h-5 text-green-700" />
+              <div>
+                <h2 className="text-lg font-bold text-green-800">Self Gen Mitsubishi — Quarterly</h2>
+                <p className="text-xs text-green-600/70">4% of Mitsubishi product value, paid quarterly</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {(kpiData.quarterly_self_gen_mits || []).map(q => (
+                <div key={q.quarter} className="bg-white rounded-xl p-3 text-center shadow-sm border border-green-200">
+                  <p className="text-[10px] font-bold uppercase text-gray-500 mb-1">{q.quarter}</p>
+                  <p className="text-xl font-mono font-bold text-green-700">${q.amount.toLocaleString('en-US', {minimumFractionDigits:2})}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* SPIFF Modal */}
       {spiffModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSpiffModal(null)}>

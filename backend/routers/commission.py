@@ -35,6 +35,8 @@ DEFAULT_RULES = {
         ]},
         {"id": "self_gen_mits", "label": "Self Gen Mitsubishi", "type": "pct_of_product", "percent": 4,
          "description": "4% of Mitsubishi product value only"},
+        {"id": "self_gen", "label": "Self Gen (Auto-generated lead)", "type": "pct_of_total", "percent": 3,
+         "description": "3% of total sale for self-generated leads"},
         {"id": "samsung", "label": "Samsung", "type": "fixed", "options": [
             {"label": "Sold", "value": 0},
         ]},

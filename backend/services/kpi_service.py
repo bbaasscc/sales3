@@ -255,6 +255,22 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         pdf = df[df['install_date'].notna() & (df['install_date'] >= ps) & (df['install_date'] <= pe) & (df['status'] == 'SALE')]
         pp_data.append({'name': pn, 'deals': len(pdf), 'revenue': pdf['ticket_value'].sum()})
 
+    # Quarterly Self Gen Mitsubishi acumulado
+    now = datetime.now()
+    quarterly_self_gen_mits = []
+    sale_df = df[df['status'] == 'SALE']
+    for q_num, q_label, q_start_month in [(1,'Q1',1),(2,'Q2',4),(3,'Q3',7),(4,'Q4',10)]:
+        for year in sorted(sale_df['visit_date'].dropna().apply(lambda x: x.year).unique()):
+            q_start = datetime(year, q_start_month, 1)
+            q_end_month = q_start_month + 2
+            q_end = datetime(year, q_end_month, 28 if q_end_month == 2 else 30)
+            q_sales = sale_df[(sale_df['visit_date'] >= q_start) & (sale_df['visit_date'] <= q_end)]
+            mits_total = q_sales['self_gen_mits'].sum() if 'self_gen_mits' in q_sales.columns else 0
+            if mits_total > 0:
+                quarterly_self_gen_mits.append({
+                    'quarter': f'{q_label} {year}', 'amount': round(float(mits_total), 2)
+                })
+
     return {
         "total_revenue": round(total_revenue, 2), "total_commission": round(total_commission, 2),
         "closed_deals": closed_deals, "gross_closed": gross_closed, "closing_rate": round(closing_rate, 1),
@@ -275,4 +291,5 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
         "install_pm_count": install_pm_count,
         "install_pm_revenue": round(install_pm_revenue, 2),
         "install_pm_commission": round(install_pm_commission, 2),
+        "quarterly_self_gen_mits": quarterly_self_gen_mits,
     }

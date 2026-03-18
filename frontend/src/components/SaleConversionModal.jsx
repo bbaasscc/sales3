@@ -53,13 +53,18 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
       const sel = spiffSelections[spiff.id];
       if (!sel?.selected) continue;
 
-      // Under book: only Samsung and Self Gen Mitsubishi SPIFFs survive
-      if (isUnderBook && spiff.id !== 'samsung' && spiff.id !== 'self_gen_mits') {
+      // Under book: only Samsung, Self Gen Mitsubishi and Self Gen SPIFFs survive
+      if (isUnderBook && spiff.id !== 'samsung' && spiff.id !== 'self_gen_mits' && spiff.id !== 'self_gen') {
         breakdown.push({ label: spiff.label, amount: 0, detail: 'Lost (Under Book)', strikethrough: true });
         continue;
       }
 
-      if (spiff.type === 'pct_of_product') {
+      if (spiff.type === 'pct_of_total') {
+        // Percentage of total sale value (e.g., Self Gen 3%)
+        const amt = ticketValue * (spiff.percent || 0) / 100;
+        spiffTotal += amt;
+        breakdown.push({ label: spiff.label, amount: amt, detail: `${spiff.percent}% of $${ticketValue.toLocaleString()}` });
+      } else if (spiff.type === 'pct_of_product') {
         const pv = sel.product_value || 0;
         const amt = pv * (spiff.percent || 0) / 100;
         if (amt > 0) {
@@ -104,7 +109,11 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
       if (spiff.id === 'surge_furnace') spiffData.surge_protector = (spiffData.surge_protector || 0) + (calc.breakdown.find(b => b.label.includes('Furnace'))?.amount || 0);
       if (spiff.id === 'surge_ac') spiffData.surge_protector = (spiffData.surge_protector || 0) + (calc.breakdown.find(b => b.label.includes('AC'))?.amount || 0);
       if (spiff.id === 'duct_cleaning') spiffData.duct_cleaning = calc.breakdown.find(b => b.label.includes('Duct'))?.amount || 0;
-      if (spiff.id === 'self_gen_mits') spiffData.self_gen_mits = calc.breakdown.find(b => b.label.includes('Mitsubishi'))?.amount || 0;
+      if (spiff.id === 'self_gen_mits') {
+        spiffData.self_gen_mits = calc.breakdown.find(b => b.label.includes('Mitsubishi'))?.amount || 0;
+        spiffData.self_gen_mits_product_value = sel.product_value || 0;
+      }
+      if (spiff.id === 'self_gen') spiffData.self_gen_commission = calc.breakdown.find(b => b.label === 'Self Gen (Auto-generated lead)')?.amount || 0;
       if (spiff.id === 'samsung') spiffData.samsung = calc.breakdown.find(b => b.label.includes('Samsung'))?.amount || 0;
     }
 
@@ -206,7 +215,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
               <label className="text-[10px] font-bold uppercase text-gray-500 mb-2 block">Accessories & SPIFFs</label>
               {isUnderBook && (
                 <div className="mb-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-[10px] font-bold text-red-600">
-                  Under Book — All SPIFFs lost except Samsung & Self Gen Mitsubishi
+                  Under Book — All SPIFFs lost except Samsung, Self Gen Mitsubishi & Self Gen
                 </div>
               )}
               <div className="space-y-1.5">
