@@ -1,233 +1,280 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import axios from "axios";
+import { X, DollarSign, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { X, Plus, Trash2, ShoppingCart, Package } from "lucide-react";
 import { MANUFACTURER_OPTIONS, ACCESSORY_OPTIONS, GENERATOR_MANUFACTURER_OPTIONS, GENERATOR_ACCESSORY_OPTIONS, BRAND_COLORS, isGeneratorLead } from "@/lib/constants";
 
-export default function SaleConversionModal({ lead, onSave, onCancel }) {
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+export default function SaleConversionModal({ lead, onSave, onCancel, authHeaders }) {
   const isGen = isGeneratorLead(lead);
   const mfgOptions = isGen ? GENERATOR_MANUFACTURER_OPTIONS : MANUFACTURER_OPTIONS;
   const accOptions = isGen ? GENERATOR_ACCESSORY_OPTIONS : ACCESSORY_OPTIONS;
-  const [products, setProducts] = useState(
-    lead?.products?.length > 0 ? lead.products : [{ manufacturer: "", manufacturer_other: "", model: "" }]
-  );
-  const [accessories, setAccessories] = useState(
-    lead?.sale_accessories?.length > 0 ? lead.sale_accessories : []
-  );
+
+  const [rules, setRules] = useState(null);
   const [ticketValue, setTicketValue] = useState(lead?.ticket_value || 0);
-  const [commissionPercent, setCommissionPercent] = useState(lead?.commission_percent || 0);
+  const [priceTier, setPriceTier] = useState('at_book');
+  const [products, setProducts] = useState(lead?.products || [{ manufacturer: '', model: '' }]);
+  const [accessories, setAccessories] = useState(lead?.sale_accessories || []);
   const [isSelfGen, setIsSelfGen] = useState(lead?.is_self_gen || false);
-  const [promoCode, setPromoCode] = useState(lead?.promo_code || "");
+  const [promoCode, setPromoCode] = useState(lead?.promo_code || '');
 
-  const addProduct = () => setProducts(p => [...p, { manufacturer: "", manufacturer_other: "", model: "" }]);
-  const removeProduct = (i) => setProducts(p => p.filter((_, idx) => idx !== i));
-  const updateProduct = (i, field, val) => setProducts(p => p.map((item, idx) => idx === i ? { ...item, [field]: val } : item));
+  // SPIFF selections: { spiff_id: { selected: true, option_idx: 0, product_value: 0 } }
+  const [spiffSelections, setSpiffSelections] = useState({});
 
-  const addAccessory = () => setAccessories(a => [...a, { name: "", name_other: "", details: "" }]);
-  const removeAccessory = (i) => setAccessories(a => a.filter((_, idx) => idx !== i));
-  const updateAccessory = (i, field, val) => setAccessories(a => a.map((item, idx) => idx === i ? { ...item, [field]: val } : item));
+  useEffect(() => {
+    const h = authHeaders || {};
+    axios.get(`${API}/commission/rules`, { headers: h })
+      .then(r => setRules(r.data.rules))
+      .catch(() => {});
+  }, [authHeaders]);
+
+  const setSpiff = (id, field, value) => {
+    setSpiffSelections(prev => ({ ...prev, [id]: { ...(prev[id] || {}), [field]: value } }));
+  };
+
+  // Calculate commission
+  const calc = useMemo(() => {
+    if (!rules) return { percent: 0, base: 0, spiffTotal: 0, total: 0, breakdown: [] };
+
+    // Find commission percent from tier
+    const tier = rules.tiers.find(t => t.id === priceTier);
+    const commPercent = tier ? tier.percent : 7;
+    const base = ticketValue * commPercent / 100;
+
+    // Calculate SPIFFs
+    let spiffTotal = 0;
+    const breakdown = [];
+
+    for (const spiff of (rules.spiffs || [])) {
+      const sel = spiffSelections[spiff.id];
+      if (!sel?.selected) continue;
+
+      if (spiff.type === 'pct_of_product') {
+        const pv = sel.product_value || 0;
+        const amt = pv * (spiff.percent || 0) / 100;
+        if (amt > 0) {
+          spiffTotal += amt;
+          breakdown.push({ label: spiff.label, amount: amt, detail: `${spiff.percent}% of $${pv.toLocaleString()}` });
+        }
+      } else if (spiff.options && sel.option_idx !== undefined) {
+        const opt = spiff.options[sel.option_idx];
+        if (opt) {
+          let amt = opt.value || 0;
+          let detail = opt.label;
+          if (opt.pct_of_total && opt.pct_of_total > 0) {
+            const pctAmt = ticketValue * opt.pct_of_total / 100;
+            amt += pctAmt;
+            detail += ` + ${opt.pct_of_total}% ($${pctAmt.toFixed(0)})`;
+          }
+          spiffTotal += amt;
+          breakdown.push({ label: spiff.label, amount: amt, detail });
+        }
+      }
+    }
+
+    return { percent: commPercent, base, spiffTotal, total: base + spiffTotal, breakdown };
+  }, [rules, priceTier, ticketValue, spiffSelections]);
 
   const handleSave = () => {
-    const cleanProducts = products.filter(p => p.manufacturer || p.model).map(p => ({
-      manufacturer: p.manufacturer === "Other" ? p.manufacturer_other : p.manufacturer,
-      model: p.model,
-    }));
-    const cleanAccessories = accessories.filter(a => a.name).map(a => ({
-      name: a.name === "Other" ? a.name_other : a.name,
-      details: a.details,
-    }));
+    const spiffData = {};
+    for (const spiff of (rules?.spiffs || [])) {
+      const sel = spiffSelections[spiff.id];
+      if (!sel?.selected) continue;
+      if (spiff.id === 'apco_x') spiffData.apco_x = calc.breakdown.find(b => b.label.includes('APCO'))?.amount || 0;
+      if (spiff.id === 'surge_furnace') spiffData.surge_protector = (spiffData.surge_protector || 0) + (calc.breakdown.find(b => b.label.includes('Furnace'))?.amount || 0);
+      if (spiff.id === 'surge_ac') spiffData.surge_protector = (spiffData.surge_protector || 0) + (calc.breakdown.find(b => b.label.includes('AC'))?.amount || 0);
+      if (spiff.id === 'duct_cleaning') spiffData.duct_cleaning = calc.breakdown.find(b => b.label.includes('Duct'))?.amount || 0;
+      if (spiff.id === 'self_gen_mits') spiffData.self_gen_mits = calc.breakdown.find(b => b.label.includes('Mitsubishi'))?.amount || 0;
+      if (spiff.id === 'samsung') spiffData.samsung = calc.breakdown.find(b => b.label.includes('Samsung'))?.amount || 0;
+    }
+
     onSave({
-      products: cleanProducts,
-      sale_accessories: cleanAccessories,
       ticket_value: ticketValue,
-      commission_percent: commissionPercent,
+      commission_percent: calc.percent,
+      commission_value: Math.round(calc.total * 100) / 100,
+      spif_total: Math.round(calc.spiffTotal * 100) / 100,
+      products: products.filter(p => p.manufacturer || p.model),
+      sale_accessories: accessories.filter(a => a.name),
       is_self_gen: isSelfGen,
       promo_code: promoCode,
+      price_tier: priceTier,
+      ...spiffData,
     });
   };
 
-  const handleFocus = (e) => e.target.select();
-
-  const spiffSum = isGen ? 0 : (lead?.apco_x || 0) + (lead?.samsung || 0) + (lead?.mitsubishi || 0) + (lead?.surge_protector || 0) + (lead?.duct_cleaning || 0) + (lead?.self_gen_mits || 0);
-  const baseComm = ticketValue * commissionPercent / 100;
-  const totalComm = baseComm + spiffSum;
+  if (!lead) return null;
 
   return (
     <div className="fixed inset-0 bg-black/60 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 anim-backdrop">
       <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto pb-16 anim-modal" onClick={e => e.stopPropagation()}>
-        {/* Header */}
         <div className="sticky top-0 z-10 px-4 sm:px-6 py-4 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white"
           style={{ background: isGen ? 'linear-gradient(135deg, #1a472a, #2d6a4f)' : 'linear-gradient(135deg, #059669, #10B981)' }}>
           <div>
-            <h3 className="text-base font-bold">{isGen ? 'Convert to Generator Sale' : 'Convert to Sale'}</h3>
+            <h3 className="text-base font-bold">{isGen ? 'Generator Sale' : 'Convert to Sale'}</h3>
             <p className="text-xs text-white/80">{lead?.name}</p>
           </div>
           <button onClick={onCancel} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
         </div>
 
-        <div className="p-4 space-y-5">
-          {/* PRODUCTS */}
+        <div className="p-4 space-y-4">
+          {/* Ticket Value */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <ShoppingCart className="w-4 h-4 text-blue-600" />
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-600">Products Sold</p>
-              </div>
-              <button onClick={addProduct} className="flex items-center gap-1 px-2 py-1 text-[10px] font-bold bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100">
-                <Plus className="w-3 h-3" /> Add Product
-              </button>
-            </div>
-            <div className="space-y-2">
-              {products.map((p, i) => (
-                <div key={i} className="p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-gray-400">Product {i + 1}</span>
-                    {products.length > 1 && (
-                      <button onClick={() => removeProduct(i)} className="text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="text-[10px] font-bold uppercase text-gray-500">Manufacturer</label>
-                      <select value={p.manufacturer} onChange={e => updateProduct(i, 'manufacturer', e.target.value)}
-                        className="w-full px-2 py-1.5 text-sm border rounded-lg">
-                        <option value="">Select...</option>
-                        {mfgOptions.map(m => <option key={m} value={m}>{m}</option>)}
-                      </select>
-                    </div>
-                    {p.manufacturer === "Other" ? (
-                      <div>
-                        <label className="text-[10px] font-bold uppercase text-gray-500">Brand Name</label>
-                        <input value={p.manufacturer_other || ''} onChange={e => updateProduct(i, 'manufacturer_other', e.target.value)}
-                          placeholder="Type brand..." className="w-full px-2 py-1.5 text-sm border rounded-lg" />
-                      </div>
-                    ) : <div />}
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold uppercase text-gray-500">Model / Description</label>
-                    <input value={p.model || ''} onChange={e => updateProduct(i, 'model', e.target.value)}
-                      placeholder="e.g. EL 28070000E" className="w-full px-2 py-1.5 text-sm border rounded-lg" />
-                  </div>
-                </div>
-              ))}
+            <label className="text-[10px] font-bold uppercase text-gray-500">Sale Amount (Ticket Value)</label>
+            <div className="relative">
+              <span className="absolute left-3 top-2.5 text-gray-400 font-bold">$</span>
+              <input type="number" step="0.01" value={ticketValue || ''}
+                onChange={e => setTicketValue(parseFloat(e.target.value) || 0)}
+                onFocus={e => e.target.select()}
+                className="w-full pl-7 pr-4 py-2 text-lg font-mono font-bold border-2 border-gray-200 rounded-xl focus:border-emerald-400 focus:outline-none"
+                data-testid="sale-ticket-value" />
             </div>
           </div>
 
-          {/* ACCESSORIES */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Package className="w-4 h-4 text-amber-600" />
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-600">Accessories</p>
+          {/* Price Tier */}
+          {rules && (
+            <div>
+              <label className="text-[10px] font-bold uppercase text-gray-500">Price Level</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 mt-1">
+                {rules.tiers.map(tier => (
+                  <button key={tier.id} onClick={() => setPriceTier(tier.id)}
+                    className={`px-3 py-2 rounded-xl text-xs font-bold transition-all border-2 ${
+                      priceTier === tier.id
+                        ? tier.id === 'under_book' ? 'bg-red-50 border-red-400 text-red-700' : 'bg-emerald-50 border-emerald-400 text-emerald-700'
+                        : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-gray-300'
+                    }`}
+                    data-testid={`tier-${tier.id}`}>
+                    <span className="block">{tier.label}</span>
+                    <span className="text-lg font-mono">{tier.percent}%</span>
+                  </button>
+                ))}
               </div>
-              <button onClick={addAccessory} className="flex items-center gap-1 px-2 py-1 text-[10px] font-bold bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100">
-                <Plus className="w-3 h-3" /> Add Accessory
+            </div>
+          )}
+
+          {/* Products */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-[10px] font-bold uppercase text-gray-500">Equipment Sold</label>
+              <button onClick={() => setProducts(p => [...p, { manufacturer: '', model: '' }])}
+                className="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-600 rounded font-bold hover:bg-blue-100 flex items-center gap-1">
+                <Plus className="w-3 h-3" /> Add
               </button>
             </div>
-            {accessories.length === 0 ? (
-              <p className="text-xs text-gray-400 italic">No accessories — click "Add Accessory" to add</p>
-            ) : (
+            {products.map((p, i) => (
+              <div key={i} className="flex gap-1.5 mb-1.5">
+                <select value={p.manufacturer} onChange={e => { const np = [...products]; np[i] = { ...np[i], manufacturer: e.target.value }; setProducts(np); }}
+                  className="w-1/3 px-2 py-1.5 text-xs border rounded-lg">
+                  <option value="">Brand...</option>
+                  {mfgOptions.map(m => <option key={m} value={m}>{m}</option>)}
+                </select>
+                <input value={p.model} placeholder="Model" onChange={e => { const np = [...products]; np[i] = { ...np[i], model: e.target.value }; setProducts(np); }}
+                  className="flex-1 px-2 py-1.5 text-xs border rounded-lg" />
+                {products.length > 1 && (
+                  <button onClick={() => setProducts(products.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-600 px-1">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* SPIFFs */}
+          {rules && !isGen && (
+            <div>
+              <label className="text-[10px] font-bold uppercase text-gray-500 mb-2 block">Accessories & SPIFFs</label>
               <div className="space-y-2">
-                {accessories.map((a, i) => (
-                  <div key={i} className="p-3 bg-amber-50/50 rounded-lg border border-amber-200 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-gray-400">Accessory {i + 1}</span>
-                      <button onClick={() => removeAccessory(i)} className="text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="text-[10px] font-bold uppercase text-gray-500">Type</label>
-                        <select value={a.name} onChange={e => updateAccessory(i, 'name', e.target.value)}
-                          className="w-full px-2 py-1.5 text-sm border rounded-lg">
-                          <option value="">Select...</option>
-                          {accOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                        </select>
+                {rules.spiffs.map(spiff => {
+                  const sel = spiffSelections[spiff.id] || {};
+                  return (
+                    <div key={spiff.id} className={`rounded-xl border-2 p-3 transition-all ${sel.selected ? 'border-emerald-300 bg-emerald-50/30' : 'border-gray-200 bg-gray-50/50'}`}>
+                      <div className="flex items-center justify-between">
+                        <label className="flex items-center gap-2 cursor-pointer flex-1">
+                          <input type="checkbox" checked={sel.selected || false}
+                            onChange={e => setSpiff(spiff.id, 'selected', e.target.checked)}
+                            className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+                          <span className="text-xs font-bold text-gray-700">{spiff.label}</span>
+                        </label>
+                        {sel.selected && spiff.type === 'pct_of_product' && (
+                          <span className="text-[10px] font-mono text-emerald-600 font-bold">
+                            +${((sel.product_value || 0) * (spiff.percent || 0) / 100).toFixed(0)}
+                          </span>
+                        )}
                       </div>
-                      {a.name === "Other" ? (
-                        <div>
-                          <label className="text-[10px] font-bold uppercase text-gray-500">Name</label>
-                          <input value={a.name_other || ''} onChange={e => updateAccessory(i, 'name_other', e.target.value)}
-                            placeholder="Type name..." className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+
+                      {sel.selected && spiff.options && (
+                        <div className="mt-2 flex flex-wrap gap-1.5 pl-6">
+                          {spiff.options.map((opt, oi) => (
+                            <button key={oi} onClick={() => setSpiff(spiff.id, 'option_idx', oi)}
+                              className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all border ${
+                                sel.option_idx === oi
+                                  ? 'bg-emerald-100 border-emerald-400 text-emerald-700'
+                                  : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'
+                              }`}>
+                              {opt.label} → +${opt.value}
+                              {opt.pct_of_total > 0 && <span className="text-amber-600"> +{opt.pct_of_total}%</span>}
+                            </button>
+                          ))}
                         </div>
-                      ) : (
-                        <div>
-                          <label className="text-[10px] font-bold uppercase text-gray-500">Details</label>
-                          <input value={a.details || ''} onChange={e => updateAccessory(i, 'details', e.target.value)}
-                            placeholder="Optional details" className="w-full px-2 py-1.5 text-sm border rounded-lg" />
+                      )}
+
+                      {sel.selected && spiff.type === 'pct_of_product' && (
+                        <div className="mt-2 pl-6">
+                          <label className="text-[10px] text-gray-500">Product Value ($)</label>
+                          <input type="number" value={sel.product_value || ''}
+                            onChange={e => setSpiff(spiff.id, 'product_value', parseFloat(e.target.value) || 0)}
+                            onFocus={e => e.target.select()}
+                            className="w-32 px-2 py-1 text-xs font-mono border rounded-lg" placeholder="0" />
                         </div>
                       )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* SELF GEN & PROMO */}
-          <div className="border-t border-gray-200 pt-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-[10px] font-bold uppercase text-gray-500">Self Generated?</label>
-                <div className="flex gap-2 mt-1">
-                  <button onClick={() => setIsSelfGen(true)}
-                    className={`flex-1 py-2 text-sm font-bold rounded-lg border transition-all ${isSelfGen ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>
-                    Yes
-                  </button>
-                  <button onClick={() => setIsSelfGen(false)}
-                    className={`flex-1 py-2 text-sm font-bold rounded-lg border transition-all ${!isSelfGen ? 'bg-gray-600 text-white border-gray-600' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>
-                    No
-                  </button>
-                </div>
-              </div>
-              <div>
-                <label className="text-[10px] font-bold uppercase text-gray-500">Promo Code</label>
-                <input value={promoCode} onChange={e => setPromoCode(e.target.value.toUpperCase())}
-                  placeholder="Optional" className="w-full px-2 py-1.5 text-sm border rounded-lg mt-1" />
-              </div>
+          {/* Self Gen + Promo */}
+          <div className="grid grid-cols-2 gap-3">
+            <label className="flex items-center gap-2 cursor-pointer p-2 bg-gray-50 rounded-lg">
+              <input type="checkbox" checked={isSelfGen} onChange={e => setIsSelfGen(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-blue-600" />
+              <span className="text-xs font-bold text-gray-700">Self-Generated Lead</span>
+            </label>
+            <div>
+              <input value={promoCode} onChange={e => setPromoCode(e.target.value)} placeholder="Promo Code"
+                className="w-full px-2 py-2 text-xs border rounded-lg" />
             </div>
           </div>
 
-          {/* FINANCIALS */}
-          <div className="border-t border-gray-200 pt-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-600 mb-3">Financial Details</p>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-[10px] font-bold uppercase text-gray-500">Ticket Value</label>
-                <input type="number" step="0.01" value={ticketValue} onFocus={handleFocus}
-                  onChange={e => setTicketValue(e.target.value === '' ? 0 : parseFloat(e.target.value))}
-                  className="w-full px-2 py-1.5 text-sm border rounded-lg" />
-              </div>
-              <div>
-                <label className="text-[10px] font-bold uppercase text-gray-500">Commission %</label>
-                <input type="number" step="0.01" value={commissionPercent} onFocus={handleFocus}
-                  onChange={e => setCommissionPercent(e.target.value === '' ? 0 : parseFloat(e.target.value))}
-                  className="w-full px-2 py-1.5 text-sm border rounded-lg" />
-              </div>
-            </div>
-            <div className="mt-2 bg-green-50 rounded-lg p-2.5 border border-green-200">
+          {/* Commission Summary */}
+          <div className="bg-emerald-50 rounded-xl p-4 border-2 border-emerald-200">
+            <h4 className="text-xs font-bold uppercase text-emerald-800 mb-3 flex items-center gap-2">
+              <DollarSign className="w-4 h-4" /> Commission Calculation
+            </h4>
+            <div className="space-y-1.5">
               <div className="flex justify-between text-xs">
-                <span className="text-gray-500">Base ({commissionPercent}% of ${ticketValue.toLocaleString()})</span>
-                <span className="font-mono font-semibold">${baseComm.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                <span className="text-gray-600">Base ({calc.percent}% of ${ticketValue.toLocaleString()})</span>
+                <span className="font-mono font-bold">${calc.base.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
-              {spiffSum > 0 && (
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-500">+ SPIFFs</span>
-                  <span className="font-mono font-semibold text-amber-600">${spiffSum.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+              {calc.breakdown.map((b, i) => (
+                <div key={i} className="flex justify-between text-xs">
+                  <span className="text-amber-700">+ {b.label} <span className="text-gray-400">({b.detail})</span></span>
+                  <span className="font-mono font-bold text-amber-700">+${b.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
-              )}
-              <div className="flex justify-between text-sm font-bold border-t border-green-300 mt-1 pt-1">
-                <span className="text-green-700">Total Commission</span>
-                <span className="font-mono text-green-700">${totalComm.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+              ))}
+              <div className="flex justify-between text-sm font-bold border-t border-emerald-300 pt-2 mt-2">
+                <span className="text-emerald-800">Total Commission</span>
+                <span className="font-mono text-emerald-800 text-lg">${calc.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
           </div>
 
-          {/* ACTIONS */}
-          <div className="flex gap-2 pt-2">
-            <Button onClick={handleSave} className="flex-1 text-white" style={{ backgroundColor: '#059669' }}>
-              Confirm Sale
-            </Button>
-            <Button onClick={onCancel} variant="outline">Cancel</Button>
-          </div>
+          {/* Confirm */}
+          <Button onClick={handleSave} className="w-full py-3 text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
+            data-testid="confirm-sale-btn">
+            Confirm Sale — ${calc.total.toLocaleString('en-US', { minimumFractionDigits: 2 })} Commission
+          </Button>
         </div>
       </div>
     </div>

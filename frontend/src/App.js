@@ -22,6 +22,7 @@ import EmailIngestConfig from "@/components/EmailIngestConfig";
 import SaleConversionModal from "@/components/SaleConversionModal";
 import NotificationBell from "@/components/NotificationBell";
 import PipelineSettings from "@/components/PipelineSettings";
+import CommissionRulesPanel from "@/components/CommissionRulesPanel";
 import {
   PipelineModal, NewLeadModal, DeleteConfirmModal,
   ClientDetailModal, SaleDetailModal, InstallationsModal,
@@ -582,6 +583,7 @@ function MainDashboard({ token, user, onLogout }) {
                 { id: 'dashboard', label: 'Overview' },
                 { id: 'admin', label: 'Salespeople' },
                 { id: 'data', label: 'All Data' },
+                { id: 'commission', label: 'Commission' },
                 { id: 'email', label: 'Email Ingest' },
               ] : [
                 { id: 'dashboard', label: 'Dashboard' },
@@ -704,6 +706,11 @@ function MainDashboard({ token, user, onLogout }) {
               <EmailIngestConfig token={token} />
             )}
 
+            {/* Commission Rules Tab (Admin only) */}
+            {activeTab === 'commission' && isAdmin && (
+              <CommissionRulesPanel token={token} />
+            )}
+
                 </div>
               </div>
             </div>
@@ -753,7 +760,7 @@ function MainDashboard({ token, user, onLogout }) {
       <InstallationsModal installationsOpen={installationsOpen} setInstallationsOpen={setInstallationsOpen} kpiData={kpiData} />
       <EditLeadModal editingLead={editingLead} setEditingLead={setEditingLead} handleSaveEditLead={handleSaveEditLead} setDeleteConfirm={setDeleteConfirm} originalLead={originalLead} />
       {saleConversion && (
-        <SaleConversionModal lead={saleConversion} onSave={handleSaleConversion} onCancel={() => setSaleConversion(null)} />
+        <SaleConversionModal lead={saleConversion} onSave={handleSaleConversion} onCancel={() => setSaleConversion(null)} authHeaders={authHeaders} />
       )}
 
       {/* Footer */}
