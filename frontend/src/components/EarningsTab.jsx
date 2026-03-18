@@ -9,13 +9,18 @@ import {
 import { SpiffBrandCard } from "@/components/shared";
 import { SPIFF_COLORS } from "@/lib/constants";
 
-export default function EarningsTab({ kpiData, setInstallationsOpen }) {
+export default function EarningsTab({ kpiData, setInstallationsOpen, category }) {
   const [spiffModal, setSpiffModal] = useState(null);
+  const isGen = category === 'generator';
+  const payBg = isGen ? '#ECFDF5' : '#ECFDF5';
+  const payBorder = isGen ? '#22c55e' : '#10B981';
+  const spiffBg = isGen ? '#F0FDF4' : '#FFFBEB';
+  const spiffBorder = isGen ? '#16a34a' : '#F59E0B';
 
   return (
     <div className="space-y-6">
       {/* Payments */}
-      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#ECFDF5', borderLeftColor: '#10B981' }}>
+      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: payBg, borderLeftColor: payBorder }}>
         <div className="p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-5">
             <DollarSign className="w-5 h-5 text-emerald-600" />
@@ -64,7 +69,7 @@ export default function EarningsTab({ kpiData, setInstallationsOpen }) {
       </div>
 
       {/* SPIFF Breakdown */}
-      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: '#FFFBEB', borderLeftColor: '#F59E0B' }}>
+      <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: spiffBg, borderLeftColor: spiffBorder }}>
         <div className="p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-5">
             <Gift className="w-5 h-5 text-amber-600" />

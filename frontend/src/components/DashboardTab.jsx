@@ -11,8 +11,12 @@ import {
 import { ChartCard } from "@/components/shared";
 import { CHART_COLORS } from "@/lib/constants";
 
-export default function DashboardTab({ kpiData, setSelectedSale }) {
+export default function DashboardTab({ kpiData, setSelectedSale, setInstallationsOpen, category }) {
   const dpa = kpiData.total_visits > 0 ? (kpiData.total_revenue / kpiData.total_visits) : 0;
+  const isGen = category === 'generator';
+  const t = isGen
+    ? { primary: '#14532D', accent: '#22c55e', chartBg: '#F0FDF4', chartBorder: '#16a34a', chartLabel: '#166534', tableBg: '#ECFDF5', tableBorder: '#22c55e', tableLabel: '#166534' }
+    : { primary: '#1E3A5F', accent: '#3B82F6', chartBg: '#EFF6FF', chartBorder: '#3B82F6', chartLabel: '#1E40AF', tableBg: '#F5F3FF', tableBorder: '#8B5CF6', tableLabel: '#5B21B6' };
 
   const unitTypeData = kpiData?.unit_type_count 
     ? Object.entries(kpiData.unit_type_count).map(([name, value]) => ({
@@ -27,7 +31,7 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
   return (
     <div className="space-y-6">
       {/* SALES METRICS - Power Rankings */}
-      <div className="rounded-2xl overflow-hidden anim-section" style={{ backgroundColor: '#1E3A5F' }}>
+      <div className="rounded-2xl overflow-hidden anim-section" style={{ backgroundColor: t.primary }}>
         <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white/10">
@@ -130,15 +134,15 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
       </div>
 
       {/* WHAT AM I SELLING? - Charts */}
-      <div className="rounded-2xl border-l-4 overflow-hidden anim-section anim-delay-3" style={{ backgroundColor: '#EFF6FF', borderLeftColor: '#3B82F6' }}>
+      <div className="rounded-2xl border-l-4 overflow-hidden anim-section anim-delay-3" style={{ backgroundColor: t.chartBg, borderLeftColor: t.chartBorder }}>
         <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white shadow-sm">
               <BarChart3 className="w-5 h-5" style={{ color: '#3B82F6' }} />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold" style={{ color: '#1E40AF' }} data-testid="block-3-title">What Am I Selling?</h2>
-              <p className="text-xs sm:text-sm text-blue-600/70">Sales analysis & performance trends</p>
+              <h2 className="text-lg sm:text-xl font-bold" style={{ color: t.chartLabel }} data-testid="block-3-title">What Am I Selling?</h2>
+              <p className="text-xs sm:text-sm" style={{ color: t.chartBorder + '99' }}>Sales analysis & performance trends</p>
             </div>
           </div>
 
@@ -201,15 +205,15 @@ export default function DashboardTab({ kpiData, setSelectedSale }) {
       </div>
 
       {/* CLOSED SALES TABLE */}
-      <div className="rounded-2xl border-l-4 overflow-hidden anim-section anim-delay-5" style={{ backgroundColor: '#F5F3FF', borderLeftColor: '#8B5CF6' }}>
+      <div className="rounded-2xl border-l-4 overflow-hidden anim-section anim-delay-5" style={{ backgroundColor: t.tableBg, borderLeftColor: t.tableBorder }}>
         <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center gap-3 mb-5">
             <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white shadow-sm">
               <Calendar className="w-5 h-5" style={{ color: '#8B5CF6' }} />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold" style={{ color: '#5B21B6' }} data-testid="block-4-title">Closed Sales</h2>
-              <p className="text-xs sm:text-sm text-violet-600/70">Click on a sale for details</p>
+              <h2 className="text-lg sm:text-xl font-bold" style={{ color: t.tableLabel }} data-testid="block-4-title">Closed Sales</h2>
+              <p className="text-xs sm:text-sm" style={{ color: t.tableBorder + '99' }}>Click on a sale for details</p>
             </div>
           </div>
           

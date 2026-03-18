@@ -643,7 +643,7 @@ function MainDashboard({ token, user, onLogout }) {
 
             {/* Salesperson Dashboard Tab */}
             {activeTab === 'dashboard' && (!isAdmin || filterSalespersonId) && (
-              <DashboardTab kpiData={kpiData} setSelectedSale={setSelectedSale} setInstallationsOpen={setInstallationsOpen} />
+              <DashboardTab kpiData={kpiData} setSelectedSale={setSelectedSale} setInstallationsOpen={setInstallationsOpen} category={activeCategory} />
             )}
 
             {/* Status Tab (combined Follow-ups + Data access) */}
@@ -675,7 +675,7 @@ function MainDashboard({ token, user, onLogout }) {
 
             {/* Earnings Tab (separate from dashboard) */}
             {activeTab === 'earnings' && !isAdmin && (
-              <EarningsTab kpiData={kpiData} setInstallationsOpen={setInstallationsOpen} />
+              <EarningsTab kpiData={kpiData} setInstallationsOpen={setInstallationsOpen} category={activeCategory} />
             )}
 
             {/* Email Ingest Tab (Admin only) */}
