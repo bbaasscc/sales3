@@ -10,7 +10,7 @@ import AddInteraction from "@/components/AddInteraction";
 export function PipelineModal({
   actionMenu, setActionMenu, pipelineSchedule, setPipelineSchedule,
   isStepDone, toggleStep, handleSendEmail, handleCopySMS,
-  savePipelineSchedule, getPipelineProgress, onRemoveFromPipeline,
+  savePipelineSchedule, getPipelineProgress, onRemoveFromPipeline, onOpenSettings,
 }) {
   if (!actionMenu) return null;
   return (
@@ -22,6 +22,7 @@ export function PipelineModal({
             <p className="text-xs text-white/80">{actionMenu.client.name} &mdash; {getPipelineProgress(actionMenu.client.name).done}/{ALL_PIPELINE_ACTIONS.length} steps</p>
           </div>
           <div className="flex items-center gap-1">
+            {onOpenSettings && <button onClick={onOpenSettings} className="p-1.5 hover:bg-white/20 rounded-full" title="Customize templates"><Settings className="w-4 h-4" /></button>}
             <button onClick={() => savePipelineSchedule(actionMenu.client.name, pipelineSchedule)} className="p-1.5 hover:bg-white/20 rounded-full" title="Save schedule"><Save className="w-4 h-4" /></button>
             <button onClick={() => setActionMenu(null)} className="p-1.5 hover:bg-white/20 rounded-full"><X className="w-5 h-5" /></button>
           </div>

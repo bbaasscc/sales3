@@ -21,6 +21,7 @@ import EarningsTab from "@/components/EarningsTab";
 import EmailIngestConfig from "@/components/EmailIngestConfig";
 import SaleConversionModal from "@/components/SaleConversionModal";
 import NotificationBell from "@/components/NotificationBell";
+import PipelineSettings from "@/components/PipelineSettings";
 import {
   PipelineModal, NewLeadModal, DeleteConfirmModal,
   ClientDetailModal, SaleDetailModal, InstallationsModal,
@@ -133,6 +134,8 @@ function MainDashboard({ token, user, onLogout }) {
   const [pipelineSchedule, setPipelineSchedule] = useState([]);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [installationsOpen, setInstallationsOpen] = useState(false);
+  const [pipelineSettingsOpen, setPipelineSettingsOpen] = useState(false);
+  const [customTemplates, setCustomTemplates] = useState({});
 
   // Data tab state
   const [allLeads, setAllLeads] = useState([]);
@@ -183,6 +186,15 @@ function MainDashboard({ token, user, onLogout }) {
   }, []);
 
   useEffect(() => { fetchActions(); }, [fetchActions]);
+
+  // Load custom pipeline templates
+  useEffect(() => {
+    if (!isAdmin) {
+      axios.get(`${API}/pipeline/templates`, { headers: authHeaders })
+        .then(r => setCustomTemplates(r.data.templates || {}))
+        .catch(() => {});
+    }
+  }, []);
 
   const fetchAllLeads = useCallback(async () => {
     try {
@@ -237,15 +249,18 @@ function MainDashboard({ token, user, onLogout }) {
 
   const handleSendEmail = (client, action) => {
     const name = getFirstName(client.name);
-    const body = action.body.replace(/\[NAME\]/g, name);
+    const subject = customTemplates[action.id]?.subject || action.subject;
+    const bodyTemplate = customTemplates[action.id]?.body || action.body;
+    const body = bodyTemplate.replace(/\[NAME\]/g, name);
     if (client.lead_id) axios.post(`${API}/leads/${client.lead_id}/activity`, { type: 'email' }, { headers: authHeaders }).catch(() => {});
-    window.open(`mailto:${client.email || ''}?subject=${encodeURIComponent(action.subject)}&body=${encodeURIComponent(body)}`, '_blank');
+    window.open(`mailto:${client.email || ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
     toast.success(`Email opened for ${name}`);
   };
 
   const handleCopySMS = async (client, action) => {
     const name = getFirstName(client.name);
-    const text = action.text.replace(/\[NAME\]/g, name);
+    const textTemplate = customTemplates[action.id]?.text || action.text;
+    const text = textTemplate.replace(/\[NAME\]/g, name);
     const phone = (client.phone || '').replace(/\D/g, '').slice(-10);
     if (client.lead_id) axios.post(`${API}/leads/${client.lead_id}/activity`, { type: 'sms' }, { headers: authHeaders }).catch(() => {});
     const sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? '&' : '?';
@@ -699,6 +714,12 @@ function MainDashboard({ token, user, onLogout }) {
         handleSendEmail={handleSendEmail} handleCopySMS={handleCopySMS}
         savePipelineSchedule={savePipelineSchedule} getPipelineProgress={getPipelineProgress}
         onRemoveFromPipeline={handleRemoveFromPipeline}
+        onOpenSettings={() => setPipelineSettingsOpen(true)}
+      />
+      <PipelineSettings
+        open={pipelineSettingsOpen}
+        onClose={() => { setPipelineSettingsOpen(false); axios.get(`${API}/pipeline/templates`, { headers: authHeaders }).then(r => setCustomTemplates(r.data.templates || {})).catch(() => {}); }}
+        authHeaders={authHeaders}
       />
       <NewLeadModal
         newLeadOpen={newLeadOpen} setNewLeadOpen={setNewLeadOpen}
