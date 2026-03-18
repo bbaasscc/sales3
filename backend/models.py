@@ -92,6 +92,7 @@ class LeadUpdate(BaseModel):
     also_generator: Optional[bool] = None
     custom_spiffs: Optional[List[Dict[str, Any]]] = None
     price_tier: Optional[str] = None
+    paid_accessory: Optional[bool] = None
 
 class PipelineScheduleUpdate(BaseModel):
     client_name: str

@@ -143,7 +143,7 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
               { label: 'APCO X Sold', count: sb['APCO X']?.count || 0 },
               { label: 'Duct Cleaning', count: sb['Duct Cleaning']?.count || 0 },
               { label: 'Surge Protector', count: sb['Surge Protector']?.count || 0 },
-              { label: 'Accessories', count: Object.values(sb).reduce((s, v) => s + (v.count || 0), 0) },
+              { label: 'Paid Accessory', count: (kpiData.records || []).filter(r => r.paid_accessory).length },
             ];
             return items.map(item => {
               const pct = total > 0 ? (item.count / total * 100) : 0;

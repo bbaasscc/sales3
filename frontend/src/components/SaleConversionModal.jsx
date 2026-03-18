@@ -22,6 +22,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
   // SPIFF selections: { spiff_id: { selected: true, option_idx: 0, product_value: 0 } }
   const [spiffSelections, setSpiffSelections] = useState({});
   const [customSpiffs, setCustomSpiffs] = useState(lead?.custom_spiffs || []);
+  const [paidAccessory, setPaidAccessory] = useState(lead?.paid_accessory || false);
 
   useEffect(() => {
     const h = authHeaders || {};
@@ -116,6 +117,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
       sale_accessories: accessories.filter(a => a.name),
       is_self_gen: isSelfGen,
       promo_code: promoCode,
+      paid_accessory: paidAccessory,
       custom_spiffs: customSpiffs.filter(c => c.amount > 0),
       price_tier: priceTier,
       ...spiffData,
@@ -301,12 +303,17 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
             </div>
           )}
 
-          {/* Self Gen + Promo */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Self Gen + Promo + Paid Accessory */}
+          <div className="grid grid-cols-3 gap-2">
+            <label className="flex items-center gap-2 cursor-pointer p-2 bg-gray-50 rounded-lg">
+              <input type="checkbox" checked={paidAccessory} onChange={e => setPaidAccessory(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-amber-600" />
+              <span className="text-[10px] font-bold text-gray-700">Paid Accessory</span>
+            </label>
             <label className="flex items-center gap-2 cursor-pointer p-2 bg-gray-50 rounded-lg">
               <input type="checkbox" checked={isSelfGen} onChange={e => setIsSelfGen(e.target.checked)}
                 className="w-4 h-4 rounded border-gray-300 text-blue-600" />
-              <span className="text-xs font-bold text-gray-700">Self-Generated Lead</span>
+              <span className="text-[10px] font-bold text-gray-700">Self-Gen Lead</span>
             </label>
             <div>
               <input value={promoCode} onChange={e => setPromoCode(e.target.value)} placeholder="Promo Code"
