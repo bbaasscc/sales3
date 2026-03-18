@@ -58,7 +58,11 @@ export function PipelineModal({
                               </div>
                               {sched.scheduled_date && <p className="text-[10px] text-gray-400 mt-0.5">Scheduled: {sched.scheduled_date}</p>}
                             </div>
-                            <button onClick={() => action.type === 'email' ? handleSendEmail(actionMenu.client, action) : handleCopySMS(actionMenu.client, action)}
+                            <button onClick={() => {
+                              const fn = action.type === 'email' ? handleSendEmail : handleCopySMS;
+                              fn(actionMenu.client, action);
+                              if (!isStepDone(actionMenu.client.name, action.id)) toggleStep(actionMenu.client.name, action.id);
+                            }}
                               className={`p-1.5 rounded-md flex-shrink-0 ${action.type === 'email' ? 'hover:bg-blue-100 text-blue-500' : 'hover:bg-green-100 text-green-500'}`}>
                               <Send className="w-3.5 h-3.5" />
                             </button>
