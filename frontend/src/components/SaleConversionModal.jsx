@@ -221,7 +221,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
               <div className="space-y-1.5">
                 {rules.spiffs.map(spiff => {
                   const sel = spiffSelections[spiff.id] || {};
-                  const isLocked = isUnderBook && spiff.id !== 'samsung' && spiff.id !== 'self_gen_mits';
+                  const isLocked = isUnderBook && spiff.id !== 'samsung' && spiff.id !== 'self_gen_mits' && spiff.id !== 'self_gen';
                   return (
                     <div key={spiff.id} className={`rounded-xl border-2 transition-all overflow-hidden ${
                       isLocked ? 'border-gray-200 bg-gray-100 opacity-50' :
