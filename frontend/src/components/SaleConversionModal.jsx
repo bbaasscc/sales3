@@ -42,13 +42,20 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
     const commPercent = tier ? tier.percent : 7;
     const base = ticketValue * commPercent / 100;
 
-    // Calculate SPIFFs
+    // Calculate SPIFFs (Under Book loses all SPIFFs except Samsung and Self Gen Mitsubishi)
     let spiffTotal = 0;
     const breakdown = [];
+    const isUnderBook = priceTier === 'under_book';
 
     for (const spiff of (rules.spiffs || [])) {
       const sel = spiffSelections[spiff.id];
       if (!sel?.selected) continue;
+
+      // Under book: only Samsung and Self Gen Mitsubishi SPIFFs survive
+      if (isUnderBook && spiff.id !== 'samsung' && spiff.id !== 'self_gen_mits') {
+        breakdown.push({ label: spiff.label, amount: 0, detail: 'Lost (Under Book)', strikethrough: true });
+        continue;
+      }
 
       if (spiff.type === 'pct_of_product') {
         const pv = sel.product_value || 0;
@@ -75,6 +82,8 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
 
     return { percent: commPercent, base, spiffTotal, total: base + spiffTotal, breakdown };
   }, [rules, priceTier, ticketValue, spiffSelections]);
+
+  const isUnderBook = priceTier === 'under_book';
 
   const handleSave = () => {
     const spiffData = {};
@@ -183,48 +192,67 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
           {rules && !isGen && (
             <div>
               <label className="text-[10px] font-bold uppercase text-gray-500 mb-2 block">Accessories & SPIFFs</label>
-              <div className="space-y-2">
+              {isUnderBook && (
+                <div className="mb-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-[10px] font-bold text-red-600">
+                  Under Book — All SPIFFs lost except Samsung & Self Gen Mitsubishi
+                </div>
+              )}
+              <div className="space-y-1.5">
                 {rules.spiffs.map(spiff => {
                   const sel = spiffSelections[spiff.id] || {};
+                  const isLocked = isUnderBook && spiff.id !== 'samsung' && spiff.id !== 'self_gen_mits';
                   return (
-                    <div key={spiff.id} className={`rounded-xl border-2 p-3 transition-all ${sel.selected ? 'border-emerald-300 bg-emerald-50/30' : 'border-gray-200 bg-gray-50/50'}`}>
-                      <div className="flex items-center justify-between">
-                        <label className="flex items-center gap-2 cursor-pointer flex-1">
-                          <input type="checkbox" checked={sel.selected || false}
-                            onChange={e => setSpiff(spiff.id, 'selected', e.target.checked)}
-                            className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
-                          <span className="text-xs font-bold text-gray-700">{spiff.label}</span>
-                        </label>
-                        {sel.selected && spiff.type === 'pct_of_product' && (
-                          <span className="text-[10px] font-mono text-emerald-600 font-bold">
-                            +${((sel.product_value || 0) * (spiff.percent || 0) / 100).toFixed(0)}
+                    <div key={spiff.id} className={`rounded-xl border-2 transition-all overflow-hidden ${
+                      isLocked ? 'border-gray-200 bg-gray-100 opacity-50' :
+                      sel.selected ? 'border-emerald-300 bg-emerald-50/30' : 'border-gray-200'
+                    }`}>
+                      {/* Header — tap to toggle */}
+                      <button onClick={() => !isLocked && setSpiff(spiff.id, 'selected', !sel.selected)}
+                        className={`w-full flex items-center justify-between px-3 py-2.5 ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                        disabled={isLocked}>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center text-xs transition-all ${
+                            sel.selected && !isLocked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-gray-300'
+                          }`}>
+                            {sel.selected && !isLocked && '✓'}
+                            {isLocked && '✕'}
+                          </div>
+                          <span className={`text-xs font-bold ${isLocked ? 'text-gray-400 line-through' : 'text-gray-700'}`}>{spiff.label}</span>
+                        </div>
+                        {sel.selected && !isLocked && (
+                          <span className="text-xs font-mono font-bold text-emerald-600">
+                            +${(calc.breakdown.find(b => b.label === spiff.label)?.amount || 0).toFixed(0)}
                           </span>
                         )}
-                      </div>
+                      </button>
 
-                      {sel.selected && spiff.options && (
-                        <div className="mt-2 flex flex-wrap gap-1.5 pl-6">
+                      {/* Options as tabs — visible when selected */}
+                      {sel.selected && !isLocked && spiff.options && (
+                        <div className="px-3 pb-3 flex flex-wrap gap-1.5">
                           {spiff.options.map((opt, oi) => (
                             <button key={oi} onClick={() => setSpiff(spiff.id, 'option_idx', oi)}
-                              className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all border ${
+                              className={`px-3 py-2 rounded-lg text-[10px] font-bold transition-all border ${
                                 sel.option_idx === oi
-                                  ? 'bg-emerald-100 border-emerald-400 text-emerald-700'
-                                  : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'
+                                  ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm'
+                                  : 'bg-white border-gray-200 text-gray-600 hover:border-emerald-300'
                               }`}>
-                              {opt.label} → +${opt.value}
-                              {opt.pct_of_total > 0 && <span className="text-amber-600"> +{opt.pct_of_total}%</span>}
+                              {opt.label}
+                              <span className="block text-[9px] mt-0.5 opacity-80">
+                                +${opt.value}{opt.pct_of_total > 0 ? ` +${opt.pct_of_total}%` : ''}
+                              </span>
                             </button>
                           ))}
                         </div>
                       )}
 
-                      {sel.selected && spiff.type === 'pct_of_product' && (
-                        <div className="mt-2 pl-6">
-                          <label className="text-[10px] text-gray-500">Product Value ($)</label>
+                      {/* Product value input for pct_of_product type */}
+                      {sel.selected && !isLocked && spiff.type === 'pct_of_product' && (
+                        <div className="px-3 pb-3">
+                          <label className="text-[10px] text-gray-500 block mb-1">{spiff.label} product value ($)</label>
                           <input type="number" value={sel.product_value || ''}
                             onChange={e => setSpiff(spiff.id, 'product_value', parseFloat(e.target.value) || 0)}
                             onFocus={e => e.target.select()}
-                            className="w-32 px-2 py-1 text-xs font-mono border rounded-lg" placeholder="0" />
+                            className="w-40 px-2 py-1.5 text-sm font-mono border-2 rounded-lg focus:border-emerald-400 focus:outline-none" placeholder="0" />
                         </div>
                       )}
                     </div>
@@ -258,9 +286,13 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
                 <span className="font-mono font-bold">${calc.base.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               {calc.breakdown.map((b, i) => (
-                <div key={i} className="flex justify-between text-xs">
-                  <span className="text-amber-700">+ {b.label} <span className="text-gray-400">({b.detail})</span></span>
-                  <span className="font-mono font-bold text-amber-700">+${b.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <div key={i} className={`flex justify-between text-xs ${b.strikethrough ? 'line-through opacity-50' : ''}`}>
+                  <span className={b.strikethrough ? 'text-red-400' : 'text-amber-700'}>
+                    {b.strikethrough ? '- ' : '+ '}{b.label} <span className="text-gray-400">({b.detail})</span>
+                  </span>
+                  <span className={`font-mono font-bold ${b.strikethrough ? 'text-red-400' : 'text-amber-700'}`}>
+                    {b.strikethrough ? '$0' : `+$${b.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  </span>
                 </div>
               ))}
               <div className="flex justify-between text-sm font-bold border-t border-emerald-300 pt-2 mt-2">
