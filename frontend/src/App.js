@@ -615,9 +615,10 @@ function MainDashboard({ token, user, onLogout }) {
                   );
                 })}
               </div>
-              <div className="rounded-b-xl rounded-tr-xl overflow-hidden transition-all duration-500 ease-out"
+              <div className="rounded-b-xl rounded-tr-xl overflow-hidden transition-all duration-500 ease-out border-2"
               style={{
-                backgroundColor: activeCategory === 'hvac' ? '#1E3A5F' : '#14532D',
+                borderColor: activeCategory === 'hvac' ? '#1E3A5F' : '#14532D',
+                backgroundColor: activeCategory === 'hvac' ? '#F0F4F8' : '#F0FAF0',
               }}>
                 <div className="p-3 sm:p-4 md:p-5"
                   style={{ animation: 'folderSlideIn 0.4s ease-out' }}
