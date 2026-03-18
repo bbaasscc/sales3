@@ -10,16 +10,18 @@ import AddInteraction from "@/components/AddInteraction";
 export function PipelineModal({
   actionMenu, setActionMenu, pipelineSchedule, setPipelineSchedule,
   isStepDone, toggleStep, handleSendEmail, handleCopySMS,
-  savePipelineSchedule, getPipelineProgress, onRemoveFromPipeline, onOpenSettings,
+  savePipelineSchedule, getPipelineProgress, onRemoveFromPipeline, onOpenSettings, customSteps,
 }) {
   if (!actionMenu) return null;
+  const stepsToRender = customSteps || PIPELINE_STEPS;
+  const allActions = stepsToRender.flatMap(s => s.actions);
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 anim-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}>
       <div className="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto pb-16 anim-modal" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-gradient-to-r from-red-600 to-orange-500 px-4 sm:px-6 py-3 flex items-center justify-between rounded-t-2xl sm:rounded-t-xl text-white z-10">
           <div>
             <h3 className="text-base font-bold">Closing Flow</h3>
-            <p className="text-xs text-white/80">{actionMenu.client.name} &mdash; {getPipelineProgress(actionMenu.client.name).done}/{ALL_PIPELINE_ACTIONS.length} steps</p>
+            <p className="text-xs text-white/80">{actionMenu.client.name} &mdash; {getPipelineProgress(actionMenu.client.name).done}/{allActions.length} steps</p>
           </div>
           <div className="flex items-center gap-1">
             {onOpenSettings && <button onClick={onOpenSettings} className="p-1.5 hover:bg-white/20 rounded-full" title="Customize templates"><Settings className="w-4 h-4" /></button>}
@@ -28,12 +30,12 @@ export function PipelineModal({
           </div>
         </div>
         <div className="p-3 sm:p-4">
-          {PIPELINE_STEPS.map((step, si) => {
+          {stepsToRender.map((step, si) => {
             const allDone = step.actions.every(a => isStepDone(actionMenu.client.name, a.id));
             const someDone = step.actions.some(a => isStepDone(actionMenu.client.name, a.id));
             return (
               <div key={si} className="relative">
-                {si < PIPELINE_STEPS.length - 1 && <div className={`absolute left-[15px] top-10 w-0.5 h-[calc(100%-16px)] ${allDone ? 'bg-green-400' : 'bg-gray-200'}`} />}
+                {si < stepsToRender.length - 1 && <div className={`absolute left-[15px] top-10 w-0.5 h-[calc(100%-16px)] ${allDone ? 'bg-green-400' : 'bg-gray-200'}`} />}
                 <div className="flex items-start gap-3 mb-1">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${allDone ? 'bg-green-500 text-white' : someDone ? 'bg-amber-400 text-white' : 'bg-gray-200 text-gray-500'}`}>{step.day}</div>
                   <div className="pt-1"><p className="text-sm font-bold text-gray-800">{step.label}</p><p className="text-[10px] text-gray-400">{step.subtitle}</p></div>

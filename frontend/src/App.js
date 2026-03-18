@@ -188,10 +188,15 @@ function MainDashboard({ token, user, onLogout }) {
   useEffect(() => { fetchActions(); }, [fetchActions]);
 
   // Load custom pipeline templates
+  const [customPipelineSteps, setCustomPipelineSteps] = useState(null);
+
   useEffect(() => {
     if (!isAdmin) {
       axios.get(`${API}/pipeline/templates`, { headers: authHeaders })
-        .then(r => setCustomTemplates(r.data.templates || {}))
+        .then(r => {
+          setCustomTemplates(r.data.templates || {});
+          if (r.data.custom_steps?.length > 0) setCustomPipelineSteps(r.data.custom_steps);
+        })
         .catch(() => {});
     }
   }, []);
@@ -715,10 +720,18 @@ function MainDashboard({ token, user, onLogout }) {
         savePipelineSchedule={savePipelineSchedule} getPipelineProgress={getPipelineProgress}
         onRemoveFromPipeline={handleRemoveFromPipeline}
         onOpenSettings={() => setPipelineSettingsOpen(true)}
+        customSteps={customPipelineSteps}
       />
       <PipelineSettings
         open={pipelineSettingsOpen}
-        onClose={() => { setPipelineSettingsOpen(false); axios.get(`${API}/pipeline/templates`, { headers: authHeaders }).then(r => setCustomTemplates(r.data.templates || {})).catch(() => {}); }}
+        onClose={() => {
+          setPipelineSettingsOpen(false);
+          axios.get(`${API}/pipeline/templates`, { headers: authHeaders }).then(r => {
+            setCustomTemplates(r.data.templates || {});
+            if (r.data.custom_steps?.length > 0) setCustomPipelineSteps(r.data.custom_steps);
+            else setCustomPipelineSteps(null);
+          }).catch(() => {});
+        }}
         authHeaders={authHeaders}
       />
       <NewLeadModal

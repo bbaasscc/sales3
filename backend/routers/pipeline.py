@@ -103,22 +103,27 @@ async def remove_client_from_pipeline(body: dict, user=Depends(get_current_user)
 
 @router.get("/pipeline/templates")
 async def get_pipeline_templates(user=Depends(get_current_user)):
-    """Get custom pipeline templates for this salesperson, or defaults."""
+    """Get custom pipeline templates and steps for this salesperson."""
     doc = await db.pipeline_templates.find_one(
         {"user_id": user["user_id"]}, {"_id": 0}
     )
-    return {"templates": doc.get("templates", {}) if doc else {}}
+    return {
+        "templates": doc.get("templates", {}) if doc else {},
+        "custom_steps": doc.get("custom_steps", []) if doc else [],
+    }
 
 
 @router.put("/pipeline/templates")
 async def save_pipeline_templates(body: dict, user=Depends(get_current_user)):
-    """Save custom pipeline templates for this salesperson."""
+    """Save custom pipeline templates and steps for this salesperson."""
     templates = body.get("templates", {})
+    custom_steps = body.get("custom_steps", [])
     await db.pipeline_templates.update_one(
         {"user_id": user["user_id"]},
         {"$set": {
             "user_id": user["user_id"],
             "templates": templates,
+            "custom_steps": custom_steps,
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }},
         upsert=True,
