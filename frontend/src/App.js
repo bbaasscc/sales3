@@ -582,11 +582,11 @@ function MainDashboard({ token, user, onLogout }) {
             </div>
 
             {/* Category Folder Tabs (HVAC / Generators) */}
-            <div className="mb-6" data-testid="category-toggle">
+            <div className="relative z-0" data-testid="category-toggle">
               <div className="flex items-end gap-0 pl-4">
                 {[
-                  { id: 'hvac', label: 'HVAC', color: '#1E3A5F', lightBg: '#EFF6FF', border: '#BFDBFE' },
-                  { id: 'generator', label: 'Generators', color: '#14532D', lightBg: '#F0FDF4', border: '#BBF7D0' },
+                  { id: 'hvac', label: 'HVAC', color: '#1E3A5F' },
+                  { id: 'generator', label: 'Generators', color: '#14532D' },
                 ].map((cat, i) => {
                   const isActive = activeCategory === cat.id;
                   return (
@@ -596,44 +596,31 @@ function MainDashboard({ token, user, onLogout }) {
                       className="relative transition-all duration-300 ease-out"
                       style={{
                         zIndex: isActive ? 10 : 5 - i,
-                        transform: isActive ? 'translateY(0)' : 'translateY(4px)',
+                        transform: isActive ? 'translateY(1px)' : 'translateY(4px)',
                         marginRight: '-2px',
                       }}>
                       <div className={`
                         px-5 sm:px-7 pt-2.5 pb-2 text-xs sm:text-sm font-bold tracking-wide
-                        rounded-t-xl border-t-2 border-l-2 border-r-2
+                        rounded-t-xl
                         transition-all duration-300 ease-out
                         ${isActive
                           ? 'text-white shadow-lg'
-                          : 'text-gray-400 hover:text-gray-600 bg-gray-100 border-gray-200 hover:bg-gray-200 opacity-70 hover:opacity-90'
+                          : 'text-gray-400 hover:text-gray-600 bg-gray-200 hover:bg-gray-300 opacity-70 hover:opacity-90'
                         }
                       `}
-                      style={isActive ? {
-                        backgroundColor: cat.color,
-                        borderColor: cat.color,
-                        boxShadow: `0 -4px 12px -2px ${cat.color}33`,
-                      } : {}}>
+                      style={isActive ? { backgroundColor: cat.color } : {}}>
                         {cat.label}
                       </div>
                     </button>
                   );
                 })}
               </div>
-              <div className={`
-                rounded-xl rounded-tl-none border-2 overflow-hidden
-                transition-all duration-500 ease-out
-              `}
+              <div className="rounded-b-xl rounded-tr-xl overflow-hidden transition-all duration-500 ease-out"
               style={{
-                borderColor: activeCategory === 'hvac' ? '#1E3A5F' : '#14532D',
-                backgroundColor: activeCategory === 'hvac' ? '#FAFCFF' : '#FAFFF7',
-                boxShadow: activeCategory === 'hvac'
-                  ? '0 4px 24px -4px rgba(30,58,95,0.12)'
-                  : '0 4px 24px -4px rgba(20,83,45,0.12)',
+                backgroundColor: activeCategory === 'hvac' ? '#1E3A5F' : '#14532D',
               }}>
                 <div className="p-3 sm:p-4 md:p-5"
-                  style={{
-                    animation: 'folderSlideIn 0.4s ease-out',
-                  }}
+                  style={{ animation: 'folderSlideIn 0.4s ease-out' }}
                   key={activeCategory}>
 
             {/* Admin salesperson filter banner */}
