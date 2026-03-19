@@ -41,6 +41,7 @@ async def get_company_averages(date_filter: str = "all", pay_period: Optional[st
     if not salespeople:
         return {"averages": {}, "salesperson_count": 0}
 
+    total_sp = len(salespeople)
     totals = {"closing_rate": [], "gross_closing_rate": [], "average_ticket": [], "dpa": [], "total_revenue": [],
               "closed_deals": [], "total_visits": [], "credit_reject_count": [],
               "price_margin_sales_count": [], "avg_commission_percent": []}
@@ -71,11 +72,11 @@ async def get_company_averages(date_filter: str = "all", pay_period: Optional[st
 
     n = len(totals["closing_rate"])
     if n == 0:
-        return {"averages": {}, "salesperson_count": 0}
+        return {"averages": {}, "salesperson_count": total_sp}
 
     avg = lambda lst: round(sum(lst) / len(lst), 1) if lst else 0
     return {
-        "salesperson_count": n,
+        "salesperson_count": total_sp,
         "averages": {
             "closing_rate": avg(totals["closing_rate"]),
             "gross_closing_rate": avg(totals["gross_closing_rate"]),
