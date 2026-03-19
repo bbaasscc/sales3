@@ -1,0 +1,79 @@
+{
+  "summary": "Comprehensive testing of Sales Management App v22 - All features working. Backend: 28/28 tests pass. Frontend: All key flows verified including login (4 users), dashboard KPIs, category toggle, company averages (3 salespeople label, 2 in calc), status tabs, pipeline with last interaction dates, earnings, commission rules, sale conversion modal with 5 tiers + 7 SPIFFs, edit sale details, notifications, closing flow templates, mobile horizontal scroll.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v22_comprehensive.py",
+    "/app/test_reports/pytest/v22_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_v22_comprehensive.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": {
+    "salesperson1": "Bcardarelli@fshac.com / Benja123",
+    "salesperson2": "Fbarbagallo@fshac.com / Franco123",
+    "salesperson3": "cbrayton@fshac.com / Brayton123",
+    "admin": "Bsanchezcar@gmail.com / Benja123"
+  },
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All features verified working in iteration 22.",
+  "features_verified": {
+    "login_all_4_users": "✓ Benjamin, Franco, Chris (3 salespeople) + Admin all login correctly",
+    "benjamin_dashboard": "✓ R% 42.9%, Gross R% 46.8%, $388,850 revenue, 77 leads, 33 closed deals, Credit Reject 3, PM 3",
+    "franco_dashboard": "✓ R% 43.9%, Gross R% 43.9%, $357,043 revenue, 66 leads, 29 closed deals",
+    "chris_dashboard_0_data": "✓ R% 0%, $0 revenue, 0 leads - shows Company Average correctly",
+    "company_averages": "✓ Shows '3 salespeople' label but calculates from 2 active (Benjamin/Franco). Avg R% 43.4%, Avg Revenue $372,946",
+    "category_toggle": "✓ HVAC/Generators toggle works, Generator shows green theme",
+    "accessory_sellthrough": "✓ APCO X 24%, Duct Cleaning 9%, Surge Protector 12%, Self Gen Mits 18%",
+    "self_gen_3_percent_card": "✓ Shows Self Gen (3%) card in Sales Metrics",
+    "status_tab_all_leads": "✓ All columns visible (Name, City, Status, Unit, Value, Visit, Actions)",
+    "pipeline_target_button": "✓ Pipeline button (Target icon) visible for PENDING leads - 25 found",
+    "pipeline_view": "✓ Book-style cards with progress bars, Closing Flow button, action buttons",
+    "pipeline_last_interaction": "✓ 'Last:' interaction dates shown in pipeline cards",
+    "tasks_view": "✓ Shows Pending Installations (0 pending), Completed (4)",
+    "earnings_tab": "✓ 27 installations, $35,944.80 commission, $8,441 SPIFF included, AVG COMM 8.85%",
+    "spiff_breakdown": "✓ APCO X 8 (24.2%), Samsung 4 (12.1%), Surge 4 (12.1%), Duct 3 (9.1%), Mits 6 (18.2%)",
+    "quarterly_self_gen_mits": "✓ Q1 2026: $3,092.00",
+    "edit_sale_details_button": "✓ Button visible on SALE leads, opens SaleConversionModal with pre-loaded data",
+    "sale_conversion_modal_5_tiers": "✓ Under Book (5%), At Book (7%), $200 Over (8%), $500 Over (9%), $1,000+ Over (10%)",
+    "sale_conversion_modal_7_spiffs": "✓ APCO X, Surge Protector, Duct Cleaning, Self Gen Mits (4%), Self Gen (3%), Samsung ($400), Paid Accessory (1%)",
+    "commission_auto_calculation": "✓ Shows base calculation + SPIFF breakdown in real-time",
+    "under_book_rule": "✓ Locks APCO X, Surge, Duct but keeps Samsung, Self Gen Mits, Self Gen available",
+    "custom_spiffs": "✓ Add SPIFF button with description and amount fields",
+    "same_as_ticket_button": "✓ Button sets Self Gen Mits product value to ticket value",
+    "commission_rules_endpoint": "✓ Returns 5 tiers + 7 SPIFFs, Samsung=$400, Paid Accessory=1%",
+    "price_tier_migration": "✓ All 35 SALE leads (Benjamin) have price_tier set",
+    "self_gen_mits_product_value_field": "✓ Field exists and saves correctly",
+    "data_integrity": "✓ No non-PENDING leads with follow_up_date",
+    "admin_overview": "✓ Company totals: 62 closed deals, $745,893 revenue, Lead Status pie chart, Equipment Revenue chart",
+    "admin_commission_rules": "✓ Tab visible, editable tiers and SPIFFs",
+    "password_reset_endpoint": "✓ Endpoint exists at /api/auth/reset-password",
+    "notifications": "✓ Bell icon, panel opens, shows 0 active, Enable push notifications option",
+    "closing_flow_modal": "✓ 7 steps (Day 0,2,4,6,8), customizable templates, Send button, date pickers, Settings gear",
+    "mobile_horizontal_scroll": "✓ overflow-x-auto container on leads table enables horizontal scroll"
+  },
+  "data_verification": {
+    "benjamin_deals": 33,
+    "benjamin_revenue": 388850,
+    "franco_deals": 29,
+    "franco_revenue": 357043,
+    "chris_deals": 0,
+    "total_sale_leads_benjamin": 35,
+    "leads_with_price_tier": 35,
+    "company_avg_salesperson_count": 3,
+    "company_avg_closed_deals": 31.0,
+    "company_avg_revenue": 372946
+  }
+}
