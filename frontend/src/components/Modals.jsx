@@ -384,7 +384,7 @@ export function ClientDetailModal({
           </div>
         </div>
         
-        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 space-y-2">
+        <div className="bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 space-y-2">
           <div className="flex gap-2">
             <Button onClick={saveClientNote} disabled={noteSaving} className="flex-1" style={{ backgroundColor: '#2563EB' }} data-testid="save-notes-btn">
               {noteSaving ? 'Saving...' : 'Save Notes'}
