@@ -195,16 +195,16 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
                 { label: 'Avg R%', yours: kpiData.closing_rate, avg: companyAvg.averages.closing_rate, fmt: v => `${v}%` },
+                { label: 'Avg Gross R%', yours: kpiData.total_visits > 0 ? +((kpiData.gross_closed || kpiData.closed_deals) / kpiData.total_visits * 100).toFixed(1) : 0, avg: companyAvg.averages.gross_closing_rate || 0, fmt: v => `${v}%` },
                 { label: 'Avg Revenue', yours: kpiData.total_revenue, avg: companyAvg.averages.total_revenue, fmt: v => `$${(+v).toLocaleString('en-US',{maximumFractionDigits:0})}` },
                 { label: 'Avg Ticket', yours: kpiData.average_ticket, avg: companyAvg.averages.average_ticket, fmt: v => `$${(+v).toLocaleString('en-US',{maximumFractionDigits:0})}` },
                 { label: 'Avg DPA', yours: dpa, avg: companyAvg.averages.dpa, fmt: v => `$${(+v).toLocaleString('en-US',{maximumFractionDigits:0})}` },
                 { label: 'Avg Deals', yours: kpiData.closed_deals, avg: companyAvg.averages.closed_deals, fmt: v => `${v}` },
-                { label: 'Avg Leads', yours: kpiData.total_visits, avg: companyAvg.averages.total_visits, fmt: v => `${v}` },
                 { label: 'Avg Credit Rej', yours: kpiData.credit_reject_count || 0, avg: companyAvg.averages.credit_reject_count, fmt: v => `${v}` },
-                { label: 'Avg Under Book', yours: kpiData.price_margin_sales_count || 0, avg: companyAvg.averages.price_margin_sales_count, fmt: v => `${v}` },
+                { label: 'Avg Price Match %', yours: kpiData.price_margin_sales_count || 0, avg: companyAvg.averages.price_margin_sales_count, fmt: v => `${v}` },
               ].map(item => {
                 const diff = item.yours - item.avg;
-                const isGood = item.label.includes('Credit') || item.label.includes('Under') ? diff <= 0 : diff >= 0;
+                const isGood = item.label.includes('Credit') || item.label.includes('Price Match') ? diff <= 0 : diff >= 0;
                 return (
                   <div key={item.label} className="bg-white rounded-lg p-2.5 border border-gray-100">
                     <p className="text-[9px] font-bold uppercase text-gray-400 mb-1">{item.label}</p>

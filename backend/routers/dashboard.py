@@ -41,7 +41,7 @@ async def get_company_averages(date_filter: str = "all", pay_period: Optional[st
     if not salespeople:
         return {"averages": {}, "salesperson_count": 0}
 
-    totals = {"closing_rate": [], "average_ticket": [], "dpa": [], "total_revenue": [],
+    totals = {"closing_rate": [], "gross_closing_rate": [], "average_ticket": [], "dpa": [], "total_revenue": [],
               "closed_deals": [], "total_visits": [], "credit_reject_count": [],
               "price_margin_sales_count": [], "avg_commission_percent": []}
 
@@ -58,6 +58,8 @@ async def get_company_averages(date_filter: str = "all", pay_period: Optional[st
         df = pd.DataFrame(leads)
         kpi = process_sales_data(df, date_filter=date_filter, pay_period=pay_period, from_db=True)
         totals["closing_rate"].append(kpi["closing_rate"])
+        gross_rate = ((kpi["gross_closed"] or kpi["closed_deals"]) / kpi["total_visits"] * 100) if kpi["total_visits"] > 0 else 0
+        totals["gross_closing_rate"].append(round(gross_rate, 1))
         totals["average_ticket"].append(kpi["average_ticket"])
         totals["dpa"].append(kpi["total_revenue"] / kpi["total_visits"] if kpi["total_visits"] > 0 else 0)
         totals["total_revenue"].append(kpi["total_revenue"])
@@ -76,6 +78,7 @@ async def get_company_averages(date_filter: str = "all", pay_period: Optional[st
         "salesperson_count": n,
         "averages": {
             "closing_rate": avg(totals["closing_rate"]),
+            "gross_closing_rate": avg(totals["gross_closing_rate"]),
             "average_ticket": round(avg(totals["average_ticket"]), 0),
             "dpa": round(avg(totals["dpa"]), 0),
             "total_revenue": round(avg(totals["total_revenue"]), 0),
