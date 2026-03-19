@@ -296,14 +296,27 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
                         </div>
                       )}
 
-                      {/* Product value input for pct_of_product type */}
+                      {/* Product value input for pct_of_product type (e.g., Self Gen Mitsubishi 4%) */}
                       {sel.selected && !isLocked && spiff.type === 'pct_of_product' && (
                         <div className="px-3 pb-3">
-                          <label className="text-[10px] text-gray-500 block mb-1">{spiff.label} product value ($)</label>
-                          <input type="number" value={sel.product_value || ''}
-                            onChange={e => setSpiff(spiff.id, 'product_value', parseFloat(e.target.value) || 0)}
-                            onFocus={e => e.target.select()}
-                            className="w-40 px-2 py-1.5 text-sm font-mono border-2 rounded-lg focus:border-emerald-400 focus:outline-none" placeholder="0" />
+                          <label className="text-[10px] text-gray-500 block mb-1">Mitsubishi sale value ($)</label>
+                          <div className="flex items-center gap-2">
+                            <div className="relative flex-1">
+                              <span className="absolute left-2 top-2 text-sm text-gray-400">$</span>
+                              <input type="number" value={sel.product_value || ''}
+                                onChange={e => setSpiff(spiff.id, 'product_value', parseFloat(e.target.value) || 0)}
+                                onFocus={e => e.target.select()}
+                                className="w-full pl-6 pr-2 py-1.5 text-sm font-mono border-2 rounded-lg focus:border-emerald-400 focus:outline-none" placeholder="0" />
+                            </div>
+                            <button type="button" onClick={() => setSpiff(spiff.id, 'product_value', ticketValue)}
+                              className="px-2.5 py-1.5 text-[9px] font-bold bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 whitespace-nowrap">
+                              Same as Ticket
+                            </button>
+                          </div>
+                          <div className="mt-1.5 px-2 py-1 bg-emerald-50 rounded text-[10px] font-mono">
+                            <span className="text-gray-500">{spiff.percent}% of ${(sel.product_value || 0).toLocaleString()} = </span>
+                            <span className="font-bold text-emerald-700">${((sel.product_value || 0) * (spiff.percent || 0) / 100).toFixed(2)}</span>
+                          </div>
                         </div>
                       )}
                     </div>
