@@ -395,21 +395,18 @@ function MainDashboard({ token, user, onLogout }) {
 
   const handleSaleConversion = async (saleData) => {
     if (!saleConversion?.lead_id) return;
-    const lead = { ...saleConversion, ...saleData, status: 'SALE' };
-    const spiffSum = (lead.apco_x || 0) + (lead.samsung || 0) + (lead.mitsubishi || 0) + (lead.surge_protector || 0) + (lead.duct_cleaning || 0) + (lead.self_gen_mits || 0);
-    const baseComm = (lead.ticket_value || 0) * (lead.commission_percent || 0) / 100;
-    const dataToSave = { ...lead, commission_value: Math.round((baseComm + spiffSum) * 100) / 100, spif_total: Math.round(spiffSum * 100) / 100 };
+    const dataToSave = { ...saleConversion, ...saleData, status: 'SALE' };
     try {
       await axios.put(`${API}/leads/${saleConversion.lead_id}`, dataToSave, { headers: authHeaders });
-      // CELEBRATION!
       const name = saleConversion.name.split(' ')[0];
       const value = dataToSave.ticket_value || 0;
-      toast.success(`${name} converted to SALE!`, { description: value > 0 ? `$${value.toLocaleString()} deal closed!` : 'Deal closed!' });
-      celebrateSale();
+      const isEdit = saleConversion.status === 'SALE';
+      toast.success(isEdit ? `${name} updated!` : `${name} converted to SALE!`, { description: value > 0 ? `$${value.toLocaleString()} deal` : '' });
+      if (!isEdit) celebrateSale();
       setEditingLead(null);
       setSaleConversion(null);
       fetchDashboardData(); fetchAllLeads(); fetchTasks();
-    } catch { toast.error("Error converting to sale"); }
+    } catch { toast.error("Error saving sale"); }
   };
 
   const celebrateSale = () => {
@@ -758,7 +755,8 @@ function MainDashboard({ token, user, onLogout }) {
       />
       <SaleDetailModal selectedSale={selectedSale} setSelectedSale={setSelectedSale} />
       <InstallationsModal installationsOpen={installationsOpen} setInstallationsOpen={setInstallationsOpen} kpiData={kpiData} />
-      <EditLeadModal editingLead={editingLead} setEditingLead={setEditingLead} handleSaveEditLead={handleSaveEditLead} setDeleteConfirm={setDeleteConfirm} originalLead={originalLead} />
+      <EditLeadModal editingLead={editingLead} setEditingLead={setEditingLead} handleSaveEditLead={handleSaveEditLead} setDeleteConfirm={setDeleteConfirm} originalLead={originalLead}
+        onEditSale={(lead) => { setSaleConversion(lead); }} />
       {saleConversion && (
         <SaleConversionModal lead={saleConversion} onSave={handleSaleConversion} onCancel={() => setSaleConversion(null)} authHeaders={authHeaders} />
       )}

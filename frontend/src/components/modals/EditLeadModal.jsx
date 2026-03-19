@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { X, Plus, Trash2 } from "lucide-react";
 import { STATUS_OPTIONS, STATUS_LABELS, UNIT_TYPE_OPTIONS, isGeneratorLead } from "@/lib/constants";
 
-export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead, setDeleteConfirm, originalLead }) {
+export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead, setDeleteConfirm, originalLead, onEditSale }) {
   if (!editingLead) return null;
   const isGen = isGeneratorLead(editingLead);
   const spiffSum = isGen ? 0 : (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
@@ -162,6 +162,13 @@ export function EditLeadModal({ editingLead, setEditingLead, handleSaveEditLead,
                   {editingLead.install_date === 'PENDING' && <p className="text-[9px] text-amber-600 mt-0.5 font-semibold">Remember to book installer</p>}
                 </div>
               </div>
+              {onEditSale && (
+                <button onClick={() => onEditSale(editingLead)}
+                  className="w-full mt-3 py-2 text-xs font-bold text-emerald-600 border-2 border-dashed border-emerald-200 rounded-xl hover:bg-emerald-50 hover:border-emerald-400 transition-all"
+                  data-testid="edit-sale-details-btn">
+                  Edit Sale Details & Commission
+                </button>
+              )}
             </div>
           )}
           <div className="flex gap-2 pt-2">

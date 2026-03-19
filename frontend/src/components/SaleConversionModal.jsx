@@ -13,16 +13,32 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
 
   const [rules, setRules] = useState(null);
   const [ticketValue, setTicketValue] = useState(lead?.ticket_value || 0);
-  const [priceTier, setPriceTier] = useState('at_book');
-  const [products, setProducts] = useState(lead?.products || [{ manufacturer: '', model: '' }]);
+  const [priceTier, setPriceTier] = useState(lead?.price_tier || 'at_book');
+  const [products, setProducts] = useState(lead?.products?.length ? lead.products : [{ manufacturer: '', model: '' }]);
   const [accessories, setAccessories] = useState(lead?.sale_accessories || []);
   const [isSelfGen, setIsSelfGen] = useState(lead?.is_self_gen || false);
   const [promoCode, setPromoCode] = useState(lead?.promo_code || '');
 
-  // SPIFF selections: { spiff_id: { selected: true, option_idx: 0, product_value: 0 } }
   const [spiffSelections, setSpiffSelections] = useState({});
   const [customSpiffs, setCustomSpiffs] = useState(lead?.custom_spiffs || []);
   const [paidAccessory, setPaidAccessory] = useState(lead?.paid_accessory || false);
+
+  // Pre-populate spiff selections from saved lead data
+  useEffect(() => {
+    if (!lead) return;
+    const sel = {};
+    if (lead.apco_x > 0) sel.apco_x = { selected: true, option_idx: 0 };
+    if (lead.surge_protector > 0) {
+      sel.surge_furnace = { selected: true, option_idx: lead.surge_protector >= 75 ? 0 : 1 };
+    }
+    if (lead.duct_cleaning > 0) {
+      sel.duct_cleaning = { selected: true, option_idx: lead.duct_cleaning >= 100 ? 0 : lead.duct_cleaning >= 75 ? 1 : 2 };
+    }
+    if (lead.self_gen_mits > 0) sel.self_gen_mits = { selected: true, product_value: lead.self_gen_mits_product_value || 0 };
+    if (lead.self_gen_commission > 0 || lead.is_self_gen) sel.self_gen = { selected: true };
+    if (lead.samsung > 0) sel.samsung = { selected: true, option_idx: 0 };
+    setSpiffSelections(sel);
+  }, [lead]);
 
   useEffect(() => {
     const h = authHeaders || {};
