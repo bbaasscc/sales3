@@ -2,30 +2,15 @@ import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import {
-  DollarSign, Target, Percent, BarChart3, Users, TrendingDown, PieChart as PieIcon, Settings, Package,
+  DollarSign, Target, Users, TrendingUp, BarChart3, PieChart as PieIcon, Settings, Package,
 } from "lucide-react";
 import axios from "axios";
 import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis,
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, AreaChart, Area,
 } from "recharts";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
 const EQUIP_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B6D4'];
-const ACCESSORY_LABELS = {
-  apco_x: 'APCO X',
-  samsung: 'Samsung',
-  mitsubishi: 'Mitsubishi',
-  surge_protector: 'Surge Protector',
-  duct_cleaning: 'Duct Cleaning',
-};
-const ACCESSORY_COLORS = {
-  apco_x: '#C62828',
-  samsung: '#1E3A5F',
-  mitsubishi: '#4CAF50',
-  surge_protector: '#FF9800',
-  duct_cleaning: '#9C27B0',
-};
 
 export default function AdminOverview({ token, payPeriod, dateFilter, category }) {
   const [data, setData] = useState(null);
@@ -39,7 +24,6 @@ export default function AdminOverview({ token, payPeriod, dateFilter, category }
       if (dateFilter && dateFilter !== "all") params.date_filter = dateFilter;
       const res = await axios.get(`${API}/admin/comparison`, {
         headers: { Authorization: `Bearer ${token}` }, params,
-        headers: { Authorization: `Bearer ${token}` }, params,
       });
       setData(res.data);
     } catch { toast.error("Error loading data"); }
@@ -51,8 +35,9 @@ export default function AdminOverview({ token, payPeriod, dateFilter, category }
   if (loading || !data) return <div className="flex items-center justify-center min-h-[300px]"><p className="text-gray-400">Loading...</p></div>;
 
   const { totals, comparison } = data;
+  const activeSP = comparison.filter(sp => sp.total_leads > 0).length;
+  const dpa = totals.total_leads > 0 ? (totals.total_revenue / totals.total_leads) : 0;
   const totalPending = (totals.total_leads || 0) - (totals.closed_deals || 0) - (totals.lost_deals || 0);
-  const activeSalespeople = comparison.filter(sp => sp.total_leads > 0).length;
 
   const statusPie = [
     { name: 'Closed', value: totals.closed_deals || 0, color: '#22C55E' },
@@ -60,72 +45,79 @@ export default function AdminOverview({ token, payPeriod, dateFilter, category }
     { name: 'Lost', value: totals.lost_deals || 0, color: '#EF4444' },
   ].filter(s => s.value > 0);
 
-  // Equipment chart data
   const equipData = Object.entries(totals.equipment_types || {})
     .map(([name, d]) => ({ name, count: d.count, revenue: d.revenue }))
     .sort((a, b) => b.revenue - a.revenue);
 
-  // Accessories data
   const accessories = totals.accessories || {};
-  const totalAccessories = Object.values(accessories).reduce((sum, a) => sum + a.count, 0);
 
   return (
     <div className="space-y-6">
-      {/* Company KPIs */}
-      <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#1E3A5F' }}>
-        <div className="p-5 sm:p-6">
+      {/* COMPANY SALES METRICS — same layout as salesperson */}
+      <div className="rounded-2xl overflow-hidden anim-section" style={{ backgroundColor: '#1E3A5F' }}>
+        <div className="p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-5">
-            <BarChart3 className="w-6 h-6 text-white/80" />
+            <TrendingUp className="w-5 h-5 text-white" />
             <div>
-              <h2 className="text-lg sm:text-xl font-bold text-white" data-testid="admin-overview-title">Company Totals</h2>
-              <p className="text-xs text-white/60">{comparison.length} salespeople ({activeSalespeople} active)</p>
+              <h2 className="text-lg sm:text-xl font-bold text-white" data-testid="admin-overview-title">Company Sales Metrics</h2>
+              <p className="text-xs text-white/50">{comparison.length} salespeople ({activeSP} active)</p>
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {[
-              { label: "Revenue", value: `$${(totals.total_revenue || 0).toLocaleString('en-US', {maximumFractionDigits: 0})}`, icon: DollarSign, accent: '#22C55E' },
-              { label: "Commission", value: `$${(totals.total_commission || 0).toLocaleString('en-US', {maximumFractionDigits: 0})}`, icon: DollarSign, accent: '#10B981' },
-              { label: "Closed", value: totals.closed_deals || 0, icon: Target, accent: '#3B82F6' },
-              { label: "Total Leads", value: totals.total_leads || 0, icon: Users, accent: '#F59E0B' },
-              { label: "Lost", value: totals.lost_deals || 0, icon: TrendingDown, accent: '#EF4444' },
+              { label: 'Net R%', value: `${totals.closing_rate || 0}%`, sub: `${totals.closed_deals} of ${totals.total_leads} leads` },
+              { label: 'Gross R%', value: `${totals.total_leads > 0 ? ((totals.gross_closed || totals.closed_deals) / totals.total_leads * 100).toFixed(1) : 0}%`, sub: 'Incl. Credit Reject' },
+              { label: 'Revenue', value: `$${(totals.total_revenue || 0).toLocaleString('en-US', {maximumFractionDigits:0})}`, sub: `${totals.closed_deals} closed deals` },
+              { label: 'Leads', value: totals.total_leads || 0, sub: 'Excl. Cancel/Resched' },
+              { label: 'Credit Reject', value: totals.credit_reject || 0, sub: `${totals.total_leads > 0 ? ((totals.credit_reject || 0) / totals.total_leads * 100).toFixed(1) : 0}% of leads` },
+              { label: 'Avg Ticket', value: `$${(totals.avg_ticket || 0).toLocaleString('en-US', {maximumFractionDigits:0})}`, sub: 'Per closed deal' },
+              { label: 'DPA', value: `$${dpa.toLocaleString('en-US', {maximumFractionDigits:0})}`, sub: 'Dollars Per Appt' },
+              { label: 'Closed Deals', value: totals.closed_deals || 0, sub: 'SALE status' },
+              { label: 'Under Book', value: totals.pm_jobs || 0, sub: `${totals.pm_pct || 0}% of deals` },
+              { label: 'Commission', value: `$${(totals.total_commission || 0).toLocaleString('en-US', {maximumFractionDigits:0})}`, sub: `Avg ${totals.gp_pct || 0}%` },
             ].map((item, i) => (
-              <Card key={i} className="bg-white/10 border-0 backdrop-blur-sm">
-                <CardContent className="p-3 sm:p-4">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ backgroundColor: item.accent + '22' }}>
-                      <item.icon className="w-3 h-3" style={{ color: item.accent }} />
-                    </div>
-                  </div>
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-white/50">{item.label}</p>
-                  <p className="text-lg sm:text-xl font-mono font-bold text-white mt-0.5">{item.value}</p>
-                </CardContent>
-              </Card>
+              <div key={i} className="bg-white/10 backdrop-blur rounded-xl p-3 text-center hover:bg-white/15 transition-all anim-card" style={{animationDelay: `${i*0.04}s`}}>
+                <p className="text-[9px] font-bold uppercase tracking-widest text-white/50 mb-1">{item.label}</p>
+                <p className="text-xl sm:text-2xl font-mono font-bold text-white">{item.value}</p>
+                <p className="text-[9px] text-white/40 mt-0.5">{item.sub}</p>
+              </div>
             ))}
           </div>
+          {(totals.cancel_count > 0) && (
+            <div className="mt-3">
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 text-white/60">
+                Cancelled: {totals.cancel_count}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Key Rates + Lead Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      {/* ACCESSORY SELL-THROUGH % — same as salesperson */}
+      {totals.closed_deals > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 anim-section">
           {[
-            { label: "R%", value: `${totals.closing_rate || 0}%`, sub: "Net Closing Rate", color: '#8B5CF6' },
-            { label: "Gross R%", value: `${totals.total_leads > 0 ? ((totals.gross_closed || totals.closed_deals) / totals.total_leads * 100).toFixed(1) : 0}%`, sub: "Incl. Credit Reject", color: '#6D28D9' },
-            { label: "Avg Ticket", value: `$${(totals.avg_ticket || 0).toLocaleString('en-US', {maximumFractionDigits: 0})}`, sub: "Per closed deal", color: '#22C55E' },
-            { label: "GP %", value: `${totals.gp_pct || 0}%`, sub: "Avg Comm Rate", color: '#F59E0B' },
-            { label: "PM Jobs", value: totals.pm_jobs || 0, sub: "Under book (5%)", color: '#EF4444' },
-            { label: "PM %", value: `${totals.pm_pct || 0}%`, sub: "Of closed deals", color: '#EF4444' },
-          ].map((item, i) => (
-            <Card key={i} className="bg-white border border-gray-200 shadow-sm rounded-xl">
-              <CardContent className="p-3 sm:p-4">
-                <p className="text-[9px] font-bold uppercase tracking-wider" style={{ color: item.color }}>{item.label}</p>
-                <p className="text-xl sm:text-2xl font-mono font-bold text-gray-900 mt-1">{item.value}</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">{item.sub}</p>
-              </CardContent>
-            </Card>
-          ))}
+            { label: 'APCO X Sold', count: accessories.apco_x?.count || 0 },
+            { label: 'Duct Cleaning', count: accessories.duct_cleaning?.count || 0 },
+            { label: 'Surge Protector', count: accessories.surge_protector?.count || 0 },
+            { label: 'Samsung', count: accessories.samsung?.count || 0 },
+          ].map(item => {
+            const pct = totals.closed_deals > 0 ? (item.count / totals.closed_deals * 100) : 0;
+            return (
+              <div key={item.label} className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
+                <p className="text-[10px] font-bold uppercase text-gray-500 mb-1">{item.label}</p>
+                <p className="text-2xl font-mono font-bold" style={{ color: pct >= 50 ? '#10B981' : pct >= 25 ? '#F59E0B' : '#EF4444' }}>
+                  {pct.toFixed(0)}%
+                </p>
+                <p className="text-[10px] text-gray-400">{item.count} of {totals.closed_deals} deals</p>
+              </div>
+            );
+          })}
         </div>
+      )}
 
+      {/* CHARTS ROW — Lead Status + Equipment Revenue */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {statusPie.length > 0 && (
           <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
             <CardContent className="p-4 sm:p-5">
@@ -157,18 +149,14 @@ export default function AdminOverview({ token, payPeriod, dateFilter, category }
             </CardContent>
           </Card>
         )}
-      </div>
 
-      {/* Equipment Types + Revenue */}
-      {equipData.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Equipment Revenue Chart */}
+        {equipData.length > 0 && (
           <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
             <CardContent className="p-4 sm:p-5">
               <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
                 <Settings className="w-4 h-4 text-blue-500" /> Equipment Revenue
               </h3>
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={equipData} layout="vertical">
                   <XAxis type="number" tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 10 }} />
                   <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11 }} />
@@ -180,67 +168,22 @@ export default function AdminOverview({ token, payPeriod, dateFilter, category }
               </ResponsiveContainer>
             </CardContent>
           </Card>
+        )}
+      </div>
 
-          {/* Equipment Breakdown Table */}
-          <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
-            <CardContent className="p-4 sm:p-5">
-              <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
-                <Settings className="w-4 h-4 text-blue-500" /> Equipment Breakdown
-              </h3>
-              <div className="space-y-2">
-                {equipData.map((eq, i) => {
-                  const pct = totals.closed_deals > 0 ? Math.round(eq.count / totals.closed_deals * 100) : 0;
-                  return (
-                    <div key={eq.name} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors" data-testid={`equip-${i}`}>
-                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: EQUIP_COLORS[i % EQUIP_COLORS.length] }} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-800 truncate">{eq.name}</p>
-                      </div>
-                      <div className="text-right flex-shrink-0 flex items-center gap-4">
-                        <div>
-                          <p className="text-xs text-gray-400">Qty</p>
-                          <p className="text-sm font-mono font-bold text-gray-900">{eq.count}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-400">Revenue</p>
-                          <p className="text-sm font-mono font-bold text-blue-700">${eq.revenue.toLocaleString('en-US', {maximumFractionDigits: 0})}</p>
-                        </div>
-                        <span className="text-[10px] font-mono bg-gray-200 px-1.5 py-0.5 rounded-full text-gray-600">{pct}%</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Accessories Sold */}
-      {totalAccessories > 0 && (
+      {/* ACCESSORIES DETAIL */}
+      {Object.keys(accessories).length > 0 && (
         <Card className="bg-white border border-gray-200 shadow-sm rounded-xl">
           <CardContent className="p-4 sm:p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                <Package className="w-4 h-4 text-amber-500" /> Accessories Sold
-              </h3>
-              <span className="text-xs font-mono bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-bold" data-testid="total-accessories">
-                {totalAccessories} total
-              </span>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {Object.entries(accessories).map(([key, data]) => (
-                <div key={key}
-                  className="rounded-xl p-3 border transition-all hover:shadow-md"
-                  style={{ borderColor: data.count > 0 ? ACCESSORY_COLORS[key] + '44' : '#e5e7eb', backgroundColor: data.count > 0 ? ACCESSORY_COLORS[key] + '08' : '#fafafa' }}
-                  data-testid={`accessory-${key}`}
-                >
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: ACCESSORY_COLORS[key] }} />
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500">{ACCESSORY_LABELS[key]}</p>
-                  </div>
-                  <p className="text-2xl font-mono font-bold" style={{ color: data.count > 0 ? ACCESSORY_COLORS[key] : '#d1d5db' }}>{data.count}</p>
-                  <p className="text-[10px] font-mono text-gray-400 mt-0.5">${data.value.toLocaleString('en-US', {maximumFractionDigits: 0})} SPIFF</p>
+            <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+              <Package className="w-4 h-4 text-amber-500" /> SPIFF Breakdown
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {Object.entries(accessories).map(([key, d]) => (
+                <div key={key} className="rounded-xl p-3 border bg-gray-50 hover:bg-gray-100 transition-all">
+                  <p className="text-[10px] font-bold uppercase text-gray-500 mb-1">{key.replace(/_/g, ' ')}</p>
+                  <p className="text-xl font-mono font-bold text-gray-800">{d.count}<span className="text-xs text-gray-400 ml-1">sales</span></p>
+                  <p className="text-[10px] font-mono text-amber-600">${(d.value || 0).toLocaleString('en-US', {maximumFractionDigits:0})} SPIFF</p>
                 </div>
               ))}
             </div>
