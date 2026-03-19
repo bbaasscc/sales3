@@ -340,17 +340,12 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
             </div>
           )}
 
-          {/* Self Gen + Promo + Paid Accessory */}
-          <div className="grid grid-cols-3 gap-2">
+          {/* Paid Accessory + Promo */}
+          <div className="grid grid-cols-2 gap-3">
             <label className="flex items-center gap-2 cursor-pointer p-2 bg-gray-50 rounded-lg">
               <input type="checkbox" checked={paidAccessory} onChange={e => setPaidAccessory(e.target.checked)}
                 className="w-4 h-4 rounded border-gray-300 text-amber-600" />
               <span className="text-[10px] font-bold text-gray-700">Paid Accessory</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer p-2 bg-gray-50 rounded-lg">
-              <input type="checkbox" checked={isSelfGen} onChange={e => setIsSelfGen(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-blue-600" />
-              <span className="text-[10px] font-bold text-gray-700">Self-Gen Lead</span>
             </label>
             <div>
               <input value={promoCode} onChange={e => setPromoCode(e.target.value)} placeholder="Promo Code"
