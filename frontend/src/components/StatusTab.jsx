@@ -336,13 +336,13 @@ export default function StatusTab({
               <Table>
                 <TableHeader>
                   <TableRow className="bg-gray-50">
-                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none" onClick={() => toggleSort('name')}>Name <SortIcon field="name" /></TableHead>
-                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 hidden md:table-cell cursor-pointer select-none" onClick={() => toggleSort('city')}>City <SortIcon field="city" /></TableHead>
-                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none" onClick={() => toggleSort('status')}>Status <SortIcon field="status" /></TableHead>
-                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 hidden sm:table-cell">Unit</TableHead>
-                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 hidden sm:table-cell cursor-pointer select-none" onClick={() => toggleSort('ticket_value')}>Value <SortIcon field="ticket_value" /></TableHead>
-                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 hidden lg:table-cell cursor-pointer select-none" onClick={() => toggleSort('visit_date')}>Visit <SortIcon field="visit_date" /></TableHead>
-                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2">Actions</TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none whitespace-nowrap" onClick={() => toggleSort('name')}>Name <SortIcon field="name" /></TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none whitespace-nowrap" onClick={() => toggleSort('city')}>City <SortIcon field="city" /></TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none whitespace-nowrap" onClick={() => toggleSort('status')}>Status <SortIcon field="status" /></TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 whitespace-nowrap">Unit</TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none whitespace-nowrap" onClick={() => toggleSort('ticket_value')}>Value <SortIcon field="ticket_value" /></TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 cursor-pointer select-none whitespace-nowrap" onClick={() => toggleSort('visit_date')}>Visit <SortIcon field="visit_date" /></TableHead>
+                    <TableHead className="text-[10px] font-bold uppercase text-gray-500 py-2 px-2 whitespace-nowrap">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -356,7 +356,7 @@ export default function StatusTab({
                         style={{ borderLeft: `4px solid ${sc.solid || '#6B7280'}` }}
                         onClick={() => setEditingLead({...lead})}
                         data-testid={`status-row-${i}`}>
-                        <TableCell className="py-2 px-2 text-xs font-medium text-gray-800">
+                        <TableCell className="py-2 px-2 text-xs font-medium text-gray-800 min-w-[140px]">
                           <div>
                             <div className="flex items-center gap-1.5">
                               <span className="line-clamp-1">{lead.name}</span>
@@ -366,23 +366,20 @@ export default function StatusTab({
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center gap-2 text-[10px] text-gray-400">
-                              {lead.customer_number && <span className="font-mono">#{lead.customer_number}</span>}
-                              <span className="md:hidden">{lead.city}</span>
-                            </div>
+                            {lead.customer_number && <span className="text-[10px] text-gray-400 font-mono">#{lead.customer_number}</span>}
                           </div>
                         </TableCell>
-                        <TableCell className="py-2 px-2 text-xs text-gray-600 hidden md:table-cell">{lead.city}</TableCell>
+                        <TableCell className="py-2 px-2 text-xs text-gray-600 whitespace-nowrap">{lead.city}</TableCell>
                         <TableCell className="py-2 px-2">
-                          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${sc.bg} ${sc.text}`}>
+                          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${sc.bg} ${sc.text}`}>
                             {STATUS_LABELS[lead.status] || lead.status}
                           </span>
                         </TableCell>
-                        <TableCell className="py-2 px-2 text-[10px] text-gray-600 hidden sm:table-cell">{lead.unit_type}</TableCell>
-                        <TableCell className="py-2 px-2 font-mono text-xs font-semibold text-gray-800 hidden sm:table-cell">${(lead.ticket_value || 0).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0})}</TableCell>
-                        <TableCell className="py-2 px-2 font-mono text-[10px] text-gray-500 hidden lg:table-cell">{lead.visit_date || '\u2014'}</TableCell>
+                        <TableCell className="py-2 px-2 text-[10px] text-gray-600 whitespace-nowrap">{lead.unit_type}</TableCell>
+                        <TableCell className="py-2 px-2 font-mono text-xs font-semibold text-gray-800 whitespace-nowrap">${(lead.ticket_value || 0).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0})}</TableCell>
+                        <TableCell className="py-2 px-2 font-mono text-[10px] text-gray-500 whitespace-nowrap">{lead.visit_date || '\u2014'}</TableCell>
                         <TableCell className="py-1.5 px-1.5" onClick={e => e.stopPropagation()}>
-                          <div className="flex gap-0.5 flex-wrap">
+                          <div className="flex gap-0.5 whitespace-nowrap">
                             {lead.phone && (
                               <button onClick={(e) => handleCall(lead, e)} className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 active:scale-95 transition-transform" title="Call"
                                 data-testid={`call-btn-${i}`}>
@@ -402,9 +399,9 @@ export default function StatusTab({
                               </button>
                             )}
                             {lead.status === 'PENDING' && (
-                              <button onClick={() => openPipelineMenu(lead)} className="text-[9px] px-1.5 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-bold hover:bg-blue-100 hidden lg:block"
+                              <button onClick={(e) => { e.stopPropagation(); openPipelineMenu(lead); }} className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 active:scale-95 transition-transform" title="Add to Pipeline"
                                 data-testid={`pipeline-btn-${i}`}>
-                                Pipeline
+                                <Target className="w-3.5 h-3.5" />
                               </button>
                             )}
                           </div>
