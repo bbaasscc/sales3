@@ -131,15 +131,17 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
     for (const spiff of (rules?.spiffs || [])) {
       const sel = spiffSelections[spiff.id];
       if (!sel?.selected) continue;
-      if (spiff.id === 'apco_x') spiffData.apco_x = calc.breakdown.find(b => b.label.includes('APCO'))?.amount || 0;
-      if (spiff.id === 'surge_protector') spiffData.surge_protector = calc.breakdown.filter(b => b.label.includes('Surge')).reduce((s, b) => s + b.amount, 0);
-      if (spiff.id === 'duct_cleaning') spiffData.duct_cleaning = calc.breakdown.find(b => b.label.includes('Duct'))?.amount || 0;
+      // For Under Book: commission is 0 but mark as sold (value=1 minimum for tracking)
+      const commLost = isUnderBook && spiff.id !== 'samsung' && spiff.id !== 'self_gen_mits' && spiff.id !== 'self_gen';
+      if (spiff.id === 'apco_x') spiffData.apco_x = commLost ? 1 : (calc.breakdown.find(b => b.label.includes('APCO'))?.amount || 250);
+      if (spiff.id === 'surge_protector') spiffData.surge_protector = commLost ? 1 : calc.breakdown.filter(b => b.label.includes('Surge')).reduce((s, b) => s + b.amount, 0) || 1;
+      if (spiff.id === 'duct_cleaning') spiffData.duct_cleaning = commLost ? 1 : (calc.breakdown.find(b => b.label.includes('Duct'))?.amount || 1);
       if (spiff.id === 'self_gen_mits') {
         spiffData.self_gen_mits = calc.breakdown.find(b => b.label.includes('Mitsubishi'))?.amount || 0;
         spiffData.self_gen_mits_product_value = sel.product_value || 0;
       }
       if (spiff.id === 'self_gen') { spiffData.self_gen_commission = calc.breakdown.find(b => b.label === 'Self Gen (Auto-generated lead)')?.amount || 0; spiffData.is_self_gen = true; }
-      if (spiff.id === 'samsung') spiffData.samsung = calc.breakdown.filter(b => b.label.includes('Samsung')).reduce((s, b) => s + b.amount, 0);
+      if (spiff.id === 'samsung') spiffData.samsung = calc.breakdown.filter(b => b.label.includes('Samsung')).reduce((s, b) => s + b.amount, 0) || 400;
       if (spiff.id === 'paid_accessory') spiffData.paid_accessory = true;
     }
 
@@ -239,40 +241,40 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
               <label className="text-[10px] font-bold uppercase text-gray-500 mb-2 block">Accessories & SPIFFs</label>
               {isUnderBook && (
                 <div className="mb-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-[10px] font-bold text-red-600">
-                  Under Book — All SPIFFs lost except Samsung, Self Gen Mitsubishi & Self Gen
+                  Under Book — SPIFF commissions lost (except Samsung, Self Gen Mits & Self Gen). Mark accessories sold for tracking.
                 </div>
               )}
               <div className="space-y-1.5">
                 {rules.spiffs.map(spiff => {
                   const sel = spiffSelections[spiff.id] || {};
-                  const isLocked = isUnderBook && spiff.id !== 'samsung' && spiff.id !== 'self_gen_mits' && spiff.id !== 'self_gen';
+                  const commLost = isUnderBook && spiff.id !== 'samsung' && spiff.id !== 'self_gen_mits' && spiff.id !== 'self_gen';
                   return (
                     <div key={spiff.id} className={`rounded-xl border-2 transition-all overflow-hidden ${
-                      isLocked ? 'border-gray-200 bg-gray-100 opacity-50' :
-                      sel.selected ? 'border-emerald-300 bg-emerald-50/30' : 'border-gray-200'
+                      sel.selected ? (commLost ? 'border-amber-300 bg-amber-50/30' : 'border-emerald-300 bg-emerald-50/30') : 'border-gray-200'
                     }`}>
                       {/* Header — tap to toggle */}
-                      <button onClick={() => !isLocked && setSpiff(spiff.id, 'selected', !sel.selected)}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                        disabled={isLocked}>
+                      <button onClick={() => setSpiff(spiff.id, 'selected', !sel.selected)}
+                        className="w-full flex items-center justify-between px-3 py-2.5 cursor-pointer">
                         <div className="flex items-center gap-2">
                           <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center text-xs transition-all ${
-                            sel.selected && !isLocked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-gray-300'
+                            sel.selected ? (commLost ? 'bg-amber-500 border-amber-500 text-white' : 'bg-emerald-500 border-emerald-500 text-white') : 'border-gray-300'
                           }`}>
-                            {sel.selected && !isLocked && '✓'}
-                            {isLocked && '✕'}
+                            {sel.selected && '✓'}
                           </div>
-                          <span className={`text-xs font-bold ${isLocked ? 'text-gray-400 line-through' : 'text-gray-700'}`}>{spiff.label}</span>
+                          <span className="text-xs font-bold text-gray-700">{spiff.label}</span>
+                          {sel.selected && commLost && (
+                            <span className="text-[9px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">$0 comm</span>
+                          )}
                         </div>
-                        {sel.selected && !isLocked && (
+                        {sel.selected && !commLost && (
                           <span className="text-xs font-mono font-bold text-emerald-600">
-                            +${(calc.breakdown.find(b => b.label === spiff.label)?.amount || 0).toFixed(0)}
+                            +${(calc.breakdown.filter(b => b.label.includes(spiff.label)).reduce((s,b) => s + b.amount, 0)).toFixed(0)}
                           </span>
                         )}
                       </button>
 
                       {/* Options as tabs — visible when selected */}
-                      {sel.selected && !isLocked && spiff.options && (
+                      {sel.selected && spiff.options && (
                         <div className="px-3 pb-3 flex flex-wrap gap-1.5">
                           {spiff.options.map((opt, oi) => {
                             const indices = sel.selected_options || (sel.option_idx !== undefined ? [sel.option_idx] : []);
@@ -300,7 +302,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
                       )}
 
                       {/* Product value input for pct_of_product type (e.g., Self Gen Mitsubishi 4%) */}
-                      {sel.selected && !isLocked && spiff.type === 'pct_of_product' && (
+                      {sel.selected && spiff.type === 'pct_of_product' && (
                         <div className="px-3 pb-3">
                           <label className="text-[10px] text-gray-500 block mb-1">Mitsubishi sale value ($)</label>
                           <div className="flex items-center gap-2">
