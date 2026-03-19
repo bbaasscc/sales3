@@ -180,7 +180,7 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
       )}
 
       {/* COMPANY AVERAGES */}
-      {companyAvg?.salesperson_count > 0 && kpiData.closed_deals > 0 && (
+      {companyAvg?.salesperson_count > 0 && (
         <div className="rounded-2xl overflow-hidden anim-section anim-delay-3" style={{ backgroundColor: '#F8FAFC', border: '2px dashed #CBD5E1' }}>
           <div className="p-4 sm:p-6">
             <div className="flex items-center gap-3 mb-4">
