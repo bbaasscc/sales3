@@ -93,6 +93,8 @@ class LeadUpdate(BaseModel):
     custom_spiffs: Optional[List[Dict[str, Any]]] = None
     price_tier: Optional[str] = None
     paid_accessory: Optional[bool] = None
+    self_gen_mits_product_value: Optional[float] = None
+    self_gen_commission: Optional[float] = None
 
 class PipelineScheduleUpdate(BaseModel):
     client_name: str
