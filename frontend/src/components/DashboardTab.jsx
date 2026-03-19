@@ -125,6 +125,13 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
               <p className="text-3xl sm:text-4xl font-mono font-bold text-red-400">{kpiData.price_margin_sales_count || 0}</p>
               <p className="text-[10px] text-white/40 mt-1">{kpiData.closed_deals > 0 ? ((kpiData.price_margin_sales_count || 0) / kpiData.closed_deals * 100).toFixed(1) : '0.0'}% of deals</p>
             </div>
+
+            {/* Self Gen 3% */}
+            <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/15 transition-all anim-card" style={{animationDelay:'0.5s'}}>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Self Gen (3%)</p>
+              <p className="text-3xl sm:text-4xl font-mono font-bold text-cyan-400">{(kpiData.records || []).filter(r => r.is_self_gen).length}</p>
+              <p className="text-[10px] text-white/40 mt-1">{kpiData.closed_deals > 0 ? ((kpiData.records || []).filter(r => r.is_self_gen).length / kpiData.closed_deals * 100).toFixed(1) : '0.0'}% of deals</p>
+            </div>
           </div>
 
           {(kpiData.cancel_count > 0 || kpiData.rescheduled_count > 0) && (
@@ -154,7 +161,7 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
               { label: 'APCO X Sold', count: sb['APCO X']?.count || 0 },
               { label: 'Duct Cleaning', count: sb['Duct Cleaning']?.count || 0 },
               { label: 'Surge Protector', count: sb['Surge Protector']?.count || 0 },
-              { label: 'Self Gen %', count: (kpiData.records || []).filter(r => r.is_self_gen).length },
+              { label: 'Self Gen Mits', count: sb['Mitsubishi']?.count || 0 },
             ];
             return items.map(item => {
               const pct = total > 0 ? (item.count / total * 100) : 0;
