@@ -20,13 +20,11 @@ DEFAULT_RULES = {
         {"id": "apco_x", "label": "APCO X UV Light", "type": "fixed", "options": [
             {"label": "Sold", "value": 250},
         ]},
-        {"id": "surge_furnace", "label": "Surge Protector (Furnace)", "type": "price_based", "options": [
-            {"price": 295, "label": "Sold at $295", "value": 75},
-            {"price": 195, "label": "Sold at $195", "value": 25},
-        ]},
-        {"id": "surge_ac", "label": "Surge Protector (AC)", "type": "price_based", "options": [
-            {"price": 295, "label": "Sold at $295", "value": 75},
-            {"price": 195, "label": "Sold at $195", "value": 25},
+        {"id": "surge_protector", "label": "Surge Protector", "type": "price_based", "options": [
+            {"price": 295, "label": "Furnace $295", "value": 75},
+            {"price": 195, "label": "Furnace $195", "value": 25},
+            {"price": 295, "label": "AC $295", "value": 75},
+            {"price": 195, "label": "AC $195", "value": 25},
         ]},
         {"id": "duct_cleaning", "label": "Duct Cleaning", "type": "price_based_plus_pct", "options": [
             {"price": 699, "label": "Sold at $699", "value": 100, "pct_of_total": 1},

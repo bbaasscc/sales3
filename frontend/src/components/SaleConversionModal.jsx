@@ -29,7 +29,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
     const sel = {};
     if (lead.apco_x > 0) sel.apco_x = { selected: true, option_idx: 0 };
     if (lead.surge_protector > 0) {
-      sel.surge_furnace = { selected: true, option_idx: lead.surge_protector >= 75 ? 0 : 1 };
+      sel.surge_protector = { selected: true, selected_options: [] };
     }
     if (lead.duct_cleaning > 0) {
       sel.duct_cleaning = { selected: true, option_idx: lead.duct_cleaning >= 100 ? 0 : lead.duct_cleaning >= 75 ? 1 : 2 };
@@ -87,18 +87,22 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
           spiffTotal += amt;
           breakdown.push({ label: spiff.label, amount: amt, detail: `${spiff.percent}% of $${pv.toLocaleString()}` });
         }
-      } else if (spiff.options && sel.option_idx !== undefined) {
-        const opt = spiff.options[sel.option_idx];
-        if (opt) {
-          let amt = opt.value || 0;
-          let detail = opt.label;
-          if (opt.pct_of_total && opt.pct_of_total > 0) {
-            const pctAmt = ticketValue * opt.pct_of_total / 100;
-            amt += pctAmt;
-            detail += ` + ${opt.pct_of_total}% ($${pctAmt.toFixed(0)})`;
+      } else if (spiff.options && (sel.option_idx !== undefined || sel.selected_options)) {
+        // Support multi-select options (e.g., Surge Protector Furnace + AC)
+        const indices = sel.selected_options || (sel.option_idx !== undefined ? [sel.option_idx] : []);
+        for (const oi of indices) {
+          const opt = spiff.options[oi];
+          if (opt) {
+            let amt = opt.value || 0;
+            let detail = opt.label;
+            if (opt.pct_of_total && opt.pct_of_total > 0) {
+              const pctAmt = ticketValue * opt.pct_of_total / 100;
+              amt += pctAmt;
+              detail += ` + ${opt.pct_of_total}% ($${pctAmt.toFixed(0)})`;
+            }
+            spiffTotal += amt;
+            breakdown.push({ label: `${spiff.label} — ${opt.label}`, amount: amt, detail });
           }
-          spiffTotal += amt;
-          breakdown.push({ label: spiff.label, amount: amt, detail });
         }
       }
     }
@@ -122,8 +126,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
       const sel = spiffSelections[spiff.id];
       if (!sel?.selected) continue;
       if (spiff.id === 'apco_x') spiffData.apco_x = calc.breakdown.find(b => b.label.includes('APCO'))?.amount || 0;
-      if (spiff.id === 'surge_furnace') spiffData.surge_protector = (spiffData.surge_protector || 0) + (calc.breakdown.find(b => b.label.includes('Furnace'))?.amount || 0);
-      if (spiff.id === 'surge_ac') spiffData.surge_protector = (spiffData.surge_protector || 0) + (calc.breakdown.find(b => b.label.includes('AC'))?.amount || 0);
+      if (spiff.id === 'surge_protector') spiffData.surge_protector = calc.breakdown.filter(b => b.label.includes('Surge')).reduce((s, b) => s + b.amount, 0);
       if (spiff.id === 'duct_cleaning') spiffData.duct_cleaning = calc.breakdown.find(b => b.label.includes('Duct'))?.amount || 0;
       if (spiff.id === 'self_gen_mits') {
         spiffData.self_gen_mits = calc.breakdown.find(b => b.label.includes('Mitsubishi'))?.amount || 0;
@@ -266,19 +269,28 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
                       {/* Options as tabs — visible when selected */}
                       {sel.selected && !isLocked && spiff.options && (
                         <div className="px-3 pb-3 flex flex-wrap gap-1.5">
-                          {spiff.options.map((opt, oi) => (
-                            <button key={oi} onClick={() => setSpiff(spiff.id, 'option_idx', oi)}
-                              className={`px-3 py-2 rounded-lg text-[10px] font-bold transition-all border ${
-                                sel.option_idx === oi
-                                  ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm'
-                                  : 'bg-white border-gray-200 text-gray-600 hover:border-emerald-300'
-                              }`}>
-                              {opt.label}
-                              <span className="block text-[9px] mt-0.5 opacity-80">
-                                +${opt.value}{opt.pct_of_total > 0 ? ` +${opt.pct_of_total}%` : ''}
-                              </span>
-                            </button>
-                          ))}
+                          {spiff.options.map((opt, oi) => {
+                            const indices = sel.selected_options || (sel.option_idx !== undefined ? [sel.option_idx] : []);
+                            const isOn = indices.includes(oi);
+                            return (
+                              <button key={oi} onClick={() => {
+                                const current = sel.selected_options || (sel.option_idx !== undefined ? [sel.option_idx] : []);
+                                const next = isOn ? current.filter(x => x !== oi) : [...current, oi];
+                                setSpiff(spiff.id, 'selected_options', next);
+                                setSpiff(spiff.id, 'option_idx', undefined);
+                              }}
+                                className={`px-3 py-2 rounded-lg text-[10px] font-bold transition-all border ${
+                                  isOn
+                                    ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm'
+                                    : 'bg-white border-gray-200 text-gray-600 hover:border-emerald-300'
+                                }`}>
+                                {opt.label}
+                                <span className="block text-[9px] mt-0.5 opacity-80">
+                                  +${opt.value}{opt.pct_of_total > 0 ? ` +${opt.pct_of_total}%` : ''}
+                                </span>
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
 
