@@ -686,7 +686,8 @@ function MainDashboard({ token, user, onLogout }) {
 
             {/* Salesperson Dashboard Tab */}
             {activeTab === 'dashboard' && (!isAdmin || filterSalespersonId) && (
-              <DashboardTab kpiData={kpiData} setSelectedSale={setSelectedSale} setInstallationsOpen={setInstallationsOpen} category={activeCategory} />
+              <DashboardTab kpiData={kpiData} setSelectedSale={setSelectedSale} setInstallationsOpen={setInstallationsOpen} category={activeCategory}
+                authHeaders={authHeaders} dateFilter={dateFilter} payPeriod={payPeriod} />
             )}
 
             {/* Status Tab (combined Follow-ups + Data access) */}

@@ -32,3 +32,56 @@ async def get_dashboard_kpis(date_filter: str = "all", pay_period: Optional[str]
                 "cancel_count": 0, "rescheduled_count": 0, "credit_reject_count": 0, "gross_closed": 0}
     df = pd.DataFrame(leads)
     return process_sales_data(df, date_filter=date_filter, pay_period=pay_period, from_db=True)
+
+
+@router.get("/dashboard/company-averages")
+async def get_company_averages(date_filter: str = "all", pay_period: Optional[str] = None, category: Optional[str] = None, user=Depends(get_optional_user)):
+    """Get average KPIs across all salespeople."""
+    salespeople = await db.users.find({"role": "salesperson"}, {"_id": 0}).to_list(100)
+    if not salespeople:
+        return {"averages": {}, "salesperson_count": 0}
+
+    totals = {"closing_rate": [], "average_ticket": [], "dpa": [], "total_revenue": [],
+              "closed_deals": [], "total_visits": [], "credit_reject_count": [],
+              "price_margin_sales_count": [], "avg_commission_percent": []}
+
+    for sp in salespeople:
+        lead_filter = {"salesperson_id": sp["user_id"]}
+        if category == "hvac":
+            lead_filter["unit_type"] = {"$ne": "Generator"}
+        elif category == "generator":
+            lead_filter["$or"] = [{"unit_type": "Generator"}, {"also_generator": True}]
+            lead_filter["salesperson_id"] = sp["user_id"]
+        leads = await db.leads.find(lead_filter, {"_id": 0}).to_list(10000)
+        if not leads:
+            continue
+        df = pd.DataFrame(leads)
+        kpi = process_sales_data(df, date_filter=date_filter, pay_period=pay_period, from_db=True)
+        totals["closing_rate"].append(kpi["closing_rate"])
+        totals["average_ticket"].append(kpi["average_ticket"])
+        totals["dpa"].append(kpi["total_revenue"] / kpi["total_visits"] if kpi["total_visits"] > 0 else 0)
+        totals["total_revenue"].append(kpi["total_revenue"])
+        totals["closed_deals"].append(kpi["closed_deals"])
+        totals["total_visits"].append(kpi["total_visits"])
+        totals["credit_reject_count"].append(kpi["credit_reject_count"])
+        totals["price_margin_sales_count"].append(kpi["price_margin_sales_count"])
+        totals["avg_commission_percent"].append(kpi["avg_commission_percent"])
+
+    n = len(totals["closing_rate"])
+    if n == 0:
+        return {"averages": {}, "salesperson_count": 0}
+
+    avg = lambda lst: round(sum(lst) / len(lst), 1) if lst else 0
+    return {
+        "salesperson_count": n,
+        "averages": {
+            "closing_rate": avg(totals["closing_rate"]),
+            "average_ticket": round(avg(totals["average_ticket"]), 0),
+            "dpa": round(avg(totals["dpa"]), 0),
+            "total_revenue": round(avg(totals["total_revenue"]), 0),
+            "closed_deals": round(avg(totals["closed_deals"]), 1),
+            "total_visits": round(avg(totals["total_visits"]), 1),
+            "credit_reject_count": round(avg(totals["credit_reject_count"]), 1),
+            "price_margin_sales_count": round(avg(totals["price_margin_sales_count"]), 1),
+        },
+    }

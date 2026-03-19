@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Card } from "@/components/ui/card";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -11,12 +13,21 @@ import {
 import { ChartCard } from "@/components/shared";
 import { CHART_COLORS } from "@/lib/constants";
 
-export default function DashboardTab({ kpiData, setSelectedSale, setInstallationsOpen, category }) {
+export default function DashboardTab({ kpiData, setSelectedSale, setInstallationsOpen, category, authHeaders, dateFilter, payPeriod }) {
   const dpa = kpiData.total_visits > 0 ? (kpiData.total_revenue / kpiData.total_visits) : 0;
   const isGen = category === 'generator';
   const t = isGen
     ? { primary: '#14532D', accent: '#22c55e', chartBg: '#F0FDF4', chartBorder: '#16a34a', chartLabel: '#166534', tableBg: '#ECFDF5', tableBorder: '#22c55e', tableLabel: '#166534' }
     : { primary: '#1E3A5F', accent: '#3B82F6', chartBg: '#EFF6FF', chartBorder: '#3B82F6', chartLabel: '#1E40AF', tableBg: '#F5F3FF', tableBorder: '#8B5CF6', tableLabel: '#5B21B6' };
+
+  const [companyAvg, setCompanyAvg] = useState(null);
+  useEffect(() => {
+    const params = { date_filter: dateFilter || 'current_year', category: category || 'hvac' };
+    if (payPeriod && payPeriod !== 'all') params.pay_period = payPeriod;
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/dashboard/company-averages`, {
+      params, headers: authHeaders || {}
+    }).then(r => setCompanyAvg(r.data)).catch(() => {});
+  }, [dateFilter, payPeriod, category, authHeaders]);
 
   const unitTypeData = kpiData?.unit_type_count 
     ? Object.entries(kpiData.unit_type_count).map(([name, value]) => ({
@@ -158,6 +169,47 @@ export default function DashboardTab({ kpiData, setSelectedSale, setInstallation
               );
             });
           })()}
+        </div>
+      )}
+
+      {/* COMPANY AVERAGES */}
+      {companyAvg?.salesperson_count > 0 && kpiData.closed_deals > 0 && (
+        <div className="rounded-2xl overflow-hidden anim-section anim-delay-3" style={{ backgroundColor: '#F8FAFC', border: '2px dashed #CBD5E1' }}>
+          <div className="p-4 sm:p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-200">
+                <Users className="w-4 h-4 text-gray-600" />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-gray-600">Company Average ({companyAvg.salesperson_count} salespeople)</h2>
+                <p className="text-[10px] text-gray-400">Compare your metrics against the team</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {[
+                { label: 'Avg R%', yours: kpiData.closing_rate, avg: companyAvg.averages.closing_rate, fmt: v => `${v}%` },
+                { label: 'Avg Revenue', yours: kpiData.total_revenue, avg: companyAvg.averages.total_revenue, fmt: v => `$${(+v).toLocaleString('en-US',{maximumFractionDigits:0})}` },
+                { label: 'Avg Ticket', yours: kpiData.average_ticket, avg: companyAvg.averages.average_ticket, fmt: v => `$${(+v).toLocaleString('en-US',{maximumFractionDigits:0})}` },
+                { label: 'Avg DPA', yours: dpa, avg: companyAvg.averages.dpa, fmt: v => `$${(+v).toLocaleString('en-US',{maximumFractionDigits:0})}` },
+                { label: 'Avg Deals', yours: kpiData.closed_deals, avg: companyAvg.averages.closed_deals, fmt: v => `${v}` },
+                { label: 'Avg Leads', yours: kpiData.total_visits, avg: companyAvg.averages.total_visits, fmt: v => `${v}` },
+                { label: 'Avg Credit Rej', yours: kpiData.credit_reject_count || 0, avg: companyAvg.averages.credit_reject_count, fmt: v => `${v}` },
+                { label: 'Avg Under Book', yours: kpiData.price_margin_sales_count || 0, avg: companyAvg.averages.price_margin_sales_count, fmt: v => `${v}` },
+              ].map(item => {
+                const diff = item.yours - item.avg;
+                const isGood = item.label.includes('Credit') || item.label.includes('Under') ? diff <= 0 : diff >= 0;
+                return (
+                  <div key={item.label} className="bg-white rounded-lg p-2.5 border border-gray-100">
+                    <p className="text-[9px] font-bold uppercase text-gray-400 mb-1">{item.label}</p>
+                    <p className="text-lg font-mono font-bold text-gray-600">{item.fmt(item.avg)}</p>
+                    <p className={`text-[9px] font-bold ${isGood ? 'text-green-600' : 'text-red-500'}`}>
+                      You: {item.fmt(item.yours)} {isGood ? '▲' : '▼'}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       )}
 
