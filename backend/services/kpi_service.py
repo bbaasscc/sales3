@@ -39,7 +39,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
     for col in ['customer_number', 'name', 'status', 'unit_type', 'ticket_value', 'commission_value', 'commission_percent',
                 'visit_date', 'close_date', 'install_date', 'follow_up_date', 'spif_total',
                 'apco_x', 'samsung', 'mitsubishi', 'surge_protector', 'duct_cleaning', 'self_gen_mits',
-                'phone', 'email', 'lead_id', 'city', 'address', 'feeling', 'comments', 'objections', 'paid_accessory']:
+                'phone', 'email', 'lead_id', 'city', 'address', 'feeling', 'comments', 'objections', 'paid_accessory', 'price_tier']:
         if col not in df.columns:
             df[col] = None
 
@@ -248,6 +248,7 @@ def process_sales_data(df: pd.DataFrame, date_filter: str = "all", pay_period: s
             'email': str(r.get('email', '')) if pd.notna(r.get('email')) else '',
             'phone': str(r.get('phone', '')) if pd.notna(r.get('phone')) else '',
             'paid_accessory': bool(r.get('paid_accessory')) if pd.notna(r.get('paid_accessory')) else False,
+            'price_tier': str(r.get('price_tier', '')) if pd.notna(r.get('price_tier')) else '',
         })
 
     pp_data = []
