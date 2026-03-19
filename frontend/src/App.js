@@ -378,7 +378,7 @@ function MainDashboard({ token, user, onLogout }) {
     if (!editingLead?.lead_id) return;
     // If converting to SALE and wasn't SALE before, show conversion modal
     if (editingLead.status === 'SALE' && originalLead?.status !== 'SALE' && !saleConversion) {
-      setSaleConversion(editingLead);
+      setSaleConversion({ ...editingLead, _isNewSale: true });
       return;
     }
     const spiffSum = (editingLead.apco_x || 0) + (editingLead.samsung || 0) + (editingLead.mitsubishi || 0) + (editingLead.surge_protector || 0) + (editingLead.duct_cleaning || 0) + (editingLead.self_gen_mits || 0);
@@ -400,9 +400,9 @@ function MainDashboard({ token, user, onLogout }) {
       await axios.put(`${API}/leads/${saleConversion.lead_id}`, dataToSave, { headers: authHeaders });
       const name = saleConversion.name.split(' ')[0];
       const value = dataToSave.ticket_value || 0;
-      const isEdit = saleConversion.status === 'SALE';
-      toast.success(isEdit ? `${name} updated!` : `${name} converted to SALE!`, { description: value > 0 ? `$${value.toLocaleString()} deal` : '' });
-      if (!isEdit) {
+      const isNewSale = saleConversion._isNewSale;
+      toast.success(isNewSale ? `${name} converted to SALE!` : `${name} updated!`, { description: value > 0 ? `$${value.toLocaleString()} deal` : '' });
+      if (isNewSale) {
         if ((dataToSave.commission_percent || 0) >= 10) {
           celebrateMoneyRain();
         } else {
