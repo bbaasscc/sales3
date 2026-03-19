@@ -54,9 +54,6 @@ async def get_company_averages(date_filter: str = "all", pay_period: Optional[st
             lead_filter["salesperson_id"] = sp["user_id"]
         leads = await db.leads.find(lead_filter, {"_id": 0}).to_list(10000)
         if not leads:
-            # Include salesperson with 0s in averages
-            for key in totals:
-                totals[key].append(0)
             continue
         df = pd.DataFrame(leads)
         kpi = process_sales_data(df, date_filter=date_filter, pay_period=pay_period, from_db=True)
