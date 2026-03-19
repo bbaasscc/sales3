@@ -573,9 +573,11 @@ function InteractionTimeline({ activities }) {
   const [expandedId, setExpandedId] = useState(null);
 
   const typeConfig = {
-    call:  { icon: Phone, color: 'bg-green-500', lightBg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', label: 'Phone Call', line: 'bg-green-300' },
-    sms:   { icon: MessageSquare, color: 'bg-purple-500', lightBg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', label: 'Text Message', line: 'bg-purple-300' },
-    email: { icon: Mail, color: 'bg-blue-500', lightBg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', label: 'Email', line: 'bg-blue-300' },
+    call:     { icon: Phone, color: 'bg-green-500', lightBg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', label: 'Phone Call', line: 'bg-green-300' },
+    sms:      { icon: MessageSquare, color: 'bg-purple-500', lightBg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', label: 'Text Message', line: 'bg-purple-300' },
+    email:    { icon: Mail, color: 'bg-blue-500', lightBg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', label: 'Email', line: 'bg-blue-300' },
+    note:     { icon: FileText, color: 'bg-amber-500', lightBg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', label: 'Note', line: 'bg-amber-300' },
+    reminder: { icon: AlertTriangle, color: 'bg-red-500', lightBg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', label: 'Reminder', line: 'bg-red-300' },
   };
 
   // Group by date

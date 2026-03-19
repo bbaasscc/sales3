@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import axios from "axios";
-import { Phone, MessageSquare, Mail, Mic, MicOff, Languages, Send, X } from "lucide-react";
+import { Phone, MessageSquare, Mail, Mic, MicOff, Languages, Send, X, StickyNote, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/lib/constants";
 
@@ -100,19 +100,19 @@ export default function AddInteraction({ leadId, leadName, authHeaders, onSaved 
       </div>
 
       {/* Type selector */}
-      <div className="flex gap-2">
+      <div className="flex gap-1.5 flex-wrap">
         {[
-          { id: 'call', icon: Phone, label: 'Call', color: 'green' },
-          { id: 'sms', icon: MessageSquare, label: 'SMS', color: 'purple' },
-          { id: 'email', icon: Mail, label: 'Email', color: 'blue' },
+          { id: 'call', icon: Phone, label: 'Call', color: '#16a34a' },
+          { id: 'sms', icon: MessageSquare, label: 'SMS', color: '#9333ea' },
+          { id: 'email', icon: Mail, label: 'Email', color: '#2563eb' },
+          { id: 'note', icon: StickyNote, label: 'Note', color: '#f59e0b' },
+          { id: 'reminder', icon: Bell, label: 'Reminder', color: '#ef4444' },
         ].map(t => (
           <button key={t.id} onClick={() => setType(t.id)}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[10px] font-bold transition-all ${
-              type === t.id
-                ? `bg-${t.color}-600 text-white shadow-sm`
-                : `bg-white text-gray-500 border border-gray-200 hover:border-${t.color}-300`
+            className={`flex-1 min-w-[60px] flex items-center justify-center gap-1 py-2 rounded-lg text-[10px] font-bold transition-all border ${
+              type === t.id ? 'text-white shadow-sm' : 'bg-white text-gray-500 border-gray-200'
             }`}
-            style={type === t.id ? { backgroundColor: t.color === 'green' ? '#16a34a' : t.color === 'purple' ? '#9333ea' : '#2563eb' } : {}}
+            style={type === t.id ? { backgroundColor: t.color, borderColor: t.color } : {}}
             data-testid={`interaction-type-${t.id}`}>
             <t.icon className="w-3.5 h-3.5" />
             {t.label}
