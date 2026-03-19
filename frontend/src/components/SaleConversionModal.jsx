@@ -37,6 +37,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
     if (lead.self_gen_mits > 0) sel.self_gen_mits = { selected: true, product_value: lead.self_gen_mits_product_value || 0 };
     if (lead.self_gen_commission > 0 || lead.is_self_gen) sel.self_gen = { selected: true };
     if (lead.samsung > 0) sel.samsung = { selected: true, option_idx: 0 };
+    if (lead.paid_accessory) sel.paid_accessory = { selected: true };
     setSpiffSelections(sel);
   }, [lead]);
 
@@ -134,6 +135,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
       }
       if (spiff.id === 'self_gen') spiffData.self_gen_commission = calc.breakdown.find(b => b.label === 'Self Gen (Auto-generated lead)')?.amount || 0;
       if (spiff.id === 'samsung') spiffData.samsung = calc.breakdown.find(b => b.label.includes('Samsung'))?.amount || 0;
+      if (spiff.id === 'paid_accessory') spiffData.paid_accessory = true;
     }
 
     onSave({
@@ -340,17 +342,10 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
             </div>
           )}
 
-          {/* Paid Accessory + Promo */}
-          <div className="grid grid-cols-2 gap-3">
-            <label className="flex items-center gap-2 cursor-pointer p-2 bg-gray-50 rounded-lg">
-              <input type="checkbox" checked={paidAccessory} onChange={e => setPaidAccessory(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-amber-600" />
-              <span className="text-[10px] font-bold text-gray-700">Paid Accessory</span>
-            </label>
-            <div>
-              <input value={promoCode} onChange={e => setPromoCode(e.target.value)} placeholder="Promo Code"
-                className="w-full px-2 py-2 text-xs border rounded-lg" />
-            </div>
+          {/* Promo Code */}
+          <div>
+            <input value={promoCode} onChange={e => setPromoCode(e.target.value)} placeholder="Promo Code"
+              className="w-full px-2 py-2 text-xs border rounded-lg" />
           </div>
 
           {/* Commission Summary */}

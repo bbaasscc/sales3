@@ -38,6 +38,8 @@ DEFAULT_RULES = {
         {"id": "samsung", "label": "Samsung", "type": "fixed", "options": [
             {"label": "Sold", "value": 400},
         ]},
+        {"id": "paid_accessory", "label": "Paid Accessory", "type": "pct_of_total", "percent": 1,
+         "description": "1% of total sale for paid accessory"},
     ],
 }
 
