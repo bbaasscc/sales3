@@ -122,7 +122,12 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
   const isUnderBook = priceTier === 'under_book';
 
   const handleSave = () => {
-    const spiffData = {};
+    // Reset ALL spiff fields first, then set selected ones
+    const spiffData = {
+      apco_x: 0, surge_protector: 0, duct_cleaning: 0,
+      self_gen_mits: 0, self_gen_mits_product_value: 0, self_gen_commission: 0,
+      samsung: 0, paid_accessory: false, is_self_gen: false,
+    };
     for (const spiff of (rules?.spiffs || [])) {
       const sel = spiffSelections[spiff.id];
       if (!sel?.selected) continue;
@@ -133,8 +138,8 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
         spiffData.self_gen_mits = calc.breakdown.find(b => b.label.includes('Mitsubishi'))?.amount || 0;
         spiffData.self_gen_mits_product_value = sel.product_value || 0;
       }
-      if (spiff.id === 'self_gen') spiffData.self_gen_commission = calc.breakdown.find(b => b.label === 'Self Gen (Auto-generated lead)')?.amount || 0;
-      if (spiff.id === 'samsung') spiffData.samsung = calc.breakdown.find(b => b.label.includes('Samsung'))?.amount || 0;
+      if (spiff.id === 'self_gen') { spiffData.self_gen_commission = calc.breakdown.find(b => b.label === 'Self Gen (Auto-generated lead)')?.amount || 0; spiffData.is_self_gen = true; }
+      if (spiff.id === 'samsung') spiffData.samsung = calc.breakdown.filter(b => b.label.includes('Samsung')).reduce((s, b) => s + b.amount, 0);
       if (spiff.id === 'paid_accessory') spiffData.paid_accessory = true;
     }
 
@@ -145,9 +150,7 @@ export default function SaleConversionModal({ lead, onSave, onCancel, authHeader
       spif_total: Math.round(calc.spiffTotal * 100) / 100,
       products: products.filter(p => p.manufacturer || p.model),
       sale_accessories: accessories.filter(a => a.name),
-      is_self_gen: isSelfGen,
       promo_code: promoCode,
-      paid_accessory: paidAccessory,
       custom_spiffs: customSpiffs.filter(c => c.amount > 0),
       price_tier: priceTier,
       ...spiffData,
