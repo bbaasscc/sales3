@@ -59,3 +59,28 @@ async def update_user_role(user_id: str, body: dict, user=Depends(get_current_us
         raise HTTPException(status_code=400, detail="Invalid role")
     await db.users.update_one({"user_id": user_id}, {"$set": {"role": new_role}})
     return {"message": f"Role updated to {new_role}"}
+
+
+@router.post("/reset-password")
+async def reset_password(body: dict, user=Depends(get_current_user)):
+    """Admin resets a salesperson's password, or user resets their own."""
+    target_email = body.get("email", "").strip().lower()
+    new_password = body.get("new_password", "")
+    if not new_password or len(new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    if user["role"] == "admin":
+        target = await db.users.find_one({"email": target_email})
+        if not target:
+            raise HTTPException(status_code=404, detail="User not found")
+        await db.users.update_one({"email": target_email}, {"$set": {"password_hash": pwd_context.hash(new_password)}})
+        return {"message": f"Password reset for {target_email}"}
+    elif user["email"] == target_email:
+        old_password = body.get("old_password", "")
+        if not old_password or not pwd_context.verify(old_password, user.get("password_hash", "")):
+            full_user = await db.users.find_one({"email": target_email}, {"_id": 0})
+            if not full_user or not pwd_context.verify(old_password, full_user.get("password_hash", "")):
+                raise HTTPException(status_code=401, detail="Current password is incorrect")
+        await db.users.update_one({"email": target_email}, {"$set": {"password_hash": pwd_context.hash(new_password)}})
+        return {"message": "Password updated"}
+    else:
+        raise HTTPException(status_code=403, detail="Not authorized")

@@ -183,6 +183,11 @@ export default function LoginPage({ onLogin }) {
               >
                 {loading ? "Loading..." : mode === "login" ? "Sign In" : "Create Account"}
               </Button>
+              {mode === "login" && (
+                <p className="text-[11px] text-gray-400 text-center mt-3">
+                  Forgot your password? Contact your admin to reset it.
+                </p>
+              )}
             </form>
 
             {mode === "register" && (

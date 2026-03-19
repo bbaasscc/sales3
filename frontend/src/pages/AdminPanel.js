@@ -19,6 +19,8 @@ export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod
   const [salespeople, setSalespeople] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingRole, setEditingRole] = useState(null);
+  const [resetPwEmail, setResetPwEmail] = useState(null);
+  const [newPw, setNewPw] = useState('');
 
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -46,6 +48,15 @@ export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod
       toast.success("Role updated");
       fetchData();
       setEditingRole(null);
+    } catch (err) { toast.error(err.response?.data?.detail || "Error"); }
+  };
+
+  const handleResetPassword = async () => {
+    if (!newPw || newPw.length < 6) { toast.error("Password must be at least 6 characters"); return; }
+    try {
+      await axios.post(`${API}/auth/reset-password`, { email: resetPwEmail, new_password: newPw }, { headers });
+      toast.success(`Password reset for ${resetPwEmail}`);
+      setResetPwEmail(null); setNewPw('');
     } catch (err) { toast.error(err.response?.data?.detail || "Error"); }
   };
 
@@ -229,6 +240,10 @@ export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod
                         </button>
                       )
                     )}
+                    <button onClick={() => { setResetPwEmail(sp.email); setNewPw(''); }}
+                      className="text-[10px] px-2 py-1 bg-amber-50 text-amber-600 rounded font-bold hover:bg-amber-100 ml-1">
+                      Reset PW
+                    </button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -236,6 +251,29 @@ export default function AdminPanel({ token, user, onFilterSalesperson, payPeriod
           </Table>
         </div>
       </Card>
+
+      {/* Reset Password Modal */}
+      {resetPwEmail && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 anim-backdrop">
+          <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 anim-modal">
+            <h3 className="text-sm font-bold text-gray-800 mb-1">Reset Password</h3>
+            <p className="text-xs text-gray-500 mb-4">{resetPwEmail}</p>
+            <input type="password" value={newPw} onChange={e => setNewPw(e.target.value)}
+              placeholder="New password (min 6 chars)"
+              className="w-full px-3 py-2 text-sm border rounded-lg mb-3" autoFocus />
+            <div className="flex gap-2">
+              <button onClick={handleResetPassword}
+                className="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700">
+                Reset Password
+              </button>
+              <button onClick={() => { setResetPwEmail(null); setNewPw(''); }}
+                className="flex-1 py-2 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold hover:bg-gray-200">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
