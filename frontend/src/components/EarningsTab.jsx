@@ -68,62 +68,6 @@ export default function EarningsTab({ kpiData, setInstallationsOpen, category })
         </div>
       </div>
 
-      {/* Commission Tiers */}
-      {kpiData.closed_deals > 0 && (
-        <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: payBg, borderLeftColor: '#6366F1' }}>
-          <div className="p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <DollarSign className="w-5 h-5 text-indigo-600" />
-              <div>
-                <h2 className="text-lg font-bold text-indigo-800">Commission Tiers</h2>
-                <p className="text-xs text-indigo-600/70">Distribution by price level</p>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl p-4">
-              {(() => {
-                const records = kpiData.records || [];
-                const tiers = [
-                  { id: 'under_book', label: 'Under Book (5%)', color: '#EF4444' },
-                  { id: 'at_book', label: 'At Book (7%)', color: '#6B7280' },
-                  { id: 'over_200', label: '$200 Over (8%)', color: '#3B82F6' },
-                  { id: 'over_500', label: '$500 Over (9%)', color: '#8B5CF6' },
-                  { id: 'over_1000', label: '$1K+ Over (10%)', color: '#10B981' },
-                ];
-                // Count by price_tier field; records without price_tier go to "Legacy"
-                const tiered = records.filter(r => r.price_tier);
-                const legacy = records.filter(r => !r.price_tier);
-                const allTiers = [...tiers.map(t => {
-                  const matching = tiered.filter(r => r.price_tier === t.id);
-                  return { ...t, count: matching.length, rev: matching.reduce((s, r) => s + (r.ticket_value || 0), 0) };
-                })];
-                if (legacy.length > 0) {
-                  allTiers.push({ id: 'legacy', label: 'Legacy (pre-rules)', color: '#94A3B8', count: legacy.length, rev: legacy.reduce((s, r) => s + (r.ticket_value || 0), 0) });
-                }
-                const total = records.length;
-                return allTiers.filter(t => t.count > 0).map(tier => {
-                  const pct = total > 0 ? (tier.count / total * 100) : 0;
-                  return (
-                    <div key={tier.id} className="flex items-center gap-2 mb-2.5">
-                      <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: tier.color }} />
-                      <span className="text-[10px] font-bold text-gray-600 w-28 flex-shrink-0">{tier.label}</span>
-                      <div className="flex-1 bg-gray-100 rounded-full h-4">
-                        <div className="h-4 rounded-full transition-all flex items-center justify-end pr-1" style={{ width: `${Math.max(pct, 5)}%`, backgroundColor: tier.color }}>
-                          {pct > 15 && <span className="text-[8px] font-bold text-white">{pct.toFixed(0)}%</span>}
-                        </div>
-                      </div>
-                      <div className="text-right w-20 flex-shrink-0">
-                        <span className="text-[10px] font-mono font-bold text-gray-700">{tier.count} deals</span>
-                        <span className="text-[9px] text-gray-400 block">${tier.rev.toLocaleString('en-US', {maximumFractionDigits:0})}</span>
-                      </div>
-                    </div>
-                  );
-                });
-              })()}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* SPIFF Breakdown */}
       <div className="rounded-2xl border-l-4 overflow-hidden" style={{ backgroundColor: spiffBg, borderLeftColor: spiffBorder }}>
         <div className="p-4 sm:p-6">
