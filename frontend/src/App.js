@@ -402,7 +402,13 @@ function MainDashboard({ token, user, onLogout }) {
       const value = dataToSave.ticket_value || 0;
       const isEdit = saleConversion.status === 'SALE';
       toast.success(isEdit ? `${name} updated!` : `${name} converted to SALE!`, { description: value > 0 ? `$${value.toLocaleString()} deal` : '' });
-      if (!isEdit) celebrateSale();
+      if (!isEdit) {
+        if ((dataToSave.commission_percent || 0) >= 10) {
+          celebrateMoneyRain();
+        } else {
+          celebrateSale();
+        }
+      }
       setEditingLead(null);
       setSaleConversion(null);
       fetchDashboardData(); fetchAllLeads(); fetchTasks();
@@ -418,6 +424,23 @@ function MainDashboard({ token, user, onLogout }) {
     setTimeout(() => confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 1, y: 0.65 }, colors: ['#1E3A5F', '#FFD700', '#FF9800'] }), 300);
     // Final rain
     setTimeout(() => confetti({ particleCount: 80, spread: 100, origin: { y: 0.3 }, gravity: 0.8, colors: ['#C62828', '#1E3A5F', '#FFD700', '#4CAF50'] }), 600);
+  };
+
+  const celebrateMoneyRain = () => {
+    const moneyColors = ['#85BB65', '#3D8B37', '#2E7D32', '#4CAF50', '#A5D6A7'];
+    // Heavy money rain from top
+    const end = Date.now() + 3000;
+    const frame = () => {
+      confetti({ particleCount: 4, angle: 90, spread: 120, origin: { x: Math.random(), y: -0.1 }, gravity: 0.6, ticks: 300,
+        colors: moneyColors, shapes: ['square'], scalar: 1.5 });
+      confetti({ particleCount: 2, angle: 90, spread: 80, origin: { x: Math.random(), y: -0.1 }, gravity: 0.4, ticks: 400,
+        colors: ['#FFD700', '#FFC107'], shapes: ['circle'], scalar: 1.2 });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    };
+    frame();
+    // Burst at start
+    confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, colors: moneyColors, shapes: ['square'], scalar: 1.8 });
+    toast.success('MONEY RAIN!', { description: '10%+ commission deal!', duration: 4000 });
   };
 
   // === HANDLERS ===
