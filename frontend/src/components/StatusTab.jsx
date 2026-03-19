@@ -28,6 +28,7 @@ export default function StatusTab({
   const [showDataTools, setShowDataTools] = useState(false);
   const [sortField, setSortField] = useState('visit_date');
   const [sortDir, setSortDir] = useState('desc');
+  const [lastInteractions, setLastInteractions] = useState({});
 
   const toggleSort = (field) => {
     if (sortField === field) setSortDir(d => d === 'desc' ? 'asc' : 'desc');
@@ -44,6 +45,24 @@ export default function StatusTab({
     const done = ALL_PIPELINE_ACTIONS.filter(a => isStepDone(clientName, a.id)).length;
     return { done, total: ALL_PIPELINE_ACTIONS.length };
   };
+
+  // Fetch last interaction for pipeline leads
+  useEffect(() => {
+    if (view !== 'pipeline' || !kpiData?.follow_ups?.length) return;
+    const fetchLast = async () => {
+      const map = {};
+      for (const fu of kpiData.follow_ups) {
+        if (!fu.lead_id) continue;
+        try {
+          const res = await axios.get(`${API}/leads/${fu.lead_id}/activities`, { headers: authHeaders });
+          const acts = res.data.activities || [];
+          if (acts.length > 0) map[fu.lead_id] = acts[0];
+        } catch {}
+      }
+      setLastInteractions(map);
+    };
+    fetchLast();
+  }, [view, kpiData?.follow_ups]);
 
   // Filter leads
   const filteredLeads = allLeads
@@ -448,6 +467,18 @@ export default function StatusTab({
                             <p className="text-[10px] text-gray-400 font-mono">
                               {fu.customer_number && `#${fu.customer_number} · `}{fu.city} · Visit: {fu.visit_date}
                             </p>
+                            {lastInteractions[fu.lead_id] && (
+                              <p className="text-[9px] mt-0.5">
+                                <span className={`font-bold ${
+                                  lastInteractions[fu.lead_id].activity_type === 'call' ? 'text-green-600' :
+                                  lastInteractions[fu.lead_id].activity_type === 'sms' ? 'text-purple-600' :
+                                  lastInteractions[fu.lead_id].activity_type === 'email' ? 'text-blue-600' :
+                                  'text-amber-600'
+                                }`}>
+                                  Last: {lastInteractions[fu.lead_id].activity_type} — {new Date(lastInteractions[fu.lead_id].timestamp).toLocaleDateString()}
+                                </span>
+                              </p>
+                            )}
                           </div>
                           <div className="flex items-center gap-1.5 flex-shrink-0">
                             {fu.is_urgent && <AlertTriangle className="w-4 h-4 text-red-500" />}
